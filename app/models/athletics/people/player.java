@@ -1,4 +1,4 @@
-package models.athletics.people;
+package app.models.athletics.people;
 
 public class player {
     

@@ -1,4 +1,4 @@
-package models.athletics.teams;
+package app.models.athletics.teams;
 
 public class footballTeam {
     
