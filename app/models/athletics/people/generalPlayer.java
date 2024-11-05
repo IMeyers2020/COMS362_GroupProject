@@ -1,5 +1,5 @@
 package app.models.athletics.people;
 
-public class player {
+public class generalPlayer {
     
 }

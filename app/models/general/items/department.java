@@ -1,4 +1,4 @@
-package app.models;
+package app.models.general.items;
 
 public class department {
     
