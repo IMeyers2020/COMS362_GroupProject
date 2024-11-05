@@ -1,5 +1,5 @@
 package app.models.general.people;
 
-public class professor {
+public class professor extends genericPerson {
     
 }

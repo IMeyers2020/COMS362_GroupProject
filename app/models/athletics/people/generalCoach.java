@@ -1,5 +1,7 @@
 package app.models.athletics.people;
 
-public class generalCoach {
+import app.models.general.people.genericPerson;
+
+public class generalCoach extends genericPerson {
     
 }
