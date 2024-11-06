@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class UniversityProject {
 
     enum Departments {
-        HUMAN_RESOURCES, ADMISSIONS
+        HUMAN_RESOURCES, ADMISSIONS, REGISTRATION
     }
 
     public static void clearScreen() {
@@ -18,6 +18,7 @@ public class UniversityProject {
         System.out.println("What department are you a part of?");
         System.out.println("1. Human Resources");
         System.out.println("2. Admissions");
+        System.out.println("3. Registration");
 
         String selection = s.nextLine();
 
@@ -37,6 +38,12 @@ public class UniversityProject {
             case "2.":
                 clearScreen();
                 return Departments.ADMISSIONS;
+            case "3":
+            case "Registration":
+            case "3. Registration":
+            case "3.":
+                clearScreen();
+                return Departments.REGISTRATION;
             default:
                 clearScreen();
                 System.out.println("That is not a valid option.");
@@ -54,6 +61,9 @@ public class UniversityProject {
                 
                 break;
             case HUMAN_RESOURCES:
+
+                break;
+            case REGISTRATION:
 
                 break;
             default:
