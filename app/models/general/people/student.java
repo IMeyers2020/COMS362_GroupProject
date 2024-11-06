@@ -1,5 +1,5 @@
 package app.models.general.people;
 
-public class student extends genericPerson {
+public class student<T> extends genericPerson {
     
 }

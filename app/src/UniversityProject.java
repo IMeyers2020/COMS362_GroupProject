@@ -45,6 +45,19 @@ public class UniversityProject {
     }
 
     public static void main(String[] args) {
-        getDepartment();
+        // Select a department. This is in place instead of any type of authentication.
+        //  This allows us to take the user to the correct 'screen'.
+        Departments selectedDepartment = getDepartment();
+
+        switch(selectedDepartment) {
+            case ADMISSIONS:
+                
+                break;
+            case HUMAN_RESOURCES:
+
+                break;
+            default:
+                System.out.println("ERROR: THIS DEPARTMENT HAS NOT BEEN IMPLEMENTED");
+        }
     }
 }
