@@ -16,7 +16,7 @@ public class businessCollege extends genericCollege implements collegeInfo {
 
     @Override
     public String[] getMajors() {
-        return new String[]{"Finance", "bar"};
+        return new String[]{"Finance", "Accounting", "Marketing", "Management"};
     }
     
 }
