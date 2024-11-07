@@ -27,19 +27,23 @@ public class student extends genericPerson {
         completedCourses = new ArrayList<>();
     }
 
-    public List<course> getCurrentCourses() {
+    public List<String> getCurrentCourses() {
         return sched.getCourses();
     }
 
-    public boolean addCourse(course course) {
-        if (completedCourses.containsAll(course.getPrereqs())){
-            return sched.addCourse(course);
+    public boolean addCourse(course c) {
+        if (completedCourses.containsAll(c.getPrereqs())){
+            return sched.addCourse(c);
         }
         return false;
     }
 
-    public void setSchedule(schedule schedule) {
-        sched = schedule;
+    public boolean removeCourse(course c) {
+        return sched.removeCourse(c);
+    }
+
+    public void setSchedule(schedule s) {
+        sched = s;
     }
     public schedule getSchedule() {
         return sched;
