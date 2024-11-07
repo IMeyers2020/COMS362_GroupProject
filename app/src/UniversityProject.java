@@ -4,20 +4,17 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
-<<<<<<< HEAD
 import app.models.academics.RegistrationController;
 import app.models.finances.offices.AccountReceivableOffice;
 import app.models.finances.paymentServices.FinancialInfo;
 import app.models.finances.paymentServices.Payment;
 import app.models.general.items.Course;
 import app.models.general.people.student;
-=======
 import models.finances.offices.AccountReceivableOffice;
 import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Payment;
 import models.general.items.Course;
 import models.general.people.student;
->>>>>>> 8093029a79ca953a850c5681f20fdc5aca934b75
 
 public class UniversityProject {
     public static HashMap<String, student> test = new HashMap<String, student>();
