@@ -141,19 +141,19 @@ public class UniversityProject {
     public static void AddProfessor() {
         OfferController offerController = new OfferController();
 
-        System.out.println("Please enter student id:");
+        System.out.println("Please enter professor id:");
         String sid = s.nextLine();
 
-        System.out.println("Please enter student name:");
+        System.out.println("Please enter professor name:");
         String name = s.nextLine();
 
-        System.out.println("Please enter student address:");
+        System.out.println("Please enter professor address:");
         String address = s.nextLine();
 
-        System.out.println("Please enter student SSN:");
-        String ssn = s.nextLine();
+        System.out.println("Please enter professor Area of Study:");
+        String aos = s.nextLine();
 
-        boolean result = offerController.addProfessor(sid, name, address, ssn);
+        boolean result = offerController.addProfessor(sid, name, address, aos);
 
         clearScreen();
 

@@ -4,9 +4,9 @@ import models.academics.administrativeDepartments.admissions.items.StudentApplic
 import models.academics.administrativeDepartments.humanResources.items.Offer;
 
 public class OfferController {
-    public boolean addProfessor(String sId, String name, String address, String SSN) {
+    public boolean addProfessor(String pId, String name, String address, String AOS) {
         Offer sa = new Offer();
 
-        return sa.addProfessor(sId, name, address, SSN);
+        return sa.addProfessor(pId, name, address, AOS);
     }
 }
