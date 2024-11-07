@@ -17,9 +17,11 @@ public class student extends genericPerson {
 
     public student(String studentId, String name, FinancialInfo financialInfo, double accountBalance) {
         this.studentId = studentId;
-        this.name = student.super.getFirstName() + student.super.getLastName();
+        this.name = name;
         this.financialInfo = financialInfo;
         this.accountBalance = accountBalance;
+        sched = new Schedule();
+        completedCourses = new ArrayList<>();
     }
 
     public student() {

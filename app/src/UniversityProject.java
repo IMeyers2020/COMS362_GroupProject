@@ -1,8 +1,10 @@
 package app.src;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
+import app.models.academics.RegistrationController;
 import app.models.finances.offices.AccountReceivableOffice;
 import app.models.finances.paymentServices.FinancialInfo;
 import app.models.finances.paymentServices.Payment;
@@ -10,7 +12,7 @@ import app.models.general.items.Course;
 import app.models.general.people.student;
 
 public class UniversityProject {
-    public static student exampleStudent;
+    public static HashMap<String, student> test = new HashMap<String, student>();
     public static Scanner s;
 
     enum Departments {
@@ -85,9 +87,16 @@ public class UniversityProject {
 
     public static void CourseRegistration() {
         HashMap<String, Course> offeredCourses = initializeCourses();
+        RegistrationController rc = new RegistrationController();
         
+        String sid = null;
         String selection = null;
         Course selected;
+
+        System.out.println("Type Student ID");
+
+        if (s.hasNextLine())
+          sid = s.nextLine();
 
         System.out.println("Add or remove a course?");
         System.out.println("1. Add");
@@ -105,11 +114,12 @@ public class UniversityProject {
                 System.out.println("four");
                 System.out.println("five");
                 if (s.hasNextLine())
-                selection = s.nextLine();
+                    selection = s.nextLine();
                 selected = offeredCourses.get(selection);
                 clearScreen();
-                if (selected != null && exampleStudent.addCourse(selected)){
+                if (selected != null && rc.addCourse(sid, selected)){
                     System.out.println("Operation succeeded, " + selected.getCID() + " has been added to the schedule.");
+                    System.out.println(test.get("1").getName());
                 }
                 else {
                     System.out.println("Operation failed, " + selected.getCID() + " has not been added to the schedule.");
@@ -118,14 +128,14 @@ public class UniversityProject {
                 break;
             case "2":
                 System.out.println("What class would you like to remove?");
-                for (String course : exampleStudent.getCurrentCourses()) {
+                for (String course : rc.getCurrentCourses(sid)) {
                     System.out.println(course);
                 }
                 if (s.hasNextLine())
                     selection = s.nextLine();
                 selected = offeredCourses.get(selection);
                 clearScreen();
-                if (selected != null && exampleStudent.removeCourse(selected))
+                if (selected != null && rc.removeCourse(sid, selected))
                     System.out.println("Operation succeeded, " + selected.getCID() + " has been removed from the schedule.");
                 else {
                     System.out.println("Operation failed, " + selected.getCID() + " has not been removed from the schedule.");
@@ -287,7 +297,9 @@ public class UniversityProject {
         // Select a department. This is in place instead of any type of authentication.
         //  This allows us to take the user to the correct 'screen'.
         Departments selectedDepartment = null;
-        exampleStudent = new student();
+        student student = new student("1", "John", null, 100);
+        test.put("1", student);
+
         s = new Scanner(System.in);
 
         while(selectedDepartment != Departments.EXIT) {
