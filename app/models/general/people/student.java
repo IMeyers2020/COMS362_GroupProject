@@ -17,6 +17,8 @@ public class student {
     private double accountBalance; // The current balance in the student's account
     private String address;
     private String ssn;
+    private String dormId;
+
 
     public student(String studentId, String name, String address, String ssn, FinancialInfo financialInfo, double accountBalance) {
         this.studentId = studentId;
@@ -33,6 +35,20 @@ public class student {
         sched = new Schedule();
         completedCourses = new ArrayList<>();
     }
+
+    public boolean canAffordDorm(double dormPrice) {
+        return accountBalance >= dormPrice;
+    }
+
+    public void setDormId(String dormId) {
+        this.dormId = dormId;
+    }
+
+    public void clearDormId() {
+        this.dormId = null;
+    }
+
+    public String getDormId() { return dormId; }
 
     public HashMap<String, Course> getCurrentCourses() {
         return sched.getCourses();
