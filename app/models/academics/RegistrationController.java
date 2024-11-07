@@ -28,7 +28,6 @@ public class RegistrationController {
     }
 
     public List<String> getCurrentCourses(String sid) {
-        student tmp = UniversityProject.test.get(sid);
         return UniversityProject.test.get(sid).getCurrentCourses();
     }
 }
