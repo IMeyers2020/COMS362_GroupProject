@@ -1,12 +1,17 @@
 package app.models.general.items;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class schedule {
     private final int maxCreditHours = 18;
     private int creditHours;
-
     private List<course> courses;
+
+    public schedule() {
+        creditHours = 0;
+        courses = new ArrayList<>();
+    }
 
     public List<course> getCourses() {
         return courses;
