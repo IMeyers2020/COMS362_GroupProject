@@ -144,9 +144,6 @@ public class UniversityProject {
                 System.out.println("That is not a valid option.");
                 return;
         }
-
-        
-
     }
 
     public static void addFinancialInfo() {
