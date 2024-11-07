@@ -6,30 +6,30 @@ import java.util.List;
 public class Schedule {
     private final int maxCreditHours = 18;
     private int creditHours;
-    private List<String> courses;
+    private List<String> courseIDs;
 
     public Schedule() {
         creditHours = 0;
-        courses = new ArrayList<>();
+        courseIDs = new ArrayList<>();
     }
 
     public List<String> getCourses() {
-        return courses;
+        return courseIDs;
     }
 
     public boolean addCourse(Course c) {
-        if(courses.contains(c.getCID()))
+        if(courseIDs.contains(c.getCID()))
             return false;
         if(c.getCreditHours() + creditHours > maxCreditHours)
             return false;
-        courses.add(c.getCID());
+        courseIDs.add(c.getCID());
         creditHours += c.getCreditHours();
         return true;
     }
 
     public boolean removeCourse(Course c) {
-        if(courses.contains(c.getCID())) {
-            courses.remove(c.getCID());
+        if(courseIDs.contains(c.getCID())) {
+            courseIDs.remove(c.getCID());
             creditHours -= c.getCreditHours();
             return true;
         }
