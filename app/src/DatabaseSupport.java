@@ -2,6 +2,7 @@ package src;
 
 import java.util.HashMap;
 
+import models.dorms.DormInfo;
 import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Payment;
 import models.general.items.Course;
@@ -11,6 +12,45 @@ import models.general.people.student;
 
 public class DatabaseSupport {
     public static student student = new student("1", "Test Student", null, null, null, 0);
+
+    public static HashMap<String, student> students = new HashMap<>();
+    public static HashMap<String, DormInfo> dorms = new HashMap<>();
+
+    public boolean addDorm(String dormId) {
+        if (!dorms.containsKey(dormId)) {
+            dorms.put(dormId, new DormInfo(dormId, this));
+            return true;
+        }
+        return false;
+    }
+
+    // Remove a dorm from the database
+    public boolean removeDorm(String dormId) {
+        if (dorms.containsKey(dormId)) {
+            dorms.remove(dormId);
+            return true;
+        }
+        return false;
+    }
+
+    public void addStudent(String studentId, student student) {
+        students.put(studentId, student);
+    }
+
+    public DormInfo getDorm(String dormId) {
+        return dorms.get(dormId);
+    }
+
+    public student getStudentForDorm(String studentId) {
+        return students.get(studentId);
+    }
+
+    public int getDormssize() {
+        return dorms.size();
+    }
+
+
+
 
     public static HashMap<String, student> getStudents() {
         HashMap<String, student> map = new HashMap<String, student>();
