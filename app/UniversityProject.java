@@ -5,6 +5,7 @@ import java.util.Set;
 
 import models.academics.CourseController;
 import models.academics.RegistrationController;
+import models.academics.StudentController;
 import models.academics.administrativeDepartments.admissions.controllers.ApplicationController;
 import models.academics.administrativeDepartments.humanResources.controllers.OfferController;
 import models.finances.controllers.FinancialInfoController;
@@ -254,40 +255,35 @@ public class UniversityProject {
     }
 
     public static void addFinancialInfo() {
-        student student = new student(null, null, null, null, null, 0.0);
-        FinancialInfo financialInfo = new FinancialInfo(null, null, null);
-        FinancialInfoController fiController = new FinancialInfoController();
+        StudentController sc = new StudentController();
+        FinancialInfoController fc = new FinancialInfoController();
 
         String userIn = null;
         System.out.println("What is your student ID?");
         userIn = s.nextLine();
-        student.setStudentId(userIn);
 
-        System.out.println("What is your full name (first space last)?");
-        userIn = s.nextLine();
-        student.setName(userIn);
+        student currStud = sc.getStudent(userIn);
 
         System.out.println("What type of card will you be entering (credit or debit)?");
-        userIn = s.nextLine();
-        financialInfo.setCardType(userIn);
+        String cardType = s.nextLine();
 
         System.out.println("What is your card number? (enter all 16 digits no space)");
-        userIn = s.nextLine();
-        financialInfo.setCardNumber(userIn);
-        if (fiController.isCardNumberValid(financialInfo)) {
+        String cardNum = s.nextLine();
+
+        if (fc.isCardNumberValid(cardNum)) {
             System.out.println("Valid card number entered.");
         } else {
             System.out.println("Invalid card number entered.");
-            financialInfo.setCardNumber(null);
             return;
         }
 
         System.out.println("What is your billing address? (Street, City, State, ZIP code)");
-        userIn = s.nextLine();
-        financialInfo.setBillingAddress(userIn);
+        String billingAddress = s.nextLine();
+
+        FinancialInfo financialInfo = new FinancialInfo(cardType, cardNum, billingAddress);
 
         AccountReceivableOffice aro = new AccountReceivableOffice();
-        boolean result = aro.addStudentFinancialInfo(student, financialInfo);
+        boolean result = aro.addStudentFinancialInfo(currStud, financialInfo);
 
         if (result) {
             System.out.println("Financial information added successfully.");
@@ -387,16 +383,23 @@ public class UniversityProject {
         String selection = null;
         if (s.hasNextLine())
           selection = s.nextLine();
-        
-        if (selection.equals("1.")) {
-            clearScreen();
-            addPayment();
-        } else if (selection.equals("2.")) {
-            clearScreen();
-            addFinancialInfo();
-        }
-        
 
+        switch(selection) {
+            case "1":
+            case "1. Add Payment":
+            case "1.":
+            case "Add Payment":
+                clearScreen();
+                addPayment();
+                break;
+            case "2":
+            case "2. Add Financial Information":
+            case "2.":
+            case "Add Financial Information":
+                clearScreen();
+                addFinancialInfo();
+                break;
+        }
     }
 
     public static void main(String[] args) {
