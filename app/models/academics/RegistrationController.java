@@ -17,6 +17,6 @@ public class RegistrationController {
 
     public HashMap<String, Course> getCoursesForStudent(String sid) {
         Registration r = new Registration();
-        return r.getCourses(sid);
+        return r.getCoursesForStudent(sid);
     }
 }

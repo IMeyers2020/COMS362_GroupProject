@@ -7,7 +7,7 @@ import src.DatabaseSupport;
 
 public class Registration {
     //subject to change once saved files have been set up
-    public boolean addCourse(String sid, String cid, Integer credHours) {
+    public boolean addCourse(String cid, String sid, Integer credHours) {
         Course c = new Course(cid, credHours);
         DatabaseSupport ds = new DatabaseSupport();
         
@@ -29,7 +29,7 @@ public class Registration {
         return false;
     }
 
-    public HashMap<String, Course> getCourses(String sid) {
+    public HashMap<String, Course> getCoursesForStudent(String sid) {
         return DatabaseSupport.getCoursesForStudent(sid);
     }
 }

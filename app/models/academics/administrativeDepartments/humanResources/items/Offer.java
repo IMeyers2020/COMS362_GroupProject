@@ -1,7 +1,6 @@
 package models.academics.administrativeDepartments.humanResources.items;
 
 import models.general.people.professor;
-import models.general.people.student;
 import src.DatabaseSupport;
 
 public class Offer {
