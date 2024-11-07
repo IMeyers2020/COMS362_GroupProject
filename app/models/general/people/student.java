@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.models.finances.paymentServices.FinancialInfo;
-import app.models.general.items.course;
-import app.models.general.items.schedule;
+import app.models.general.items.Course;
+import app.models.general.items.Schedule;
 
 public class student extends genericPerson {
-    private schedule sched;
-    private List<course> completedCourses;
+    private Schedule sched;
+    private List<String> completedCourses;
     private String studentId;      // Unique identifier for the student
     private String name;           // Full name of the student
     private FinancialInfo financialInfo; // Financial info of the student (linked to the FinancialInfo class)
@@ -23,7 +23,7 @@ public class student extends genericPerson {
     }
 
     public student() {
-        sched = new schedule();
+        sched = new Schedule();
         completedCourses = new ArrayList<>();
     }
 
@@ -31,21 +31,21 @@ public class student extends genericPerson {
         return sched.getCourses();
     }
 
-    public boolean addCourse(course c) {
+    public boolean addCourse(Course c) {
         if (completedCourses.containsAll(c.getPrereqs())){
             return sched.addCourse(c);
         }
         return false;
     }
 
-    public boolean removeCourse(course c) {
+    public boolean removeCourse(Course c) {
         return sched.removeCourse(c);
     }
 
-    public void setSchedule(schedule s) {
+    public void setSchedule(Schedule s) {
         sched = s;
     }
-    public schedule getSchedule() {
+    public Schedule getSchedule() {
         return sched;
     }
 

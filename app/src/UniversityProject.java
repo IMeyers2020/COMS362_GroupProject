@@ -6,7 +6,7 @@ import java.util.Set;
 import app.models.finances.offices.AccountReceivableOffice;
 import app.models.finances.paymentServices.FinancialInfo;
 import app.models.finances.paymentServices.Payment;
-import app.models.general.items.course;
+import app.models.general.items.Course;
 import app.models.general.people.student;
 
 public class UniversityProject {
@@ -68,33 +68,26 @@ public class UniversityProject {
         }
     }
 
-    public static HashMap<String, course> initializeCourses() {
-        HashMap<String, course> map = new HashMap<String, course>();
-        course one = new course("one", 3);
+    public static HashMap<String, Course> initializeCourses() {
+        HashMap<String, Course> map = new HashMap<String, Course>();
+        Course one = new Course("one", 3);
         map.put("one", one);
-        course two = new course("two", 3);
+        Course two = new Course("two", 3);
         map.put("two", two);
-        course three = new course("three", 3);
+        Course three = new Course("three", 3);
         map.put("three", three);
-        course four = new course("four", 3, Set.of("one", "two"));
+        Course four = new Course("four", 3, Set.of("one", "two"));
         map.put("four", four);
-        course five = new course("five", 3, Set.of("two", "three"));
+        Course five = new Course("five", 3, Set.of("two", "three"));
         map.put("five", five);
         return map;
     } 
 
     public static void CourseRegistration() {
-        HashMap<String, course> offeredCourses = initializeCourses();
-        student exampleStudent = new student();
-        System.out.println("What class would you like to register for?");
-        System.out.println("one");
-        System.out.println("two");
-        System.out.println("three");
-        System.out.println("four");
-        System.out.println("five");
+        HashMap<String, Course> offeredCourses = initializeCourses();
         
         String selection = null;
-        course selected;
+        Course selected;
 
         System.out.println("Add or remove a course?");
         System.out.println("1. Add");
@@ -116,10 +109,10 @@ public class UniversityProject {
                 selected = offeredCourses.get(selection);
                 clearScreen();
                 if (selected != null && exampleStudent.addCourse(selected)){
-                    System.out.println("Operation succeeded, " + selected.getName() + " has been added to the schedule.");
+                    System.out.println("Operation succeeded, " + selected.getCID() + " has been added to the schedule.");
                 }
                 else {
-                    System.out.println("Operation failed, " + selected.getName() + " has not been added to the schedule.");
+                    System.out.println("Operation failed, " + selected.getCID() + " has not been added to the schedule.");
                     System.out.println("Three potential causes: already taking course, don't have prereqs, or already have too many credit hours.");        
                 }
                 break;
@@ -133,9 +126,9 @@ public class UniversityProject {
                 selected = offeredCourses.get(selection);
                 clearScreen();
                 if (selected != null && exampleStudent.removeCourse(selected))
-                    System.out.println("Operation succeeded, " + selected.getName() + " has been removed from the schedule.");
+                    System.out.println("Operation succeeded, " + selected.getCID() + " has been removed from the schedule.");
                 else {
-                    System.out.println("Operation failed, " + selected.getName() + " has not been removed from the schedule.");
+                    System.out.println("Operation failed, " + selected.getCID() + " has not been removed from the schedule.");
                     System.out.println("This course isn't in the schedule.");
                 }
                 break;

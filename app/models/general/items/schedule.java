@@ -3,12 +3,12 @@ package app.models.general.items;
 import java.util.ArrayList;
 import java.util.List;
 
-public class schedule {
+public class Schedule {
     private final int maxCreditHours = 18;
     private int creditHours;
     private List<String> courses;
 
-    public schedule() {
+    public Schedule() {
         creditHours = 0;
         courses = new ArrayList<>();
     }
@@ -17,19 +17,19 @@ public class schedule {
         return courses;
     }
 
-    public boolean addCourse(course c) {
-        if(courses.contains(c.getName()))
+    public boolean addCourse(Course c) {
+        if(courses.contains(c.getCID()))
             return false;
         if(c.getCreditHours() + creditHours > maxCreditHours)
             return false;
-        courses.add(c.getName());
+        courses.add(c.getCID());
         creditHours += c.getCreditHours();
         return true;
     }
 
-    public boolean removeCourse(course c) {
-        if(courses.contains(c.getName())) {
-            courses.remove(c.getName());
+    public boolean removeCourse(Course c) {
+        if(courses.contains(c.getCID())) {
+            courses.remove(c.getCID());
             creditHours -= c.getCreditHours();
             return true;
         }
