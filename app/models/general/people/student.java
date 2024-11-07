@@ -1,6 +1,7 @@
 package models.general.people;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import models.finances.paymentServices.FinancialInfo;
@@ -33,7 +34,7 @@ public class student {
         completedCourses = new ArrayList<>();
     }
 
-    public List<String> getCurrentCourses() {
+    public HashMap<String, Course> getCurrentCourses() {
         return sched.getCourses();
     }
 
