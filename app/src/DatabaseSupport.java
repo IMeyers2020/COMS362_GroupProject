@@ -3,9 +3,9 @@ package src;
 import java.util.HashMap;
 
 import models.finances.paymentServices.FinancialInfo;
+import models.finances.paymentServices.Payment;
 import models.general.people.professor;
 import models.general.people.student;
-import models.finances.paymentServices.Payment;
 
 
 public class DatabaseSupport {

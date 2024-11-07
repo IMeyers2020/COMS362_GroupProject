@@ -1,13 +1,13 @@
-package src;
+
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Set;
 
-import models.finances.controllers.PaymentController;
-import models.finances.controllers.FinancialInfoController;
+import models.academics.RegistrationController;
 import models.academics.administrativeDepartments.admissions.controllers.ApplicationController;
 import models.academics.administrativeDepartments.humanResources.controllers.OfferController;
-import models.academics.RegistrationController;
+import models.finances.controllers.FinancialInfoController;
+import models.finances.controllers.PaymentController;
 import models.finances.offices.AccountReceivableOffice;
 import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Payment;

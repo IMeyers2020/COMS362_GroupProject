@@ -2,9 +2,9 @@ package models.academics;
 
 import java.util.List;
 
+import UniversityProject;
 import models.general.items.Course;
 import models.general.people.student;
-import src.UniversityProject;
 
 public class RegistrationController {
     public boolean addCourse(String sid, Course c) {

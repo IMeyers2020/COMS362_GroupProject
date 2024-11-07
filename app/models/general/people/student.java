@@ -7,7 +7,7 @@ import models.finances.paymentServices.FinancialInfo;
 import models.general.items.Course;
 import models.general.items.Schedule;
 
-public class student extends genericPerson {
+public class student {
     private Schedule sched;
     private List<String> completedCourses;
     private String studentId;      // Unique identifier for the student
