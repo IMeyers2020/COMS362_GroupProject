@@ -150,13 +150,20 @@ public class DatabaseSupport {
         // will eventually return student with sid, for now just using preset student
         // HashMap<String, Course> students = getStudents();
         // student student = students.get(sid);
-        return student.addCourse(c);
+        return true;
     }
 
     public boolean removeCourse(String sid, Course c) {
         // will eventually return student with sid, for now just using preset student
         // HashMap<String, Course> students = getStudents();
         // student student = students.get(sid);
-        return student.removeCourse(c);
+        return true;
+    }
+
+    public student getStudent(String sid) {
+        // will eventually return student with sid, for now just using preset student
+        // HashMap<String, Course> students = getStudents();
+        // student student = students.get(sid);
+        return student;
     }
 }
