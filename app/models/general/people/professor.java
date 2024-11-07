@@ -14,7 +14,7 @@ public class professor extends genericPerson {
     }
 
     public String getPID() { return this.pid; }
-    public void setPID(String pid) { this.pid = pid }
+    public void setPID(String pid) { this.pid = pid; }
     public String getName() { return this.name; }
     public void setName(String name) { this.name = name; }
     public String getAddress() { return this.address; }

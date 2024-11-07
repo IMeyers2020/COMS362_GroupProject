@@ -6,10 +6,10 @@ import src.DatabaseSupport;
 
 public class Offer {
     public boolean addProfessor(String pId, String name, String address, String AOS) {
-        professor newStudent = new professor(pId, name, address, AOS);
+        professor newProf = new professor(pId, name, address, AOS);
 
         DatabaseSupport db = new DatabaseSupport();
 
-        return db.putProfessor(newStudent);
+        return db.putProfessor(newProf);
     }
 }

@@ -3,6 +3,8 @@ package models.general.items;
 import java.util.HashSet;
 import java.util.Set;
 
+import models.finances.paymentServices.FinancialInfo;
+
 public class Course {
     private String cid;
     private int creditHours;

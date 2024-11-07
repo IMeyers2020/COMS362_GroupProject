@@ -1,20 +1,22 @@
-package src;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
+import models.academics.CourseController;
+import models.academics.RegistrationController;
 import models.academics.administrativeDepartments.admissions.controllers.ApplicationController;
 import models.academics.administrativeDepartments.humanResources.controllers.OfferController;
-import models.academics.RegistrationController;
+import models.finances.controllers.FinancialInfoController;
+import models.finances.controllers.PaymentController;
 import models.finances.offices.AccountReceivableOffice;
 import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Payment;
 import models.general.items.Course;
 import models.general.people.student;
+import src.DatabaseSupport;
 
 public class UniversityProject {
-    public static HashMap<String, student> test = new HashMap<String, student>();
     public static Scanner s;
 
     enum Departments {
@@ -139,19 +141,19 @@ public class UniversityProject {
     public static void AddProfessor() {
         OfferController offerController = new OfferController();
 
-        System.out.println("Please enter student id:");
+        System.out.println("Please enter professor id:");
         String sid = s.nextLine();
 
-        System.out.println("Please enter student name:");
+        System.out.println("Please enter professor name:");
         String name = s.nextLine();
 
-        System.out.println("Please enter student address:");
+        System.out.println("Please enter professor address:");
         String address = s.nextLine();
 
-        System.out.println("Please enter student SSN:");
-        String ssn = s.nextLine();
+        System.out.println("Please enter professor Area of Study:");
+        String aos = s.nextLine();
 
-        boolean result = offerController.addProfessor(sid, name, address, ssn);
+        boolean result = offerController.addProfessor(sid, name, address, aos);
 
         clearScreen();
 
@@ -186,16 +188,20 @@ public class UniversityProject {
     }
 
     public static void CourseRegistration() {
-        HashMap<String, Course> offeredCourses = initializeCourses();
+        RegistrationController rc = new RegistrationController();
+        CourseController cc = new CourseController();
         
         String sid = null;
         String selection = null;
         Course selected;
+        HashMap<String, Course> offeredCourses = null;
 
         System.out.println("Type Student ID");
 
-        if (s.hasNextLine())
-          sid = s.nextLine();
+        if (s.hasNextLine()) {
+            sid = s.nextLine();
+            offeredCourses = cc.getAllCourses();
+        }
 
         System.out.println("Add or remove a course?");
         System.out.println("1. Add");
@@ -207,28 +213,27 @@ public class UniversityProject {
         switch(selection) {
             case "1":
                 System.out.println("What class would you like to register for?");
-                System.out.println("one");
-                System.out.println("two");
-                System.out.println("three");
-                System.out.println("four");
-                System.out.println("five");
+                for(String key : offeredCourses.keySet()) {
+                    System.out.println(key);
+                }
                 if (s.hasNextLine())
                     selection = s.nextLine();
                 selected = offeredCourses.get(selection);
+                System.out.println(selected.getCID());
                 clearScreen();
-                if (selected != null && (new RegistrationController()).addCourse(sid, selected)){
+                if (selected != null && rc.addCourse(sid, selected.getCID(), selected.getCreditHours())){
                     System.out.println("Operation succeeded, " + selected.getCID() + " has been added to the schedule.");
-                    System.out.println(test.get("1").getName());
                 }
                 else {
                     System.out.println("Operation failed, " + selected.getCID() + " has not been added to the schedule.");
                     System.out.println("Three potential causes: already taking course, don't have prereqs, or already have too many credit hours.");        
                 }
+                s.nextLine();
                 break;
             case "2":
                 System.out.println("What class would you like to remove?");
-                for (String course : (new RegistrationController()).getCurrentCourses(sid)) {
-                    System.out.println(course);
+                for (Course course : DatabaseSupport.getCoursesForStudent(sid).values()) {
+                    System.out.println(course.getCID());
                 }
                 if (s.hasNextLine())
                     selection = s.nextLine();
@@ -251,6 +256,7 @@ public class UniversityProject {
     public static void addFinancialInfo() {
         student student = new student(null, null, null, null, null, 0.0);
         FinancialInfo financialInfo = new FinancialInfo(null, null, null);
+        FinancialInfoController fiController = new FinancialInfoController();
 
         String userIn = null;
         System.out.println("What is your student ID?");
@@ -268,7 +274,7 @@ public class UniversityProject {
         System.out.println("What is your card number? (enter all 16 digits no space)");
         userIn = s.nextLine();
         financialInfo.setCardNumber(userIn);
-        if (financialInfo.isCardNumberValid()) {
+        if (fiController.isCardNumberValid(financialInfo)) {
             System.out.println("Valid card number entered.");
         } else {
             System.out.println("Invalid card number entered.");
@@ -315,6 +321,7 @@ public class UniversityProject {
         student curStudent = null;
         boolean foundStudent = false;
         Payment payment = new Payment();
+        PaymentController pc = new PaymentController();
         String userIn = null;
         System.out.println("What is your student ID?");
         userIn = s.nextLine();
@@ -323,7 +330,7 @@ public class UniversityProject {
                 curStudent = exampleStudents.get(key);
                 foundStudent = true;
                 System.out.println("You have an account balance of: " + exampleStudents.get(key).getAccountBalance());
-                System.out.println("Would you like to use your saved payment information? (Y or N) " + exampleStudents.get(key).getFinancialInfo());
+                System.out.println("Would you like to use your saved payment information? (Y or N)");
                 userIn = s.nextLine();
                 if (userIn.equals("Y")) {
                     System.out.println("How much would you like to pay today? (Enter in 000.00 format)");
@@ -339,7 +346,7 @@ public class UniversityProject {
                     System.out.println("Card Type: " + payment.getPaymentType() + " " + "Card Number: " + exampleStudents.get(key).getFinancialInfo().getCardNumber());
                     userIn = s.nextLine();
                     if (userIn.equals("Y")) {
-                        payment.confirmPayment();
+                        pc.confirmPayment(payment);
                         if(payment.isConfirmed()) {
                             System.out.println("Your Payment Has Been Confirmed!");
                             System.out.println();
@@ -396,9 +403,6 @@ public class UniversityProject {
         // Select a department. This is in place instead of any type of authentication.
         //  This allows us to take the user to the correct 'screen'.
         Departments selectedDepartment = null;
-        student student = new student("1", "John", null, null, null, 100);
-        test.put("1", student);
-
         s = new Scanner(System.in);
 
         while(selectedDepartment != Departments.EXIT) {

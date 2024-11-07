@@ -1,8 +1,8 @@
 package models.finances.offices;
 
-import models.general.people.student;
 import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Payment;
+import models.general.people.student;
 
 public class AccountReceivableOffice {
 
