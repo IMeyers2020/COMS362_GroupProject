@@ -17,7 +17,6 @@ import models.general.people.student;
 import src.DatabaseSupport;
 
 public class UniversityProject {
-    public static HashMap<String, student> test = new HashMap<String, student>();
     public static Scanner s;
 
     enum Departments {
@@ -225,7 +224,6 @@ public class UniversityProject {
                 clearScreen();
                 if (selected != null && rc.addCourse(sid, selected.getCID(), selected.getCreditHours())){
                     System.out.println("Operation succeeded, " + selected.getCID() + " has been added to the schedule.");
-                    System.out.println(test.get("1").getName());
                 }
                 else {
                     System.out.println("Operation failed, " + selected.getCID() + " has not been added to the schedule.");
@@ -405,9 +403,6 @@ public class UniversityProject {
         // Select a department. This is in place instead of any type of authentication.
         //  This allows us to take the user to the correct 'screen'.
         Departments selectedDepartment = null;
-        student student = new student("1", "John", null, null, null, 100);
-        test.put("1", student);
-
         s = new Scanner(System.in);
 
         while(selectedDepartment != Departments.EXIT) {
