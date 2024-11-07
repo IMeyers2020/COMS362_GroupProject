@@ -1,4 +1,4 @@
-package app.models.academics.academicColleges;
+package models.academics.academicColleges;
 
 public abstract class genericCollege {
     public abstract String[] getMajors();

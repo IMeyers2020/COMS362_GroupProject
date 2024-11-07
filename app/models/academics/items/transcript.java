@@ -1,4 +1,4 @@
-package app.models.academics.items;
+package models.academics.items;
 
 public class transcript {
     

@@ -1,15 +1,23 @@
-package app.src;
+package src;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
+<<<<<<< HEAD
 import app.models.academics.RegistrationController;
 import app.models.finances.offices.AccountReceivableOffice;
 import app.models.finances.paymentServices.FinancialInfo;
 import app.models.finances.paymentServices.Payment;
 import app.models.general.items.Course;
 import app.models.general.people.student;
+=======
+import models.finances.offices.AccountReceivableOffice;
+import models.finances.paymentServices.FinancialInfo;
+import models.finances.paymentServices.Payment;
+import models.general.items.Course;
+import models.general.people.student;
+>>>>>>> 8093029a79ca953a850c5681f20fdc5aca934b75
 
 public class UniversityProject {
     public static HashMap<String, student> test = new HashMap<String, student>();
@@ -83,7 +91,32 @@ public class UniversityProject {
         Course five = new Course("five", 3, Set.of("two", "three"));
         map.put("five", five);
         return map;
-    } 
+    }
+
+    public static void AddStudent() {
+
+    }
+
+    public static void AdmissionsTasks() {
+
+        System.out.println("What would you like to do?");
+        System.out.println("1. Add Student");
+
+        String selection = s.nextLine();
+
+        switch (selection.trim()) {
+            case "1":
+            case "1.":
+            case "1. Add Student":
+            case "Add Student":
+                clearScreen();
+                AddStudent();
+                break;
+        
+            default:
+                break;
+        }
+    }
 
     public static void CourseRegistration() {
         HashMap<String, Course> offeredCourses = initializeCourses();
@@ -150,7 +183,7 @@ public class UniversityProject {
     }
 
     public static void addFinancialInfo() {
-        student student = new student(null, null, null, 0.0);
+        student student = new student(null, null, null, null, null, 0.0);
         FinancialInfo financialInfo = new FinancialInfo(null, null, null);
 
         String userIn = null;
@@ -194,19 +227,19 @@ public class UniversityProject {
     public static HashMap<String, student> exampleStudents() {
         HashMap<String, student> map = new HashMap<String, student>();
         FinancialInfo fiOne = new FinancialInfo("credit","1234567890123456","1234 Street");
-        student one = new student("12345", "Student One", fiOne, 100.0);
+        student one = new student("12345", "Student One", "111 1st St.", "111-11-1111", fiOne, 100.0);
         map.put("one", one);
         FinancialInfo fiTwo = new FinancialInfo("credit","2345678901234561","2341 Street");
-        student two = new student("23451","Student Two", fiTwo, 200.0);
+        student two = new student("23451","Student Two", "111 1st St.", "111-11-1111", fiTwo, 200.0);
         map.put("two", two);
         FinancialInfo fiThree = new FinancialInfo("credit","3456789012345612","3412 Street");
-        student three = new student("34512", "Student Three", fiThree, 300.0);
+        student three = new student("34512", "Student Three", "111 1st St.", "111-11-1111", fiThree, 300.0);
         map.put("three", three);
         FinancialInfo fiFour = new FinancialInfo("credit","4567890123456123","4123 Street");
-        student four = new student("45123", "Student Four", fiFour, 400.0);
+        student four = new student("45123", "Student Four", "111 1st St.", "111-11-1111", fiFour, 400.0);
         map.put("four", four);
         FinancialInfo fiFive = new FinancialInfo("credit","5678901234561234","5123 Street");
-        student five = new student("51234", "Student Five", fiFive, 500.0);
+        student five = new student("51234", "Student Five", "111 1st St.", "111-11-1111", fiFive, 500.0);
         map.put("five", five);
         return map;
     } 
@@ -307,7 +340,7 @@ public class UniversityProject {
 
             switch(selectedDepartment) {
                 case ADMISSIONS:
-                    
+                    AdmissionsTasks();
                     break;
                 case HUMAN_RESOURCES:
 

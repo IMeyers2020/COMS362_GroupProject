@@ -1,5 +1,5 @@
-package app.models.athletics.people;
-import app.models.general.people.student;
+package models.athletics.people;
+import models.general.people.student;
 
 public class generalPlayer extends student {
     

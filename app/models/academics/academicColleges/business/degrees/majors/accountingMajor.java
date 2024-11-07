@@ -1,6 +1,6 @@
-package app.models.academics.academicColleges.business.degrees.majors;
+package models.academics.academicColleges.business.degrees.majors;
 
-import app.models.academics.academicColleges.genericMajor;
+import models.academics.academicColleges.genericMajor;
 
 public class accountingMajor implements genericMajor {
 
