@@ -9,9 +9,9 @@ public class FinancialInfoController {
         return fi.addStudentFinancialInfo(cardType, cardNumber, billingAddress);
     }
 
-    public boolean isCardNumberValid(FinancialInfo financialInfo) {
+    public boolean isCardNumberValid(String cardNum) {
         // Simple validation example: checks if card number is of valid length
-        if (financialInfo.getCardNumber().length() == 16) {
+        if (cardNum.length() == 16) {
             System.out.println("Financial information is valid.");
             return true;
         } else {
