@@ -112,7 +112,6 @@ public class UniversityProject {
 
     public static void CourseRegistration() {
         HashMap<String, Course> offeredCourses = initializeCourses();
-        RegistrationController rc = new RegistrationController();
         
         String sid = null;
         String selection = null;
@@ -142,7 +141,7 @@ public class UniversityProject {
                     selection = s.nextLine();
                 selected = offeredCourses.get(selection);
                 clearScreen();
-                if (selected != null && rc.addCourse(sid, selected)){
+                if (selected != null && (new RegistrationController()).addCourse(sid, selected)){
                     System.out.println("Operation succeeded, " + selected.getCID() + " has been added to the schedule.");
                     System.out.println(test.get("1").getName());
                 }
@@ -153,14 +152,14 @@ public class UniversityProject {
                 break;
             case "2":
                 System.out.println("What class would you like to remove?");
-                for (String course : rc.getCurrentCourses(sid)) {
+                for (String course : (new RegistrationController()).getCurrentCourses(sid)) {
                     System.out.println(course);
                 }
                 if (s.hasNextLine())
                     selection = s.nextLine();
                 selected = offeredCourses.get(selection);
                 clearScreen();
-                if (selected != null && rc.removeCourse(sid, selected))
+                if (selected != null && (new RegistrationController()).removeCourse(sid, selected))
                     System.out.println("Operation succeeded, " + selected.getCID() + " has been removed from the schedule.");
                 else {
                     System.out.println("Operation failed, a course has not been removed from the schedule.");
