@@ -213,14 +213,13 @@ public class UniversityProject {
         switch(selection) {
             case "1":
                 System.out.println("What class would you like to register for?");
-                System.out.println("one");
-                System.out.println("two");
-                System.out.println("three");
-                System.out.println("four");
-                System.out.println("five");
+                for(String key : offeredCourses.keySet()) {
+                    System.out.println(key);
+                }
                 if (s.hasNextLine())
                     selection = s.nextLine();
                 selected = offeredCourses.get(selection);
+                System.out.println(selected.getCID());
                 clearScreen();
                 if (selected != null && rc.addCourse(sid, selected.getCID(), selected.getCreditHours())){
                     System.out.println("Operation succeeded, " + selected.getCID() + " has been added to the schedule.");
@@ -229,6 +228,7 @@ public class UniversityProject {
                     System.out.println("Operation failed, " + selected.getCID() + " has not been added to the schedule.");
                     System.out.println("Three potential causes: already taking course, don't have prereqs, or already have too many credit hours.");        
                 }
+                s.nextLine();
                 break;
             case "2":
                 System.out.println("What class would you like to remove?");
