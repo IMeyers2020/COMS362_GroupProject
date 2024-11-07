@@ -1,4 +1,4 @@
-package app.models.general.items;
+package models.general.items;
 
 public class grade {
     

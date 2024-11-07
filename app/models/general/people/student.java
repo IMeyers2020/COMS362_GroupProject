@@ -1,11 +1,11 @@
-package app.models.general.people;
+package models.general.people;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import app.models.finances.paymentServices.FinancialInfo;
-import app.models.general.items.Course;
-import app.models.general.items.Schedule;
+import models.finances.paymentServices.FinancialInfo;
+import models.general.items.Course;
+import models.general.items.Schedule;
 
 public class student extends genericPerson {
     private Schedule sched;
@@ -14,12 +14,16 @@ public class student extends genericPerson {
     private String name;           // Full name of the student
     private FinancialInfo financialInfo; // Financial info of the student (linked to the FinancialInfo class)
     private double accountBalance; // The current balance in the student's account
+    private String address;
+    private String ssn;
 
-    public student(String studentId, String name, FinancialInfo financialInfo, double accountBalance) {
+    public student(String studentId, String name, String address, String ssn, FinancialInfo financialInfo, double accountBalance) {
         this.studentId = studentId;
         this.name = student.super.getFirstName() + student.super.getLastName();
         this.financialInfo = financialInfo;
         this.accountBalance = accountBalance;
+        this.address = address;
+        this.ssn = ssn;
     }
 
     public student() {
@@ -57,6 +61,12 @@ public class student extends genericPerson {
     public void setStudentId(String studentId) {
         this.studentId = studentId;
     }
+
+    public String getSSN() { return this.ssn; }
+    public void setSSN(String ssn) { this.ssn = ssn; }
+
+    public String getAddress() { return this.address; }
+    public void setAddress(String address) { this.address = address; }
 
     public String getName() {
         return name;

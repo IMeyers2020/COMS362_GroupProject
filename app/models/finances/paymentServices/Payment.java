@@ -1,4 +1,4 @@
-package app.models.finances.paymentServices;
+package models.finances.paymentServices;
 
 public class Payment {
     private String paymentId;      // Unique identifier for the payment

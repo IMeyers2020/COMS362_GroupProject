@@ -1,4 +1,4 @@
-package app.models.athletics.teams.generic;
+package models.athletics.teams.generic;
 
 public class genericTeam {
     

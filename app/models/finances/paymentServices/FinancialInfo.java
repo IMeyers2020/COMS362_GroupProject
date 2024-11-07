@@ -1,4 +1,4 @@
-package app.models.finances.paymentServices;
+package models.finances.paymentServices;
 
 public class FinancialInfo {
     private String cardType; // "debit" or "credit"

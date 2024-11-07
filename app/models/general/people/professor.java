@@ -1,4 +1,4 @@
-package app.models.general.people;
+package models.general.people;
 
 public class professor extends genericPerson {
     

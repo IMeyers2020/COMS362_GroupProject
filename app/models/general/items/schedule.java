@@ -1,4 +1,4 @@
-package app.models.general.items;
+package models.general.items;
 
 import java.util.ArrayList;
 import java.util.List;

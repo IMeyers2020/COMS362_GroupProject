@@ -1,4 +1,4 @@
-package app.models.general.people;
+package models.general.people;
 
 public class genericPerson {
     private String firstName;
