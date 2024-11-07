@@ -259,7 +259,7 @@ public class UniversityProject {
         FinancialInfoController fc = new FinancialInfoController();
 
         String userIn = null;
-        System.out.println("What is your student ID?");
+        System.out.println("Enter the student's ID:");
         userIn = s.nextLine();
 
         student currStud = sc.getStudent(userIn);
@@ -267,7 +267,7 @@ public class UniversityProject {
         System.out.println("What type of card will you be entering (credit or debit)?");
         String cardType = s.nextLine();
 
-        System.out.println("What is your card number? (enter all 16 digits no space)");
+        System.out.println("What is the card number? (enter all 16 digits no space)");
         String cardNum = s.nextLine();
 
         if (fc.isCardNumberValid(cardNum)) {
@@ -277,7 +277,7 @@ public class UniversityProject {
             return;
         }
 
-        System.out.println("What is your billing address? (Street, City, State, ZIP code)");
+        System.out.println("What is the billing address? (Street, City, State, ZIP code)");
         String billingAddress = s.nextLine();
 
         FinancialInfo financialInfo = new FinancialInfo(cardType, cardNum, billingAddress);
@@ -319,17 +319,17 @@ public class UniversityProject {
         Payment payment = new Payment();
         PaymentController pc = new PaymentController();
         String userIn = null;
-        System.out.println("What is your student ID?");
+        System.out.println("Enter the student's ID: ");
         userIn = s.nextLine();
         for(String key: exampleStudents.keySet()) {
             if (userIn.equals(exampleStudents.get(key).getStudentId())) {
                 curStudent = exampleStudents.get(key);
                 foundStudent = true;
-                System.out.println("You have an account balance of: " + exampleStudents.get(key).getAccountBalance());
-                System.out.println("Would you like to use your saved payment information? (Y or N)");
+                System.out.println("Account balance of: " + exampleStudents.get(key).getAccountBalance());
+                System.out.println("Use saved payment information? (Y or N)");
                 userIn = s.nextLine();
                 if (userIn.equals("Y")) {
-                    System.out.println("How much would you like to pay today? (Enter in 000.00 format)");
+                    System.out.println("Enter payment amount:  (Enter in 000.00 format)");
                     userIn = s.nextLine();
                     double amountToPay = Double.parseDouble(userIn);
                     int randomNum = (int)(Math.random() * 99999) + 1;
