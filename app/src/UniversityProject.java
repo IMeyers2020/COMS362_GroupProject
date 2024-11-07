@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
+import models.academics.administrativeDepartments.admissions.controllers.ApplicationController;
+import models.academics.administrativeDepartments.humanResources.controllers.OfferController;
 import models.academics.RegistrationController;
 import models.finances.offices.AccountReceivableOffice;
 import models.finances.paymentServices.FinancialInfo;
@@ -86,7 +88,31 @@ public class UniversityProject {
     }
 
     public static void AddStudent() {
+        ApplicationController appController = new ApplicationController();
 
+        System.out.println("Please enter student id:");
+        String sid = s.nextLine();
+
+        System.out.println("Please enter student name:");
+        String name = s.nextLine();
+
+        System.out.println("Please enter student address:");
+        String address = s.nextLine();
+
+        System.out.println("Please enter student SSN:");
+        String ssn = s.nextLine();
+
+        boolean result = appController.addStudent(sid, name, address, ssn);
+
+        clearScreen();
+
+        if(result) {
+            System.out.println("Student successfully added!");
+        } else {
+            System.err.println("Failed to add student. Error: Student with that Id already exists");
+        }
+
+        s.nextLine();
     }
 
     public static void AdmissionsTasks() {
@@ -103,6 +129,55 @@ public class UniversityProject {
             case "Add Student":
                 clearScreen();
                 AddStudent();
+                break;
+        
+            default:
+                break;
+        }
+    }
+
+    public static void AddProfessor() {
+        OfferController offerController = new OfferController();
+
+        System.out.println("Please enter student id:");
+        String sid = s.nextLine();
+
+        System.out.println("Please enter student name:");
+        String name = s.nextLine();
+
+        System.out.println("Please enter student address:");
+        String address = s.nextLine();
+
+        System.out.println("Please enter student SSN:");
+        String ssn = s.nextLine();
+
+        boolean result = offerController.addProfessor(sid, name, address, ssn);
+
+        clearScreen();
+
+        if(result) {
+            System.out.println("Student successfully added!");
+        } else {
+            System.err.println("Failed to add student. Error: Student with that Id already exists");
+        }
+
+        s.nextLine();
+    }
+
+    public static void HRTasks() {
+        
+        System.out.println("What would you like to do?");
+        System.out.println("1. Add Professor");
+
+        String selection = s.nextLine();
+
+        switch (selection.trim()) {
+            case "1":
+            case "1.":
+            case "1. Add Professor":
+            case "Add Professor":
+                clearScreen();
+                AddProfessor();
                 break;
         
             default:
@@ -334,7 +409,7 @@ public class UniversityProject {
                     AdmissionsTasks();
                     break;
                 case HUMAN_RESOURCES:
-
+                    HRTasks();
                     break;
                 case REGISTRATION:
                     CourseRegistration();

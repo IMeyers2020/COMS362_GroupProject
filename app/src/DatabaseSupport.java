@@ -3,6 +3,7 @@ package src;
 import java.util.HashMap;
 
 import models.finances.paymentServices.FinancialInfo;
+import models.general.people.professor;
 import models.general.people.student;
 
 
@@ -34,5 +35,33 @@ public class DatabaseSupport {
         // True if doesn't exist yet, false otherwise
         // Will change this to actually save to a DB
         return allStudents.get(s.getStudentId()) != null;
+    }
+
+    public static HashMap<String, professor> getProfessors() {
+        HashMap<String, professor> map = new HashMap<String, professor>();
+        FinancialInfo fiOne = new FinancialInfo("credit","1234567890123456","1234 Street");
+        professor one = new professor("12345", "Prof One", "111 1st St.", "111-11-1111");
+        map.put("one", one);
+        FinancialInfo fiTwo = new FinancialInfo("credit","2345678901234561","2341 Street");
+        professor two = new professor("23451","Prof Two", "111 1st St.", "111-11-1111");
+        map.put("two", two);
+        FinancialInfo fiThree = new FinancialInfo("credit","3456789012345612","3412 Street");
+        professor three = new professor("34512", "Prof Three", "111 1st St.", "111-11-1111");
+        map.put("three", three);
+        FinancialInfo fiFour = new FinancialInfo("credit","4567890123456123","4123 Street");
+        professor four = new professor("45123", "Prof Four", "111 1st St.", "111-11-1111");
+        map.put("four", four);
+        FinancialInfo fiFive = new FinancialInfo("credit","5678901234561234","5123 Street");
+        professor five = new professor("51234", "Prof Five", "111 1st St.", "111-11-1111");
+        map.put("five", five);
+        return map;
+    }
+
+    public boolean putProfessor(professor s) {
+        HashMap<String, professor> allStudents = getProfessors();
+
+        // True if doesn't exist yet, false otherwise
+        // Will change this to actually save to a DB
+        return allStudents.get(s.getPID()) != null;
     }
 }
