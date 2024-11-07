@@ -1,5 +1,7 @@
 package models.finances.paymentServices;
 
+import src.DatabaseSupport;
+
 public class Payment {
     private String paymentId;      // Unique identifier for the payment
     private double amount;         // Amount of the payment
@@ -54,30 +56,10 @@ public class Payment {
         isConfirmed = confirmed;
     }
 
-    // Optional: Method to check if the payment amount is valid
-    public boolean isValidAmount() {
-        // Check if the amount is greater than 0
-        return amount > 0;
-    }
+    public boolean addStudentPayment (String paymentId, double amount, String paymentType, boolean isConfirmed) {
+        Payment p = new Payment(paymentId,amount,paymentType,isConfirmed);
+        DatabaseSupport db = new DatabaseSupport();
 
-    // Method to check if payment type is valid
-    public boolean isValidPaymentType() {
-        // Payment type should either be "debit" or "credit"
-        return "debit".equals(paymentType) || "credit".equals(paymentType);
-    }
-
-    // Method to confirm the payment
-    public void confirmPayment() {
-        if (isValidAmount() && isValidPaymentType()) {
-            isConfirmed = true;
-        } else {
-            throw new IllegalArgumentException("Invalid payment details.");
-        }
-    }
-
-    // toString method for debugging purposes
-    @Override
-    public String toString() {
-        return "Payment [paymentId=" + paymentId + ", amount=" + amount + ", paymentType=" + paymentType + ", isConfirmed=" + isConfirmed + "]";
+        return db.putPayment(p);
     }
 }

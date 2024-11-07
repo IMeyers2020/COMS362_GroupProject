@@ -1,9 +1,13 @@
 package models.finances.paymentServices;
 
+import src.DatabaseSupport;
+
 public class FinancialInfo {
     private String cardType; // "debit" or "credit"
     private String cardNumber;
     private String billingAddress;
+
+    public FinancialInfo() { }
 
     // Constructor
     public FinancialInfo(String cardType, String cardNumber, String billingAddress) {
@@ -37,15 +41,11 @@ public class FinancialInfo {
         this.billingAddress = billingAddress;
     }
 
-    // Method to validate card number (simple validation)
-    public boolean isCardNumberValid() {
-        // A simple check for the card number length (assuming 16 digits)
-        return cardNumber != null && cardNumber.length() == 16 && cardNumber.matches("\\d+");
+    public boolean addStudentFinancialInfo(String cardType, String cardNumber, String billingAddress) {
+        FinancialInfo fi = new FinancialInfo(cardType, cardNumber, billingAddress);
+        DatabaseSupport db = new DatabaseSupport();
+
+        return db.putFinancialInfo(fi);
     }
 
-    // Method to display the financial info (for debugging purposes)
-    @Override
-    public String toString() {
-        return "FinancialInfo [cardType=" + cardType + ", cardNumber=" + cardNumber + ", billingAddress=" + billingAddress + "]";
-    }
 }

@@ -3,6 +3,8 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Set;
 
+import models.finances.controllers.PaymentController;
+import models.finances.controllers.FinancialInfoController;
 import models.academics.administrativeDepartments.admissions.controllers.ApplicationController;
 import models.academics.administrativeDepartments.humanResources.controllers.OfferController;
 import models.academics.RegistrationController;
@@ -250,6 +252,7 @@ public class UniversityProject {
     public static void addFinancialInfo() {
         student student = new student(null, null, null, null, null, 0.0);
         FinancialInfo financialInfo = new FinancialInfo(null, null, null);
+        FinancialInfoController fiController = new FinancialInfoController();
 
         String userIn = null;
         System.out.println("What is your student ID?");
@@ -267,7 +270,7 @@ public class UniversityProject {
         System.out.println("What is your card number? (enter all 16 digits no space)");
         userIn = s.nextLine();
         financialInfo.setCardNumber(userIn);
-        if (financialInfo.isCardNumberValid()) {
+        if (fiController.isCardNumberValid(financialInfo)) {
             System.out.println("Valid card number entered.");
         } else {
             System.out.println("Invalid card number entered.");
@@ -314,6 +317,7 @@ public class UniversityProject {
         student curStudent = null;
         boolean foundStudent = false;
         Payment payment = new Payment();
+        PaymentController pc = new PaymentController();
         String userIn = null;
         System.out.println("What is your student ID?");
         userIn = s.nextLine();
@@ -322,7 +326,7 @@ public class UniversityProject {
                 curStudent = exampleStudents.get(key);
                 foundStudent = true;
                 System.out.println("You have an account balance of: " + exampleStudents.get(key).getAccountBalance());
-                System.out.println("Would you like to use your saved payment information? (Y or N) " + exampleStudents.get(key).getFinancialInfo());
+                System.out.println("Would you like to use your saved payment information? (Y or N)");
                 userIn = s.nextLine();
                 if (userIn.equals("Y")) {
                     System.out.println("How much would you like to pay today? (Enter in 000.00 format)");
@@ -338,7 +342,7 @@ public class UniversityProject {
                     System.out.println("Card Type: " + payment.getPaymentType() + " " + "Card Number: " + exampleStudents.get(key).getFinancialInfo().getCardNumber());
                     userIn = s.nextLine();
                     if (userIn.equals("Y")) {
-                        payment.confirmPayment();
+                        pc.confirmPayment(payment);
                         if(payment.isConfirmed()) {
                             System.out.println("Your Payment Has Been Confirmed!");
                             System.out.println();
