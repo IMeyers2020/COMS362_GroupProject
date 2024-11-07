@@ -1,35 +1,36 @@
 package models.general.items;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Schedule {
     private final int maxCreditHours = 18;
     private int creditHours;
-    private List<String> courseIDs;
+    private HashMap<String, Course> courses;
 
     public Schedule() {
         creditHours = 0;
-        courseIDs = new ArrayList<>();
+        courses = new HashMap<>();
     }
 
-    public List<String> getCourses() {
-        return courseIDs;
+    public HashMap<String, Course> getCourses() {
+        return courses;
     }
 
     public boolean addCourse(Course c) {
-        if(courseIDs.contains(c.getCID()))
+        if(courses.containsKey(c.getCID()))
             return false;
         if(c.getCreditHours() + creditHours > maxCreditHours)
             return false;
-        courseIDs.add(c.getCID());
+        courses.put(c.getCID(), c);
         creditHours += c.getCreditHours();
         return true;
     }
 
     public boolean removeCourse(Course c) {
-        if(courseIDs.contains(c.getCID())) {
-            courseIDs.remove(c.getCID());
+        if(courses.containsKey(c.getCID())) {
+            courses.remove(c.getCID());
             creditHours -= c.getCreditHours();
             return true;
         }
