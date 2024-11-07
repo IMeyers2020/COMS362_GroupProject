@@ -4,12 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
-import app.models.academics.RegistrationController;
-import app.models.finances.offices.AccountReceivableOffice;
-import app.models.finances.paymentServices.FinancialInfo;
-import app.models.finances.paymentServices.Payment;
-import app.models.general.items.Course;
-import app.models.general.people.student;
+import models.academics.RegistrationController;
 import models.finances.offices.AccountReceivableOffice;
 import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Payment;
@@ -168,7 +163,7 @@ public class UniversityProject {
                 if (selected != null && rc.removeCourse(sid, selected))
                     System.out.println("Operation succeeded, " + selected.getCID() + " has been removed from the schedule.");
                 else {
-                    System.out.println("Operation failed, " + selected.getCID() + " has not been removed from the schedule.");
+                    System.out.println("Operation failed, a course has not been removed from the schedule.");
                     System.out.println("This course isn't in the schedule.");
                 }
                 break;
@@ -327,7 +322,7 @@ public class UniversityProject {
         // Select a department. This is in place instead of any type of authentication.
         //  This allows us to take the user to the correct 'screen'.
         Departments selectedDepartment = null;
-        student student = new student("1", "John", null, 100);
+        student student = new student("1", "John", null, null, null, 100);
         test.put("1", student);
 
         s = new Scanner(System.in);
