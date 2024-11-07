@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Set;
 
+import models.academics.administrativeDepartments.admissions.controllers.ApplicationController;
 import models.finances.offices.AccountReceivableOffice;
 import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Payment;
@@ -84,7 +85,29 @@ public class UniversityProject {
     }
 
     public static void AddStudent() {
+        ApplicationController appController = new ApplicationController();
 
+        System.out.println("Please enter student id:");
+        String sid = s.nextLine();
+
+        System.out.println("Please enter student name:");
+        String name = s.nextLine();
+
+        System.out.println("Please enter student address:");
+        String address = s.nextLine();
+
+        System.out.println("Please enter student SSN:");
+        String ssn = s.nextLine();
+
+        boolean result = appController.addStudent(sid, name, address, ssn);
+
+        clearScreen();
+
+        if(result) {
+            System.out.println("Student successfully added!");
+        } else {
+            System.err.println("Failed to add student. Error: Student with that Id already exists");
+        }
     }
 
     public static void AdmissionsTasks() {
