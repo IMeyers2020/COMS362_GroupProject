@@ -7,6 +7,7 @@ import models.general.people.student;
 public class AccountReceivableOffice {
 
     public boolean addStudentFinancialInfo(student student, FinancialInfo financialInfo) {
+        System.out.println(student.getName());
         if (validateFinancialInfo(financialInfo)) {
             student.setFinancialInfo(financialInfo);
             return true;

@@ -1,8 +1,6 @@
 package models.general.items;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Schedule {
     private final int maxCreditHours = 18;
