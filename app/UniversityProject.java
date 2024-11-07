@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Set;
 
+import models.academics.CourseController;
 import models.academics.RegistrationController;
 import models.academics.administrativeDepartments.admissions.controllers.ApplicationController;
 import models.academics.administrativeDepartments.humanResources.controllers.OfferController;
@@ -13,6 +14,7 @@ import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Payment;
 import models.general.items.Course;
 import models.general.people.student;
+import src.DatabaseSupport;
 
 public class UniversityProject {
     public static HashMap<String, student> test = new HashMap<String, student>();
@@ -187,16 +189,20 @@ public class UniversityProject {
     }
 
     public static void CourseRegistration() {
-        HashMap<String, Course> offeredCourses = initializeCourses();
+        RegistrationController rc = new RegistrationController();
+        CourseController cc = new CourseController();
         
         String sid = null;
         String selection = null;
         Course selected;
+        HashMap<String, Course> offeredCourses = null;
 
         System.out.println("Type Student ID");
 
-        if (s.hasNextLine())
-          sid = s.nextLine();
+        if (s.hasNextLine()) {
+            sid = s.nextLine();
+            offeredCourses = cc.getAllCourses();
+        }
 
         System.out.println("Add or remove a course?");
         System.out.println("1. Add");
@@ -217,7 +223,7 @@ public class UniversityProject {
                     selection = s.nextLine();
                 selected = offeredCourses.get(selection);
                 clearScreen();
-                if (selected != null && (new RegistrationController()).addCourse(sid, selected)){
+                if (selected != null && rc.addCourse(sid, selected.getCID(), selected.getCreditHours())){
                     System.out.println("Operation succeeded, " + selected.getCID() + " has been added to the schedule.");
                     System.out.println(test.get("1").getName());
                 }
@@ -228,8 +234,8 @@ public class UniversityProject {
                 break;
             case "2":
                 System.out.println("What class would you like to remove?");
-                for (String course : (new RegistrationController()).getCurrentCourses(sid)) {
-                    System.out.println(course);
+                for (Course course : DatabaseSupport.getCoursesForStudent(sid).values()) {
+                    System.out.println(course.getCID());
                 }
                 if (s.hasNextLine())
                     selection = s.nextLine();

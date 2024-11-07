@@ -1,34 +1,23 @@
 package models.academics;
+import java.util.HashMap;
 
-import java.util.List;
-
-import UniversityProject;
+import models.academics.items.Registration;
 import models.general.items.Course;
-import models.general.people.student;
 
 public class RegistrationController {
-    public boolean addCourse(String sid, Course c) {
-        if (UniversityProject.test.containsKey(sid)) {
-            student tmp = UniversityProject.test.get(sid);
-            tmp.addCourse(c);
-            UniversityProject.test.put(sid, tmp);
-            return true;
-        }
-        return false;
+    public boolean addCourse(String cid, String sid, Integer credHours) {
+        Registration r = new Registration();
+        return r.addCourse(cid, sid, credHours);
     }
 
     public boolean removeCourse(String sid, Course c) {
-        if (UniversityProject.test.containsKey(sid)) {
-            student tmp = UniversityProject.test.get(sid);
-            tmp.removeCourse(c);
-            UniversityProject.test.put(sid, tmp);
-            return true;
-        }
-        return false;
+        Registration r = new Registration();
+        return r.removeCourse(sid, c);
     }
 
-    public List<String> getCurrentCourses(String sid) {
-        student tmp = UniversityProject.test.get(sid);
-        return UniversityProject.test.get(sid).getCurrentCourses();
+    public HashMap<String, Course> getCoursesForStudent(String sid) {
+        Registration r = new Registration();
+
+        return r.getCourses(sid);
     }
 }
