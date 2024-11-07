@@ -10,6 +10,8 @@ import models.general.people.student;
 
 
 public class DatabaseSupport {
+    public static student student = new student("1", "Test Student", null, null, null, 0);
+
     public static HashMap<String, student> getStudents() {
         HashMap<String, student> map = new HashMap<String, student>();
         FinancialInfo fiOne = new FinancialInfo("credit","1234567890123456","1234 Street");
@@ -111,44 +113,50 @@ public class DatabaseSupport {
     }
 
     public static HashMap<String, Course> getCoursesForStudent(String sid) {
-        HashMap<String, Course> map = new HashMap<String, Course>();
-        Course one = new Course("12345", 4);
-        map.put("one", one);
-        Course two = new Course("12345", 4);
-        map.put("two", two);
-        Course three = new Course("12345", 4);
-        map.put("three", three);
-        Course four = new Course("12345", 4);
-        map.put("four", four);
-        Course five = new Course("12345", 4);
-        map.put("five", five);
-        return map;
+        // HashMap<String, Course> map = new HashMap<String, Course>();
+        // Course one = new Course("12345", 4);
+        // map.put("one", one);
+        // Course two = new Course("12345", 4);
+        // map.put("two", two);
+        // Course three = new Course("12345", 4);
+        // map.put("three", three);
+        // Course four = new Course("12345", 4);
+        // map.put("four", four);
+        // Course five = new Course("12345", 4);
+        // map.put("five", five);
+
+        // HashMap<String, Course> students = getStudents();
+        // student student = students.get(sid);
+
+        return student.getCurrentCourses();
     }
 
     public static HashMap<String, Course> getAllCourses() {
         HashMap<String, Course> map = new HashMap<String, Course>();
-        Course one = new Course("12345", 4);
-        map.put("one", one);
-        Course two = new Course("12345", 4);
-        map.put("two", two);
-        Course three = new Course("12345", 4);
-        map.put("three", three);
-        Course four = new Course("12345", 4);
-        map.put("four", four);
-        Course five = new Course("12345", 4);
-        map.put("five", five);
+        Course one = new Course("100", 4);
+        map.put("100", one);
+        Course two = new Course("200", 4);
+        map.put("200", two);
+        Course three = new Course("300", 4);
+        map.put("300", three);
+        Course four = new Course("400", 4);
+        map.put("400", four);
+        Course five = new Course("500", 4);
+        map.put("500", five);
         return map;
     }
 
     public boolean putCourse(String sid, Course c) {
-        HashMap<String, Course> allC = getCoursesForStudent(sid);
-
-        return allC.get(c.getCID()) != null;
+        // will eventually return student with sid, for now just using preset student
+        // HashMap<String, Course> students = getStudents();
+        // student student = students.get(sid);
+        return student.addCourse(c);
     }
 
     public boolean removeCourse(String sid, Course c) {
-        HashMap<String, Course> allC = getCoursesForStudent(sid);
-
-        return allC.get(c.getCID()) != null;
+        // will eventually return student with sid, for now just using preset student
+        // HashMap<String, Course> students = getStudents();
+        // student student = students.get(sid);
+        return student.removeCourse(c);
     }
 }
