@@ -10,4 +10,6 @@ public class genericPerson {
 
     public void setFirstName(String _firstName) { this.firstName = _firstName;}
     public String getFirstName() { return this.firstName; }
+    public void setLastName(String _lastName) {this.lastName = _lastName;}
+    public String getLastName() { return this.lastName; }
 }
