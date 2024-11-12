@@ -185,6 +185,21 @@ public class UniversityProject {
         s.nextLine();
     }
 
+    public static void RemoveDorm(DormController dc) {
+        System.out.println("Please enter dorm id:");
+        String did = s.nextLine();
+
+        boolean result = dc.removeDorm(did);
+
+        if(result) {
+            System.out.println("Dorm was successfully removed!");
+        } else {
+            System.err.println("Failed to remove dorm");
+        }
+
+        s.nextLine();
+    }
+
     public static void GetProfessors(ProfessorController pc) {
         HashMap<String, professor> result = pc.getAllProfessors();
 
@@ -207,6 +222,7 @@ public class UniversityProject {
         System.out.println("2. View All Students");
         System.out.println("3. Add Student To Dorm");
         System.out.println("4. List a New Dorm");
+        System.out.println("5. Unlist a Dorm");
 
         String selection = s.nextLine();
 
@@ -240,6 +256,13 @@ public class UniversityProject {
             case "List a New Dorm":
                 clearScreen();
                 CreateNewDorm(dc);
+                break;
+            case "5":
+            case "5.":
+            case "5. Unlist a Dorm":
+            case "Unlist a Dorm":
+                clearScreen();
+                RemoveDorm(dc);
                 break;
         
             default:
