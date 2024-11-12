@@ -1,6 +1,7 @@
 package src;
 
 import java.util.HashMap;
+import java.util.Set;
 
 import models.dorms.DormInfo;
 import models.finances.paymentServices.FinancialInfo;
@@ -179,9 +180,9 @@ public class DatabaseSupport {
         map.put("200", two);
         Course three = new Course("300", 4);
         map.put("300", three);
-        Course four = new Course("400", 4);
+        Course four = new Course("400", 4, Set.of("100", "200"));
         map.put("400", four);
-        Course five = new Course("500", 4);
+        Course five = new Course("500", 4, Set.of("200", "300"));
         map.put("500", five);
         return map;
     }

@@ -225,7 +225,7 @@ public class UniversityProject {
                 selected = offeredCourses.get(selection);
                 System.out.println(selected.getCID());
                 clearScreen();
-                if (selected != null && rc.addCourse(selected.getCID(), sid, selected.getCreditHours())){
+                if (selected != null && rc.addCourse(selected, sid, selected.getCreditHours())){
                     System.out.println("Operation succeeded, " + selected.getCID() + " has been added to the schedule.");
                 }
                 else {
@@ -408,62 +408,62 @@ public class UniversityProject {
     public static void main(String[] args) {
         // Select a department. This is in place instead of any type of authentication.
         //  This allows us to take the user to the correct 'screen'.
-        // Departments selectedDepartment = null;
-        // s = new Scanner(System.in);
+        Departments selectedDepartment = null;
+        s = new Scanner(System.in);
 
-        // while(selectedDepartment != Departments.EXIT) {
-        //     selectedDepartment = getDepartment();
+        while(selectedDepartment != Departments.EXIT) {
+            selectedDepartment = getDepartment();
 
-        //     switch(selectedDepartment) {
-        //         case ADMISSIONS:
-        //             AdmissionsTasks();
-        //             break;
-        //         case HUMAN_RESOURCES:
-        //             HRTasks();
-        //             break;
-        //         case REGISTRATION:
-        //             CourseRegistration();
-        //             break;
-        //         case ACCOUNT_RECEIVABLE:
-        //             PaymentService();
-        //             break;
-        //         case EXIT:
-        //             break;
-        //         default:
-        //             System.out.println("ERROR: THIS DEPARTMENT HAS NOT BEEN IMPLEMENTED");
-        //     }
-        // }
-        DatabaseSupport db = new DatabaseSupport();
+            switch(selectedDepartment) {
+                case ADMISSIONS:
+                    AdmissionsTasks();
+                    break;
+                case HUMAN_RESOURCES:
+                    HRTasks();
+                    break;
+                case REGISTRATION:
+                    CourseRegistration();
+                    break;
+                case ACCOUNT_RECEIVABLE:
+                    PaymentService();
+                    break;
+                case EXIT:
+                    break;
+                default:
+                    System.out.println("ERROR: THIS DEPARTMENT HAS NOT BEEN IMPLEMENTED");
+            }
+        }
+        // DatabaseSupport db = new DatabaseSupport();
         
-        DormController dormController = new DormController(db);
-        DormManager dormManager = new DormManager(db);
-        System.out.println("Adding dorms...");
-        System.out.println("Dorm A added: " + dormManager.addDorm("DormA")); // Expect true
-        System.out.println("Dorm B added: " + dormManager.addDorm("DormB")); // Expect true
-        System.out.println("Dorm A added again: " + dormManager.addDorm("DormA")); // Expect false
+        // DormController dormController = new DormController(db);
+        // DormManager dormManager = new DormManager(db);
+        // System.out.println("Adding dorms...");
+        // System.out.println("Dorm A added: " + dormManager.addDorm("DormA")); // Expect true
+        // System.out.println("Dorm B added: " + dormManager.addDorm("DormB")); // Expect true
+        // System.out.println("Dorm A added again: " + dormManager.addDorm("DormA")); // Expect false
 
 
 
-        student student1 = new student("student1", "John Doe", null, null, new FinancialInfo(), 600.0);
-        System.out.println("Adding student to Dorm A...");
-        System.out.println("Student added to Dorm A: " + dormController.addDorm("DormA", student1)); // Expect true
+        // student student1 = new student("student1", "John Doe", null, null, new FinancialInfo(), 600.0);
+        // System.out.println("Adding student to Dorm A...");
+        // System.out.println("Student added to Dorm A: " + dormController.addDorm("DormA", student1)); // Expect true
 
-        // Check student details after being added
-        System.out.println("Student dorm ID: " + student1.getDormId()); // Expect "DormA"
-        System.out.println("Student remaining balance: " + student1.getAccountBalance()); // Expect 100.0 after paying 500
+        // // Check student details after being added
+        // System.out.println("Student dorm ID: " + student1.getDormId()); // Expect "DormA"
+        // System.out.println("Student remaining balance: " + student1.getAccountBalance()); // Expect 100.0 after paying 500
 
-        // Remove the student from the dorm
-        System.out.println("Removing student from Dorm A...");
-        System.out.println("Student removed from Dorm A: " + dormController.removeDorm("DormA", student1)); // Expect true
-        System.out.println("Student dorm ID after removal: " + student1.getDormId()); // Expect null or empty string
+        // // Remove the student from the dorm
+        // System.out.println("Removing student from Dorm A...");
+        // System.out.println("Student removed from Dorm A: " + dormController.removeDorm("DormA", student1)); // Expect true
+        // System.out.println("Student dorm ID after removal: " + student1.getDormId()); // Expect null or empty string
 
-        // Remove dorm and check if it still exists
-        System.out.println("Removing Dorm A...");
-        System.out.println("Dorm A removed: " + dormManager.removeDorm("DormA")); // Expect true
-        System.out.println("Attempting to add a student to removed Dorm A...");
-        System.out.println("Student added to Dorm A after removal: " + dormController.addDorm("DormA", student1)); // Expect false
+        // // Remove dorm and check if it still exists
+        // System.out.println("Removing Dorm A...");
+        // System.out.println("Dorm A removed: " + dormManager.removeDorm("DormA")); // Expect true
+        // System.out.println("Attempting to add a student to removed Dorm A...");
+        // System.out.println("Student added to Dorm A after removal: " + dormController.addDorm("DormA", student1)); // Expect false
 
-        // Test edge cases
-        System.out.println("Attempting to add student with insufficient funds...");
+        // // Test edge cases
+        // System.out.println("Attempting to add student with insufficient funds...");
     }
 }
