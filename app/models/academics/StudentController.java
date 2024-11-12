@@ -12,6 +12,10 @@ public class StudentController {
         this.db = _db;
     }
 
+    public boolean updateStudent(student stud) {
+        return this.db.updateStudent(stud.getStudentId(), stud);
+    }
+
     public student getStudent(String sid) {
         return this.db.getStudents().get(sid);
     };

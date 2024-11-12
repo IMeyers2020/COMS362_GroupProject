@@ -44,6 +44,12 @@ public class DatabaseSupport {
         return resultingKey == null;
     }
 
+    public boolean updateStudent(String studentId, student stud) {
+        student resultingKey = this.students.put(studentId, stud);
+
+        return resultingKey != null;
+    }
+
     public DormInfo getDorm(String dormId) {
         return dorms.get(dormId);
     }

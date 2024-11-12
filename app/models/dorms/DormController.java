@@ -22,6 +22,7 @@ public class DormController {
         for(student stud : students.values()) {
             if(stud.getDormId() == dormId) {
                 stud.setDormId(null);
+                this.sc.updateStudent(stud);
             }
         }
 
