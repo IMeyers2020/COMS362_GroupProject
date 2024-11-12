@@ -17,13 +17,8 @@ public class DormInfo {
     }
 
     public boolean addStudent(student student) {
-        if (db.getDormssize() < 1 && student.canAffordDorm(DORM_PRICE)) {
-            db.addStudent(student.getStudentId(), student);
-            student.setDormId(dormId);
-            student.deductPayment(DORM_PRICE);
-            return true;
-        }
-        return false;
+        student.setDormId(dormId);
+        return true;
     }
 
     public boolean removeStudent(student student) {

@@ -116,14 +116,14 @@ public class student {
         return accountBalance > 0;
     }
 
-    // Method to deduct a payment from the student's account balance
-    public void deductPayment(double amount) {
-        if (amount > 0 && amount <= accountBalance) {
-            accountBalance -= amount;
-        } else {
-            throw new IllegalArgumentException("Invalid payment amount.");
-        }
-    }
+    // // Method to deduct a payment from the student's account balance
+    // public void deductPayment(double amount) {
+    //     if (amount > 0 && amount <= accountBalance) {
+    //         accountBalance -= amount;
+    //     } else {
+    //         throw new IllegalArgumentException("Invalid payment amount.");
+    //     }
+    // }
 
     // Optional: toString method for debugging purposes
     @Override
