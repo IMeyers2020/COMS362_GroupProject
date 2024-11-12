@@ -4,15 +4,18 @@ import models.general.people.student;
 import src.DatabaseSupport;
 
 public class StudentApplication {
+
+    public DatabaseSupport db;
+
+    public StudentApplication(DatabaseSupport _db) {
+        this.db = _db;
+    }
+
     public boolean addStudent(String sId, String name, String address, String SSN) {
-        student newStudent = new student();
-        newStudent.setStudentId(sId);
-        newStudent.setName(name);
-        newStudent.setAddress(address);
-        newStudent.setSSN(SSN);
+        System.out.println("in stud cont add stud");
+        student stud = new student(sId, name, address, SSN, null, 0.00);
+        System.out.println(name);
 
-        DatabaseSupport db = new DatabaseSupport();
-
-        return db.putStudent(newStudent);
+        return this.db.addStudent(sId, stud);
     }
 }
