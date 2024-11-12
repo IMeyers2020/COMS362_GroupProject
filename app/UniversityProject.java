@@ -4,6 +4,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 import models.academics.CourseController;
+import models.academics.ProfessorController;
 import models.academics.RegistrationController;
 import models.academics.StudentController;
 import models.academics.administrativeDepartments.admissions.controllers.ApplicationController;
@@ -16,6 +17,7 @@ import models.finances.offices.AccountReceivableOffice;
 import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Payment;
 import models.general.items.Course;
+import models.general.people.professor;
 import models.general.people.student;
 import src.DatabaseSupport;
 
@@ -99,6 +101,12 @@ public class UniversityProject {
         }
     }
 
+    public static void PrintProfessors(HashMap<String, professor> profs) {
+        for (professor prof : profs.values()) {
+            System.out.println(prof.getName() + ": " + prof.getPID());
+        }
+    }
+
     public static void AddStudent(ApplicationController ac) {
         System.out.println("Please enter student id:");
         String sid = s.nextLine();
@@ -140,6 +148,21 @@ public class UniversityProject {
         clearScreen();
     }
 
+    public static void GetProfessors(ProfessorController pc) {
+        HashMap<String, professor> result = pc.getAllProfessors();
+
+        clearScreen();
+
+        if(result.size() > 0) {
+            PrintProfessors(result);
+        } else {
+            System.err.println("No professors in existing database");
+        }
+
+        s.nextLine();
+        clearScreen();
+    }
+
     public static void AdmissionsTasks(StudentController sc, ApplicationController ac) {
 
         System.out.println("What would you like to do?");
@@ -170,9 +193,7 @@ public class UniversityProject {
         }
     }
 
-    public static void AddProfessor() {
-        OfferController offerController = new OfferController();
-
+    public static void AddProfessor(OfferController oc) {
         System.out.println("Please enter professor id:");
         String sid = s.nextLine();
 
@@ -185,23 +206,24 @@ public class UniversityProject {
         System.out.println("Please enter professor Area of Study:");
         String aos = s.nextLine();
 
-        boolean result = offerController.addProfessor(sid, name, address, aos);
+        boolean result = oc.addProfessor(sid, name, address, aos);
 
         clearScreen();
 
         if(result) {
-            System.out.println("Student successfully added!");
+            System.out.println("Professor successfully added!");
         } else {
-            System.err.println("Failed to add student. Error: Student with that Id already exists");
+            System.err.println("Failed to add professer. Error: Professor with that Id already exists");
         }
 
         s.nextLine();
     }
 
-    public static void HRTasks() {
+    public static void HRTasks(OfferController oc, ProfessorController pc) {
         
         System.out.println("What would you like to do?");
         System.out.println("1. Add Professor");
+        System.out.println("2. View All Professors");
 
         String selection = s.nextLine();
 
@@ -211,7 +233,15 @@ public class UniversityProject {
             case "1. Add Professor":
             case "Add Professor":
                 clearScreen();
-                AddProfessor();
+                AddProfessor(oc);
+                break;
+
+            case "2":
+            case "2.":
+            case "2. View All Professors":
+            case "View All Professors":
+                clearScreen();
+                GetProfessors(pc);
                 break;
         
             default:
@@ -439,6 +469,9 @@ public class UniversityProject {
         DatabaseSupport db = new DatabaseSupport();
         StudentController studentController = new StudentController(db);
         ApplicationController appController = new ApplicationController(db);
+        OfferController offerController = new OfferController(db);
+        ProfessorController professorController = new ProfessorController(db);
+
         s = new Scanner(System.in);
 
         while(selectedDepartment != Departments.EXIT) {
@@ -449,7 +482,7 @@ public class UniversityProject {
                     AdmissionsTasks(studentController, appController);
                     break;
                 case HUMAN_RESOURCES:
-                    HRTasks();
+                    HRTasks(offerController, professorController);
                     break;
                 case REGISTRATION:
                     CourseRegistration();
