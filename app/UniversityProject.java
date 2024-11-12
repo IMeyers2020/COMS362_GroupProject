@@ -97,7 +97,7 @@ public class UniversityProject {
 
     public static void PrintStudents(HashMap<String, student> students) {
         for (student student : students.values()) {
-            System.out.println(student.getName() + ": " + student.getStudentId());
+            System.out.println(student.getName() + ": " + student.getStudentId() + (student.getDormId() != null ? ": " + student.getDormId()  : ""));
         }
     }
 
@@ -120,9 +120,9 @@ public class UniversityProject {
         System.out.println("Please enter student SSN:");
         String ssn = s.nextLine();
 
-        System.out.println("adding student");
         boolean result = ac.addStudent(sid, name, address, ssn);
-        System.out.println("added student");
+
+        clearScreen();
 
         if(result) {
             System.out.println("Student successfully added!");
@@ -148,6 +148,43 @@ public class UniversityProject {
         clearScreen();
     }
 
+    public static void AddStudentToDorm(DormController dc) {
+        System.out.println("Please enter student id:");
+        String sid = s.nextLine();
+
+        System.out.println("Please enter dorm id:");
+        String did = s.nextLine();
+
+        boolean result = dc.addDorm(did, sid);
+
+        clearScreen();
+
+        if(result) {
+            System.out.println("Student successfully added to Dorm!");
+        } else {
+            System.err.println("Failed to add student to Dorm.");
+        }
+
+        s.nextLine();
+    }
+
+    public static void CreateNewDorm(DormController dc) {
+        System.out.println("Please enter dorm id:");
+        String did = s.nextLine();
+
+        boolean result = dc.newDorm(did);
+
+        clearScreen();
+
+        if(result) {
+            System.out.println("Dorm was successfully created!");
+        } else {
+            System.err.println("Failed to list new dorm");
+        }
+
+        s.nextLine();
+    }
+
     public static void GetProfessors(ProfessorController pc) {
         HashMap<String, professor> result = pc.getAllProfessors();
 
@@ -163,11 +200,13 @@ public class UniversityProject {
         clearScreen();
     }
 
-    public static void AdmissionsTasks(StudentController sc, ApplicationController ac) {
+    public static void AdmissionsTasks(StudentController sc, ApplicationController ac, DormController dc) {
 
         System.out.println("What would you like to do?");
         System.out.println("1. Add Student");
         System.out.println("2. View All Students");
+        System.out.println("3. Add Student To Dorm");
+        System.out.println("4. List a New Dorm");
 
         String selection = s.nextLine();
 
@@ -186,6 +225,21 @@ public class UniversityProject {
             case "View All Students":
                 clearScreen();
                 GetStudents(sc);
+                break;
+                
+            case "3":
+            case "3.":
+            case "3. Add Student To Dorm":
+            case "Add Student To Dorm":
+                clearScreen();
+                AddStudentToDorm(dc);
+                break;
+            case "4":
+            case "4.":
+            case "4. List a New Dorm":
+            case "List a New Dorm":
+                clearScreen();
+                CreateNewDorm(dc);
                 break;
         
             default:
@@ -471,6 +525,7 @@ public class UniversityProject {
         ApplicationController appController = new ApplicationController(db);
         OfferController offerController = new OfferController(db);
         ProfessorController professorController = new ProfessorController(db);
+        DormController dormController = new DormController(db, studentController);
 
         s = new Scanner(System.in);
 
@@ -479,7 +534,7 @@ public class UniversityProject {
 
             switch(selectedDepartment) {
                 case ADMISSIONS:
-                    AdmissionsTasks(studentController, appController);
+                    AdmissionsTasks(studentController, appController, dormController);
                     break;
                 case HUMAN_RESOURCES:
                     HRTasks(offerController, professorController);
@@ -496,8 +551,6 @@ public class UniversityProject {
                     System.out.println("ERROR: THIS DEPARTMENT HAS NOT BEEN IMPLEMENTED");
             }
         }
-        // DatabaseSupport db = new DatabaseSupport();
-        
         // DormController dormController = new DormController(db);
         // DormManager dormManager = new DormManager(db);
         // System.out.println("Adding dorms...");

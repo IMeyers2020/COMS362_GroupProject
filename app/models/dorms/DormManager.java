@@ -1,6 +1,6 @@
 package models.dorms;
 
-import java.util.HashMap;
+import java.util.Scanner;
 
 import models.general.people.student;
 import src.DatabaseSupport;
@@ -13,10 +13,12 @@ public class DormManager {
     }
 
     public boolean addStudentToDorm(String dormId, student student) {
+        Scanner sc = new Scanner(System.in);
         DormInfo dorm = db.getDorm(dormId);
         if (dorm != null) {
             return dorm.addStudent(student);
         }
+        System.out.println("FAILEDDD");
         return false;
     }
 
