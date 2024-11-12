@@ -93,9 +93,13 @@ public class UniversityProject {
         return map;
     }
 
-    public static void AddStudent() {
-        ApplicationController appController = new ApplicationController();
+    public static void PrintStudents(HashMap<String, student> students) {
+        for (student student : students.values()) {
+            System.out.println(student.getName() + ": " + student.getStudentId());
+        }
+    }
 
+    public static void AddStudent(ApplicationController ac) {
         System.out.println("Please enter student id:");
         String sid = s.nextLine();
 
@@ -108,9 +112,9 @@ public class UniversityProject {
         System.out.println("Please enter student SSN:");
         String ssn = s.nextLine();
 
-        boolean result = appController.addStudent(sid, name, address, ssn);
-
-        clearScreen();
+        System.out.println("adding student");
+        boolean result = ac.addStudent(sid, name, address, ssn);
+        System.out.println("added student");
 
         if(result) {
             System.out.println("Student successfully added!");
@@ -121,10 +125,26 @@ public class UniversityProject {
         s.nextLine();
     }
 
-    public static void AdmissionsTasks() {
+    public static void GetStudents(StudentController sc) {
+        HashMap<String, student> result = sc.getAllStudents();
+
+        clearScreen();
+
+        if(result.size() > 0) {
+            PrintStudents(result);
+        } else {
+            System.err.println("No students in existing database");
+        }
+
+        s.nextLine();
+        clearScreen();
+    }
+
+    public static void AdmissionsTasks(StudentController sc, ApplicationController ac) {
 
         System.out.println("What would you like to do?");
         System.out.println("1. Add Student");
+        System.out.println("2. View All Students");
 
         String selection = s.nextLine();
 
@@ -134,7 +154,15 @@ public class UniversityProject {
             case "1. Add Student":
             case "Add Student":
                 clearScreen();
-                AddStudent();
+                AddStudent(ac);
+                break;
+
+            case "2":
+            case "2.":
+            case "2. View All Students":
+            case "View All Students":
+                clearScreen();
+                GetStudents(sc);
                 break;
         
             default:
@@ -257,8 +285,7 @@ public class UniversityProject {
         }
     }
 
-    public static void addFinancialInfo() {
-        StudentController sc = new StudentController();
+    public static void addFinancialInfo(StudentController sc) {
         FinancialInfoController fc = new FinancialInfoController();
 
         String userIn = null;
@@ -378,7 +405,7 @@ public class UniversityProject {
         
     }
 
-    public static void PaymentService() {
+    public static void PaymentService(StudentController sc) {
         System.out.println("Would you like to do?");
         System.out.println("1. Add Payment");
         System.out.println("2. Add Financial Information");
@@ -400,7 +427,7 @@ public class UniversityProject {
             case "2.":
             case "Add Financial Information":
                 clearScreen();
-                addFinancialInfo();
+                addFinancialInfo(sc);
                 break;
         }
     }
@@ -409,6 +436,9 @@ public class UniversityProject {
         // Select a department. This is in place instead of any type of authentication.
         //  This allows us to take the user to the correct 'screen'.
         Departments selectedDepartment = null;
+        DatabaseSupport db = new DatabaseSupport();
+        StudentController studentController = new StudentController(db);
+        ApplicationController appController = new ApplicationController(db);
         s = new Scanner(System.in);
 
         while(selectedDepartment != Departments.EXIT) {
@@ -416,7 +446,7 @@ public class UniversityProject {
 
             switch(selectedDepartment) {
                 case ADMISSIONS:
-                    AdmissionsTasks();
+                    AdmissionsTasks(studentController, appController);
                     break;
                 case HUMAN_RESOURCES:
                     HRTasks();
@@ -425,7 +455,7 @@ public class UniversityProject {
                     CourseRegistration();
                     break;
                 case ACCOUNT_RECEIVABLE:
-                    PaymentService();
+                    PaymentService(studentController);
                     break;
                 case EXIT:
                     break;
