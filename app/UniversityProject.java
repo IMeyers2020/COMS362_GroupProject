@@ -253,7 +253,7 @@ public class UniversityProject {
                 selected = offeredCourses.get(selection);
                 System.out.println(selected.getCID());
                 clearScreen();
-                if (selected != null && rc.addCourse(selected.getCID(), sid, selected.getCreditHours())){
+                if (selected != null && rc.addCourse(selected, sid, selected.getCreditHours())){
                     System.out.println("Operation succeeded, " + selected.getCID() + " has been added to the schedule.");
                 }
                 else {
