@@ -85,6 +85,7 @@ public class JsonUtil {
 
             for (Field field : clazz.getDeclaredFields()) {
                 field.setAccessible(true);
+                // Don't get static properties (I was running into some accessibility issues)
                 if (!java.lang.reflect.Modifier.isStatic(field.getModifiers()) && map.containsKey(field.getName())) {
                     String value = map.get(field.getName());
                     if (value.equals("null")) {
@@ -119,24 +120,33 @@ public class JsonUtil {
         }
     }
 
+    // Function to be called to try and parse a list from a stringified JSON array.
+    //  Pulled out so we can easily handle nested objects/arrays.
     public static List<Object> deserializeArray(String jsonArray, Class<?> itemType) {
+        // If the value that should be an array is instead null, return the null type (This probably shouldn't get hit)
         if (jsonArray.equals("null")) {
             return null;
         }
         List<Object> list = new ArrayList<>();
-        jsonArray = jsonArray.trim().substring(1, jsonArray.length() - 1); // Remove outer brackets
-        String[] items = jsonArray.split(", (?=([^\"]*\"[^\"]*\")*[^\"]*$)"); // Split by commas outside quotes
+        // Remove outer brackets so that I can parse the array contents
+        jsonArray = jsonArray.trim().substring(1, jsonArray.length() - 1);
+        // Use regex to get the array items. Split by commas that are outside of quotes so that it doesn't try to split on the items inside the array
+        String[] items = jsonArray.split(", (?=([^\"]*\"[^\"]*\")*[^\"]*$)");
 
         for (String item : items) {
             item = item.trim();
+            // If the item inside the array is an object, deserialize it using the deserialize function I made earlier
             if (item.startsWith("{") && item.endsWith("}")) {
                 list.add(deserialize(item, itemType));
+            // If the item is a string that contains quotes, extract the string from the quotes.
             } else if (item.startsWith("\"") && item.endsWith("\"")) {
-                list.add(item.substring(1, item.length() - 1)); // Remove quotes
+                list.add(item.substring(1, item.length() - 1));
+            // Use regex to check if the string is a number, if it is, try to parse it to a double (Possibly need to seperate to int/double in the future)
             } else if (item.matches("-?\\d+(\\.\\d+)?")) {
-                list.add(Double.parseDouble(item)); // Primitive number
+                list.add(Double.parseDouble(item));
+            // Just add the stringified object as a default (Not ideal, but shouldn't get hit)
             } else {
-                list.add(item); // Default to string
+                list.add(item);
             }
         }
 
