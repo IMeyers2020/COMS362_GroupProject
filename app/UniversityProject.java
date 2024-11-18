@@ -342,15 +342,22 @@ public class UniversityProject {
             offeredCourses = cc.getAllCourses();
         }
 
-        System.out.println("Add or remove a course?");
-        System.out.println("1. Add");
-        System.out.println("2. Remove");
+        System.out.println("View registered courses or Add/Remove a course?");
+        System.out.println("1. View");
+        System.out.println("2. Add");
+        System.out.println("3. Remove");
 
         if (s.hasNextLine())
           selection = s.nextLine();
         
         switch(selection) {
             case "1":
+                System.out.println("Student " + sid + "'s courses:");
+                for (Course course : DatabaseSupport.getRegisteredCoursesForStudent(sid).values()) {
+                    System.out.println(course.getCID());
+                }
+                break;
+            case "2":
                 System.out.println("What class would you like to register for?");
                 for(String key : offeredCourses.keySet()) {
                     System.out.println(key);
@@ -369,9 +376,9 @@ public class UniversityProject {
                 }
                 s.nextLine();
                 break;
-            case "2":
+            case "3":
                 System.out.println("What class would you like to remove?");
-                for (Course course : DatabaseSupport.getCoursesForStudent(sid).values()) {
+                for (Course course : DatabaseSupport.getRegisteredCoursesForStudent(sid).values()) {
                     System.out.println(course.getCID());
                 }
                 if (s.hasNextLine())

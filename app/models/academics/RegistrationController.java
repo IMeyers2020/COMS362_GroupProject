@@ -15,8 +15,7 @@ public class RegistrationController {
         return r.removeCourse(sid, c);
     }
 
-    public HashMap<String, Course> getCoursesForStudent(String sid) {
-        Registration r = new Registration();
-        return r.getCoursesForStudent(sid);
+    public HashMap<String, Course> viewRegisteredCourses(String sid) {
+        return (new Registration()).getRegisteredCoursesForStudent(sid);
     }
 }

@@ -9,6 +9,7 @@ import models.finances.paymentServices.Payment;
 import models.general.items.Course;
 import models.general.people.professor;
 import models.general.people.student;
+import src.jsonParser.JsonUtil;
 
 
 public class DatabaseSupport {
@@ -125,25 +126,6 @@ public class DatabaseSupport {
         return allP.get(p.getPaymentId()) != null;
     }
 
-    public static HashMap<String, Course> getCoursesForStudent(String sid) {
-        // HashMap<String, Course> map = new HashMap<String, Course>();
-        // Course one = new Course("12345", 4);
-        // map.put("one", one);
-        // Course two = new Course("12345", 4);
-        // map.put("two", two);
-        // Course three = new Course("12345", 4);
-        // map.put("three", three);
-        // Course four = new Course("12345", 4);
-        // map.put("four", four);
-        // Course five = new Course("12345", 4);
-        // map.put("five", five);
-
-        // HashMap<String, Course> students = getStudents();
-        // student student = students.get(sid);
-
-        return student.getCurrentCourses();
-    }
-
     public static HashMap<String, Course> getAllCourses() {
         HashMap<String, Course> map = new HashMap<String, Course>();
         Course one = new Course("100", 4);
@@ -178,5 +160,12 @@ public class DatabaseSupport {
         // HashMap<String, Course> students = getStudents();
         // student student = students.get(sid);
         return student;
+    }
+
+    public static HashMap<String, Course> getRegisteredCoursesForStudent(String sid) {
+        // will eventually return student with sid, for now just using preset student
+        // HashMap<String, Course> students = getStudents();
+        // student student = students.get(sid);
+        return student.getCurrentCourses();
     }
 }
