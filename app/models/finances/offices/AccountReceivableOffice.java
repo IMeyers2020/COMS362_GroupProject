@@ -1,16 +1,21 @@
 package models.finances.offices;
 
+import java.io.IOException;
+
 import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Payment;
 import models.general.people.student;
 import models.general.people.studentLookup;
+import src.DatabaseSupport;
 
 public class AccountReceivableOffice {
 
-    public boolean addStudentFinancialInfo(studentLookup student, FinancialInfo financialInfo) {
+    public boolean addStudentFinancialInfo(student student, FinancialInfo financialInfo) throws IOException{
         if (validateFinancialInfo(financialInfo)) {
-            student.value.setFinancialInfo(financialInfo);
-            return true;
+            student.setFinancialInfo(financialInfo);
+            DatabaseSupport db = new DatabaseSupport();
+
+            return db.putFinancialInfo(financialInfo);
         } else {
             System.out.println("Invalid financial information provided.");
             return false;

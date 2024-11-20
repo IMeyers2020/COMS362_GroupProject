@@ -287,14 +287,58 @@ public class DatabaseSupport {
         student five = new student("51234", "Student Five", "111 1st St.", "111-11-1111", fiFive, 500.0);
         map.put("five", five);
         return map;
-    } 
+    }
 
-    public boolean putFinancialInfo(FinancialInfo fi) {
-        HashMap<String, student> allFI = getFinancialInfo();
+    public boolean putFinancialInfo(FinancialInfo fi) throws IOException{
+        String filePath = "app/models/finances/data/FinancialInfo.json";
+        String jsonContent = JsonUtil.serialize(fi);
 
-        // True if doesn't exist yet, false otherwise
-        // Will change this to actually save to a DB
-        return allFI.get(fi.getCardNumber()) != null;
+        File file = new File(filePath);
+        boolean fileExists = file.exists();
+        boolean isArrayClosed = false;
+        StringBuilder fileContent = new StringBuilder();
+    
+        // Check if the file exists and has content
+        if (fileExists && file.length() > 0) {
+            // Read the file content to check if the array is closed
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    fileContent.append(line);
+                }
+                // Check if the file ends with "]" indicating the array is closed
+                if (fileContent.toString().endsWith("]")) {
+                    isArrayClosed = true;
+                }
+            }
+        }
+    
+        // Open the file for writing (not appending yet)
+        try (FileWriter fileWriter = new FileWriter(filePath, false);  // Overwrite the file first
+             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+    
+            // If the array is closed or the file is empty, start a new array
+            if (fileExists && isArrayClosed) {
+                // Remove the closing bracket (we're going to append data)
+                fileContent.setLength(fileContent.length() - 1); // Remove the ']'
+                bufferedWriter.write(fileContent.toString()); // Write the content without the ']'
+                bufferedWriter.write(","); // Add a comma before appending new data
+            } else if (!fileExists || file.length() == 0) {
+                // If the file doesn't exist or is empty, start a new array
+                bufferedWriter.write("[");
+            } else {
+                // If the file contains an open array, just append new data with a comma
+                bufferedWriter.write(",");
+            }
+    
+            // Append the new object
+            bufferedWriter.write(jsonContent);
+    
+            // Close the array by appending the closing bracket
+            bufferedWriter.write("]");
+    
+            return true;
+        }
     }
 
     public static HashMap<String, Payment> getPayments() {

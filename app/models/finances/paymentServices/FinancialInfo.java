@@ -1,5 +1,7 @@
 package models.finances.paymentServices;
 
+import java.io.IOException;
+
 import src.DatabaseSupport;
 
 public class FinancialInfo {
@@ -41,7 +43,7 @@ public class FinancialInfo {
         this.billingAddress = billingAddress;
     }
 
-    public boolean addStudentFinancialInfo(String cardType, String cardNumber, String billingAddress) {
+    public boolean addStudentFinancialInfo(String cardType, String cardNumber, String billingAddress) throws IOException{
         FinancialInfo fi = new FinancialInfo(cardType, cardNumber, billingAddress);
         DatabaseSupport db = new DatabaseSupport();
 
