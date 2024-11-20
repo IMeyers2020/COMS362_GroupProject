@@ -434,7 +434,7 @@ public class UniversityProject {
             FinancialInfo financialInfo = new FinancialInfo(cardType, cardNum, billingAddress);
     
             AccountReceivableOffice aro = new AccountReceivableOffice();
-            boolean result = aro.addStudentFinancialInfo(currStud, financialInfo);
+            boolean result = aro.addStudentFinancialInfo(currStud.value, financialInfo);
     
             if (result) {
                 System.out.println("Financial information added successfully."); 
@@ -448,21 +448,21 @@ public class UniversityProject {
     }
 
     public static void addPayment(StudentController sc) {
-        boolean foundStudent = false;
         Payment payment = new Payment();
         PaymentController pc = new PaymentController();
+        boolean foundStudent = false;
 
         String userIn = null;
         System.out.println("Enter the student's ID: ");
         userIn = s.nextLine();
-        student curStudent = sc.getStudent(userIn);
+        studentLookup curStudent = sc.getStudent(userIn);
 
         if (curStudent != null) {
             foundStudent = true;
         }
 
         try {
-            System.out.println("Account balance of: " + curStudent.getAccountBalance());
+            System.out.println("Account balance of: " + curStudent.value.getAccountBalance());
             System.out.println("Use saved payment information? (Y or N)");
             userIn = s.nextLine();
             if (userIn.equals("Y")) {
@@ -473,10 +473,10 @@ public class UniversityProject {
                 String paymentID = String.valueOf(randomNum);
                 payment.setAmount(amountToPay);
                 payment.setPaymentId(paymentID);
-                payment.setPaymentType(curStudent.getFinancialInfo().getCardType());
+                payment.setPaymentType(curStudent.value.getFinancialInfo().getCardType());
                 System.out.println("Confirm the following information (Y or N):");
                 System.out.println("Amount To Pay: " + payment.getAmount());
-                System.out.println("Card Type: " + payment.getPaymentType() + " " + "Card Number: " + curStudent.getFinancialInfo().getCardNumber());
+                System.out.println("Card Type: " + payment.getPaymentType() + " " + "Card Number: " + curStudent.value.getFinancialInfo().getCardNumber());
                 userIn = s.nextLine();
                 if (userIn.equals("Y")) {
                     pc.confirmPayment(payment);
@@ -498,7 +498,7 @@ public class UniversityProject {
             }
 
             AccountReceivableOffice aro = new AccountReceivableOffice();
-            boolean result = aro.addStudentPayment(curStudent, payment);
+            boolean result = aro.addStudentPayment(curStudent.value, payment);
 
             if (result) {
                 System.out.println();

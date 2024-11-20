@@ -11,9 +11,10 @@ import src.DatabaseSupport;
 public class AccountReceivableOffice {
 
     public boolean addStudentFinancialInfo(student student, FinancialInfo financialInfo) throws IOException{
-        if (validateFinancialInfo(financialInfo)) {
+        if (validateFinancialInfo(financialInfo)) {    
             student.setFinancialInfo(financialInfo);
             DatabaseSupport db = new DatabaseSupport();
+            db.updateStudent(student.getStudentId(), student);
 
             return db.putFinancialInfo(financialInfo);
         } else {
@@ -35,9 +36,10 @@ public class AccountReceivableOffice {
 
         if (processPayment(payment)) {
             student.setAccountBalance(student.getAccountBalance() - payment.getAmount());
-            System.out.println("Payment processed successfully. New balance: $" + student.getAccountBalance());
             DatabaseSupport db = new DatabaseSupport();
+            db.updateStudent(student.getStudentId(), student);
 
+            System.out.println("Payment processed successfully. New balance: $" + student.getAccountBalance());
             return db.putPayment(payment);
         } else {
             System.out.println("Payment failed.");
