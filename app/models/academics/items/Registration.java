@@ -10,7 +10,6 @@ public class Registration {
     public boolean addCourse(Course c, String sid, Integer credHours) {
         // Course c = new Course(cid, credHours);
         DatabaseSupport ds = new DatabaseSupport();
-        
         //will be replaced by 'student s = ds.getStudent(sid)' if (s.addCourse(c)) {return ds.putStudent(s)}
         if(ds.getStudent(sid).addCourse(c)) {
             return true;
@@ -29,7 +28,7 @@ public class Registration {
         return false;
     }
 
-    public HashMap<String, Course> getCoursesForStudent(String sid) {
-        return DatabaseSupport.getCoursesForStudent(sid);
+    public HashMap<String, Course> getRegisteredCoursesForStudent(String sid) {
+        return DatabaseSupport.getRegisteredCoursesForStudent(sid);
     }
 }

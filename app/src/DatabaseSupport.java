@@ -352,4 +352,9 @@ public class DatabaseSupport {
         // student student = students.get(sid);
         return true;
     }
+
+    public ArrayList<Course> getRegisteredCoursesForStudent(String sid) {
+        studentLookup s = this.getStudent(sid);
+        return s.value.getCurrentCourses();
+    }
 }
