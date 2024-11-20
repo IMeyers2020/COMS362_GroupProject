@@ -3,13 +3,13 @@ package models.finances.offices;
 import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Payment;
 import models.general.people.student;
+import models.general.people.studentLookup;
 
 public class AccountReceivableOffice {
 
-    public boolean addStudentFinancialInfo(student student, FinancialInfo financialInfo) {
-        System.out.println(student.getName());
+    public boolean addStudentFinancialInfo(studentLookup student, FinancialInfo financialInfo) {
         if (validateFinancialInfo(financialInfo)) {
-            student.setFinancialInfo(financialInfo);
+            student.value.setFinancialInfo(financialInfo);
             return true;
         } else {
             System.out.println("Invalid financial information provided.");

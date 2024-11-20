@@ -1,7 +1,5 @@
 package models.dorms;
 
-import java.util.HashMap;
-
 import models.general.people.student;
 import src.DatabaseSupport;
 
@@ -16,15 +14,20 @@ public class DormInfo {
         this.db = db;
     }
 
+    public String getDormId() {
+        return this.dormId;
+    }
+
     public boolean addStudent(student student) {
         student.setDormId(dormId);
         return true;
     }
 
     public boolean removeStudent(student student) {
-        student existingStudent = db.getStudent(student.getStudentId());
+        student existingStudent = db.getStudent(student.getStudentId()).value;
         if (existingStudent != null) {
-            db.getStudent(existingStudent.getStudentId()).clearDormId();
+            existingStudent.clearDormId();
+            db.updateStudent(existingStudent.getStudentId(), existingStudent);
             return true;
         }
         return false;

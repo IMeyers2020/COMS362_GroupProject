@@ -50,7 +50,7 @@ public class student {
 
     public String getDormId() { return dormId; }
 
-    public HashMap<String, Course> getCurrentCourses() {
+    public ArrayList<Course> getCurrentCourses() {
         return sched.getCourses();
     }
 
