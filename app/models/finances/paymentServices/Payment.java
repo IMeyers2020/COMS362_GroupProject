@@ -1,5 +1,7 @@
 package models.finances.paymentServices;
 
+import java.io.IOException;
+
 import src.DatabaseSupport;
 
 public class Payment {
@@ -56,7 +58,7 @@ public class Payment {
         isConfirmed = confirmed;
     }
 
-    public boolean addStudentPayment (String paymentId, double amount, String paymentType, boolean isConfirmed) {
+    public boolean addStudentPayment (String paymentId, double amount, String paymentType, boolean isConfirmed) throws IOException{
         Payment p = new Payment(paymentId,amount,paymentType,isConfirmed);
         DatabaseSupport db = new DatabaseSupport();
 

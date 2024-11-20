@@ -1,9 +1,3 @@
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Set;
@@ -446,87 +440,67 @@ public class UniversityProject {
         }
     }
 
-    public static HashMap<String, student> exampleStudents() {
-        HashMap<String, student> map = new HashMap<String, student>();
-        FinancialInfo fiOne = new FinancialInfo("credit","1234567890123456","1234 Street");
-        student one = new student("12345", "Student One", "111 1st St.", "111-11-1111", fiOne, 100.0);
-        map.put("one", one);
-        FinancialInfo fiTwo = new FinancialInfo("credit","2345678901234561","2341 Street");
-        student two = new student("23451","Student Two", "111 1st St.", "111-11-1111", fiTwo, 200.0);
-        map.put("two", two);
-        FinancialInfo fiThree = new FinancialInfo("credit","3456789012345612","3412 Street");
-        student three = new student("34512", "Student Three", "111 1st St.", "111-11-1111", fiThree, 300.0);
-        map.put("three", three);
-        FinancialInfo fiFour = new FinancialInfo("credit","4567890123456123","4123 Street");
-        student four = new student("45123", "Student Four", "111 1st St.", "111-11-1111", fiFour, 400.0);
-        map.put("four", four);
-        FinancialInfo fiFive = new FinancialInfo("credit","5678901234561234","5123 Street");
-        student five = new student("51234", "Student Five", "111 1st St.", "111-11-1111", fiFive, 500.0);
-        map.put("five", five);
-        return map;
-    } 
-
-    public static void addPayment() {
-        HashMap<String, student> exampleStudents = exampleStudents();
-        student curStudent = null;
+    public static void addPayment(StudentController sc) {
         boolean foundStudent = false;
         Payment payment = new Payment();
         PaymentController pc = new PaymentController();
+
         String userIn = null;
         System.out.println("Enter the student's ID: ");
         userIn = s.nextLine();
-        for(String key: exampleStudents.keySet()) {
-            if (userIn.equals(exampleStudents.get(key).getStudentId())) {
-                curStudent = exampleStudents.get(key);
-                foundStudent = true;
-                System.out.println("Account balance of: " + exampleStudents.get(key).getAccountBalance());
-                System.out.println("Use saved payment information? (Y or N)");
+        student curStudent = sc.getStudent(userIn);
+
+        if (curStudent != null) {
+            foundStudent = true;
+        }
+
+        try {
+            System.out.println("Account balance of: " + curStudent.getAccountBalance());
+            System.out.println("Use saved payment information? (Y or N)");
+            userIn = s.nextLine();
+            if (userIn.equals("Y")) {
+                System.out.println("Enter payment amount:  (Enter in 000.00 format)");
+                userIn = s.nextLine();
+                double amountToPay = Double.parseDouble(userIn);
+                int randomNum = (int)(Math.random() * 99999) + 1;
+                String paymentID = String.valueOf(randomNum);
+                payment.setAmount(amountToPay);
+                payment.setPaymentId(paymentID);
+                payment.setPaymentType(curStudent.getFinancialInfo().getCardType());
+                System.out.println("Confirm the following information (Y or N):");
+                System.out.println("Amount To Pay: " + payment.getAmount());
+                System.out.println("Card Type: " + payment.getPaymentType() + " " + "Card Number: " + curStudent.getFinancialInfo().getCardNumber());
                 userIn = s.nextLine();
                 if (userIn.equals("Y")) {
-                    System.out.println("Enter payment amount:  (Enter in 000.00 format)");
-                    userIn = s.nextLine();
-                    double amountToPay = Double.parseDouble(userIn);
-                    int randomNum = (int)(Math.random() * 99999) + 1;
-                    String paymentID = String.valueOf(randomNum);
-                    payment.setAmount(amountToPay);
-                    payment.setPaymentId(paymentID);
-                    payment.setPaymentType(exampleStudents.get(key).getFinancialInfo().getCardType());
-                    System.out.println("Confirm the following information (Y or N):");
-                    System.out.println("Amount To Pay: " + payment.getAmount());
-                    System.out.println("Card Type: " + payment.getPaymentType() + " " + "Card Number: " + exampleStudents.get(key).getFinancialInfo().getCardNumber());
-                    userIn = s.nextLine();
-                    if (userIn.equals("Y")) {
-                        pc.confirmPayment(payment);
-                        if(payment.isConfirmed()) {
-                            System.out.println("Your Payment Has Been Confirmed!");
-                            System.out.println();
-                        }
-                    } else {
-                        System.out.println("Transaction cancelled.");
+                    pc.confirmPayment(payment);
+                    if(payment.isConfirmed()) {
+                        System.out.println("Your Payment Has Been Confirmed!");
                         System.out.println();
-                        break;
                     }
                 } else {
                     System.out.println("Transaction cancelled.");
                     System.out.println();
-                    break;
                 }
-            } 
-        }
+            } else {
+                System.out.println("Transaction cancelled.");
+                System.out.println();
+            }
 
-        if(!foundStudent) {
-            System.out.println("You are not registered in the system.");
-        }
+            if(!foundStudent) {
+                System.out.println("You are not registered in the system.");
+            }
 
-        AccountReceivableOffice aro = new AccountReceivableOffice();
-        boolean result = aro.addStudentPayment(curStudent, payment);
+            AccountReceivableOffice aro = new AccountReceivableOffice();
+            boolean result = aro.addStudentPayment(curStudent, payment);
 
-        if (result) {
-            System.out.println();
-        } else {
-            System.out.println("Failed to Process Payment.");
+            if (result) {
+                System.out.println();
+            } else {
+                System.out.println("Failed to Process Payment.");
+            }
+        } catch (Exception e) {
+            System.err.println("An error occurred: " + e.getMessage());
         }
-        
     }
 
     public static void PaymentService(StudentController sc) {
@@ -544,7 +518,7 @@ public class UniversityProject {
             case "1.":
             case "Add Payment":
                 clearScreen();
-                addPayment();
+                addPayment(sc);
                 break;
             case "2":
             case "2. Add Financial Information":
@@ -553,41 +527,6 @@ public class UniversityProject {
                 clearScreen();
                 addFinancialInfo(sc);
                 break;
-        }
-    }
-
-    // Method to close the JSON array (append closing bracket ']')
-    public static void closeJsonArray(String filePath) {
-        File file = new File(filePath);
-
-        try {
-            if (file.exists() && file.length() > 0) {
-                try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
-                    long fileLength = raf.length();
-                    if (fileLength > 0) {
-                        raf.seek(fileLength - 1); // Seek to the last character
-                        int lastChar = raf.read(); // Read the last character as an integer
-                        if (lastChar != -1) { // Check if we reached the end of the file
-                            char lastCharacter = (char) lastChar;
-    
-                            // If the last character is not ']', append it to close the array
-                            if (lastCharacter != ']') {
-                                try (FileWriter fileWriter = new FileWriter(file, true);
-                                     BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
-                                    bufferedWriter.write("]"); // Close the JSON array
-                                    System.out.println("JSON array closed with ']'");
-                                } catch (IOException e) {
-                                    System.err.println("Error appending closing bracket: " + e.getMessage());
-                                }
-                            }
-                        }
-                    }
-                } catch (IOException e) {
-                    System.err.println("Error reading the last character of the file: " + e.getMessage());
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("Unexpected error: " + e.getMessage());
         }
     }
 
@@ -619,7 +558,6 @@ public class UniversityProject {
                     break;
                 case ACCOUNT_RECEIVABLE:
                     PaymentService(studentController);
-                    closeJsonArray("app/models/finances/data/Financialinfo.json");
                     break;
                 case EXIT:
                     break;
