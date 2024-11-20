@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -15,7 +16,6 @@ import models.academics.StudentController;
 import models.academics.administrativeDepartments.admissions.controllers.ApplicationController;
 import models.academics.administrativeDepartments.humanResources.controllers.OfferController;
 import models.dorms.DormController;
-import models.dorms.DormManager;
 import models.finances.controllers.FinancialInfoController;
 import models.finances.controllers.PaymentController;
 import models.finances.offices.AccountReceivableOffice;
@@ -24,6 +24,7 @@ import models.finances.paymentServices.Payment;
 import models.general.items.Course;
 import models.general.people.professor;
 import models.general.people.student;
+import models.general.people.studentLookup;
 import src.DatabaseSupport;
 
 public class UniversityProject {
@@ -100,9 +101,9 @@ public class UniversityProject {
         return map;
     }
 
-    public static void PrintStudents(HashMap<String, student> students) {
-        for (student student : students.values()) {
-            System.out.println(student.getName() + ": " + student.getStudentId() + (student.getDormId() != null ? ": " + student.getDormId()  : ""));
+    public static void PrintStudents(ArrayList<studentLookup> students) {
+        for (studentLookup student : students) {
+            System.out.println(student.value.getName() + ": " + student.value.getStudentId() + (student.value.getDormId() != null ? ": " + student.value.getDormId()  : ""));
         }
     }
 
@@ -139,7 +140,7 @@ public class UniversityProject {
     }
 
     public static void GetStudents(StudentController sc) {
-        HashMap<String, student> result = sc.getAllStudents();
+        ArrayList<studentLookup> result = sc.getAllStudents();
 
         clearScreen();
 
@@ -411,7 +412,7 @@ public class UniversityProject {
         System.out.println("Enter the student's ID:");
         userIn = s.nextLine();
 
-        student currStud = sc.getStudent(userIn);
+        studentLookup currStud = sc.getStudent(userIn);
 
         System.out.println("What type of card will you be entering (credit or debit)?");
         String cardType = s.nextLine();

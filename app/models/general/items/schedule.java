@@ -1,5 +1,6 @@
 package models.general.items;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Schedule {
@@ -12,7 +13,7 @@ public class Schedule {
         courses = new HashMap<>();
     }
 
-    public HashMap<String, Course> getCourses() {
+    public ArrayList<courseLookup> getCourses() {
         return courses;
     }
 

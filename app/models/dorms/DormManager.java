@@ -1,7 +1,5 @@
 package models.dorms;
 
-import java.util.Scanner;
-
 import models.general.people.student;
 import src.DatabaseSupport;
 
@@ -13,8 +11,7 @@ public class DormManager {
     }
 
     public boolean addStudentToDorm(String dormId, student student) {
-        Scanner sc = new Scanner(System.in);
-        DormInfo dorm = db.getDorm(dormId);
+        DormInfo dorm = db.getDorm(dormId).value;
         if (dorm != null) {
             return dorm.addStudent(student);
         }
@@ -23,7 +20,7 @@ public class DormManager {
     }
 
     public boolean removeStudentFromDorm(String dormId, student student) {
-        DormInfo dorm = db.getDorm(dormId);
+        DormInfo dorm = db.getDorm(dormId).value;
         if (dorm != null) {
             return dorm.removeStudent(student);
         }
@@ -31,7 +28,8 @@ public class DormManager {
     }
 
     public boolean addDorm(String dormId) {
-        return db.addDorm(dormId);
+        DormInfo di = new DormInfo(dormId, db);
+        return db.addDorm(dormId, di);
     }
 
     public boolean removeDorm(String dormId) {

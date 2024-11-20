@@ -1,8 +1,9 @@
 package models.academics;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import models.general.people.student;
+import models.general.people.studentLookup;
 import src.DatabaseSupport;
 
 public class StudentController {
@@ -16,11 +17,18 @@ public class StudentController {
         return this.db.updateStudent(stud.getStudentId(), stud);
     }
 
-    public student getStudent(String sid) {
-        return this.db.getStudents().get(sid);
+    public studentLookup getStudent(String sid) {
+        ArrayList<studentLookup> filtered = this.db.getStudents();
+        filtered.removeIf(s -> !(s.key == sid));
+
+        if(filtered.size() == 0) {
+            return null;
+        }
+
+        return filtered.get(0);
     };
 
-    public HashMap<String, student> getAllStudents() {
+    public ArrayList<studentLookup> getAllStudents() {
         return this.db.getStudents();
     }
 }
