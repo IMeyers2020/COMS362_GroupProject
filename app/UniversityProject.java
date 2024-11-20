@@ -1,4 +1,9 @@
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Set;
@@ -414,25 +419,30 @@ public class UniversityProject {
         System.out.println("What is the card number? (enter all 16 digits no space)");
         String cardNum = s.nextLine();
 
-        if (fc.isCardNumberValid(cardNum)) {
-            System.out.println("Valid card number entered.");
-        } else {
-            System.out.println("Invalid card number entered.");
-            return;
-        }
-
-        System.out.println("What is the billing address? (Street, City, State, ZIP code)");
-        String billingAddress = s.nextLine();
-
-        FinancialInfo financialInfo = new FinancialInfo(cardType, cardNum, billingAddress);
-
-        AccountReceivableOffice aro = new AccountReceivableOffice();
-        boolean result = aro.addStudentFinancialInfo(currStud, financialInfo);
-
-        if (result) {
-            System.out.println("Financial information added successfully.");
-        } else {
-            System.out.println("Failed to add financial information.");
+        try {
+            if (fc.isCardNumberValid(cardNum)) {
+                System.out.println("Valid card number entered.");
+            } else {
+                System.out.println("Invalid card number entered.");
+                return;
+            }
+    
+            System.out.println("What is the billing address? (Street, City, State, ZIP code)");
+            String billingAddress = s.nextLine();
+    
+            FinancialInfo financialInfo = new FinancialInfo(cardType, cardNum, billingAddress);
+    
+            AccountReceivableOffice aro = new AccountReceivableOffice();
+            boolean result = aro.addStudentFinancialInfo(currStud, financialInfo);
+    
+            if (result) {
+                System.out.println("Financial information added successfully."); 
+            } else {
+                System.out.println("Failed to add financial information.");
+            }
+    
+        } catch (Exception e) {
+            System.err.println("An error occurred: " + e.getMessage());
         }
     }
 
@@ -546,6 +556,41 @@ public class UniversityProject {
         }
     }
 
+    // Method to close the JSON array (append closing bracket ']')
+    public static void closeJsonArray(String filePath) {
+        File file = new File(filePath);
+
+        try {
+            if (file.exists() && file.length() > 0) {
+                try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
+                    long fileLength = raf.length();
+                    if (fileLength > 0) {
+                        raf.seek(fileLength - 1); // Seek to the last character
+                        int lastChar = raf.read(); // Read the last character as an integer
+                        if (lastChar != -1) { // Check if we reached the end of the file
+                            char lastCharacter = (char) lastChar;
+    
+                            // If the last character is not ']', append it to close the array
+                            if (lastCharacter != ']') {
+                                try (FileWriter fileWriter = new FileWriter(file, true);
+                                     BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+                                    bufferedWriter.write("]"); // Close the JSON array
+                                    System.out.println("JSON array closed with ']'");
+                                } catch (IOException e) {
+                                    System.err.println("Error appending closing bracket: " + e.getMessage());
+                                }
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    System.err.println("Error reading the last character of the file: " + e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Unexpected error: " + e.getMessage());
+        }
+    }
+
     public static void main(String[] args) {
         // Select a department. This is in place instead of any type of authentication.
         //  This allows us to take the user to the correct 'screen'.
@@ -574,6 +619,7 @@ public class UniversityProject {
                     break;
                 case ACCOUNT_RECEIVABLE:
                     PaymentService(studentController);
+                    closeJsonArray("app/models/finances/data/Financialinfo.json");
                     break;
                 case EXIT:
                     break;
