@@ -30,6 +30,7 @@ import models.general.items.Course;
 import models.general.items.Major;
 import models.general.items.courseLookup;
 import models.general.items.majorLookup;
+import models.general.people.genericPerson;
 import models.general.people.professor;
 import models.general.people.professorLookup;
 import models.general.people.student;
@@ -285,6 +286,31 @@ public class UniversityProject {
         }
     }
 
+    public static ArrayList<genericPerson> AddReferences() {
+        ArrayList<genericPerson> retVal = new ArrayList<>();
+
+        boolean con = false;
+        int count = 0;
+
+        while(con == false && count < 3) {
+            System.out.println("Please enter reference name:");
+            String refName = s.nextLine();
+    
+            System.out.println("Please enter reference Phone Number:");
+            String refNum = s.nextLine();
+
+            System.out.println("Would you like to enter another reference? (Y/N)");
+            String refCont = s.nextLine();
+            refCont = refCont.trim().toLowerCase();
+
+            retVal.add(new genericPerson(refName, refNum));
+            con = !(refCont.equals("y") || refCont.equals("yes"));
+            count++;
+        }
+
+        return retVal;
+    }
+
     public static void AddProfessor(OfferController oc) {
         System.out.println("Please enter professor id:");
         String sid = s.nextLine();
@@ -298,7 +324,9 @@ public class UniversityProject {
         System.out.println("Please enter professor Area of Study:");
         String aos = s.nextLine();
 
-        boolean result = oc.addProfessor(sid, name, address, aos);
+        ArrayList<genericPerson> refs = AddReferences();
+
+        boolean result = oc.addProfessor(sid, name, address, aos, refs);
 
         clearScreen();
 

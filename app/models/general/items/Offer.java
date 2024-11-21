@@ -1,5 +1,8 @@
 package models.general.items;
 
+import java.util.ArrayList;
+
+import models.general.people.genericPerson;
 import models.general.people.professor;
 import src.DatabaseSupport;
 
@@ -10,8 +13,8 @@ public class Offer {
         this.db = _db;
     }
 
-    public boolean addProfessor(String pId, String name, String address, String AOS) {
-        professor newProf = new professor(pId, name, address, AOS);
+    public boolean addProfessor(String pId, String name, String address, String AOS, ArrayList<genericPerson> refs) {
+        professor newProf = new professor(pId, name, address, AOS, refs);
 
         return this.db.addProfessor(pId, newProf);
     }

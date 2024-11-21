@@ -9,21 +9,30 @@ import java.util.*;
 public class JsonUtil {
 
     public static <T> String serialize(T obj) {
+        return serialize(obj, new HashSet<>());
+    }
+    
+    private static <T> String serialize(T obj, Set<Object> seenObjects) {
         if (obj == null) {
             return "null";
         }
-
+    
+        if (seenObjects.contains(obj)) {
+            return "\"CYCLIC_REFERENCE_DETECTED\"";
+        }
+        seenObjects.add(obj);
+    
         StringBuilder json = new StringBuilder("{");
-
+    
         Field[] fields = obj.getClass().getDeclaredFields();
         for (Field field : fields) {
             field.setAccessible(true);
             try {
                 String key = field.getName();
                 Object value = field.get(obj);
-
+    
                 json.append("\"").append(key).append("\":");
-
+    
                 if (value == null) {
                     json.append("null");
                 } else if (value instanceof String) {
@@ -31,30 +40,30 @@ public class JsonUtil {
                 } else if (value instanceof Integer || value instanceof Boolean || value instanceof Double || value instanceof Float || value instanceof Long) {
                     json.append(value);
                 } else if (value instanceof List) {
-                    json.append(serializeArray((List<?>) value));
+                    json.append(serializeArray((List<?>) value, seenObjects));
                 } else {
-                    json.append(serialize(value));
+                    json.append(serialize(value, seenObjects));
                 }
                 json.append(",");
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
-
+    
         if (json.length() > 1) {
-            json.deleteCharAt(json.length() - 1);
+            json.deleteCharAt(json.length() - 1); // Remove the trailing comma
         }
-
+    
         json.append("}");
         return json.toString();
     }
-
-    public static String serializeArray(List<?> list) {
+    
+    private static String serializeArray(List<?> list, Set<Object> seenObjects) {
         if (list == null) {
             return "null";
         }
         StringBuilder jsonArray = new StringBuilder("[");
-
+    
         for (Object item : list) {
             if (item == null) {
                 jsonArray.append("null");
@@ -63,18 +72,19 @@ public class JsonUtil {
             } else if (item instanceof Integer || item instanceof Boolean || item instanceof Double || item instanceof Float || item instanceof Long) {
                 jsonArray.append(item);
             } else {
-                jsonArray.append(serialize(item));
+                jsonArray.append(serialize(item, seenObjects));
             }
             jsonArray.append(",");
         }
-
+    
         if (jsonArray.length() > 1) {
             jsonArray.deleteCharAt(jsonArray.length() - 1); // Remove the trailing comma
         }
-
+    
         jsonArray.append("]");
         return jsonArray.toString();
     }
+    
 
     public static <T> T deserialize(String jsonString, Class<T> clazz) {
         try {
