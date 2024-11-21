@@ -1,4 +1,4 @@
-package models.academics.administrativeDepartments.admissions.items;
+package models.academics.administrativeDepartments.admissions.controllers;
 
 import models.general.people.student;
 import src.DatabaseSupport;
