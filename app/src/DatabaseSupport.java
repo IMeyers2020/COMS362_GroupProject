@@ -484,18 +484,7 @@ public class DatabaseSupport {
     }
 
     public static HashMap<String, Course> getAllCourses() {
-        HashMap<String, Course> map = new HashMap<String, Course>();
-        Course one = new Course("100", 4);
-        map.put("100", one);
-        Course two = new Course("200", 4);
-        map.put("200", two);
-        Course three = new Course("300", 4);
-        map.put("300", three);
-        Course four = new Course("400", 4, Set.of("100", "200"));
-        map.put("400", four);
-        Course five = new Course("500", 4, Set.of("200", "300"));
-        map.put("500", five);
-        map = new HashMap<String, Course>() {{
+        HashMap<String, Course> map = new HashMap<String, Course>() {{
             put("COMS100", new Course("COMS100", 3));
             put("COMS200", new Course("COMS200", 3));
             put("SE200", new Course("SE200", 3));
@@ -503,7 +492,6 @@ public class DatabaseSupport {
             put("COMS400", new Course("COMS400", 4, Set.of("COMS100")));
             put("SE400", new Course("SE400", 4, Set.of("SE200")));
             put("COMS500", new Course("COMS500", 4, Set.of("COMS200")));
-
             put("FIN100", new Course("FIN100", 3));
             put("FIN200", new Course("FIN200", 3));
             put("FIN300", new Course("FIN300", 4, Set.of("FIN100")));
