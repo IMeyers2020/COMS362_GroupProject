@@ -3,7 +3,9 @@ import java.util.ArrayList;
 
 import models.academics.items.Registration;
 import models.general.items.Course;
+import models.general.items.Major;
 import models.general.items.courseLookup;
+import models.general.items.majorLookup;
 import models.general.people.studentLookup;
 import src.DatabaseSupport;
 
@@ -15,10 +17,10 @@ public class RegistrationController {
         this.db = _db;
     }
 
-    public boolean addCourse(Course cid, String sid, Integer credHours) {
+    public boolean addCourse(String sid, Course c) {
         Registration r = new Registration();
         studentLookup stud = this.db.getStudent(sid);
-        stud.value.addCourse(cid);
+        stud.value.addCourse(c);
         this.db.updateStudent(sid, stud.value);
         return true;
     }
@@ -34,5 +36,24 @@ public class RegistrationController {
     public ArrayList<courseLookup> viewRegisteredCourses(String sid) {
         studentLookup stud = this.db.getStudent(sid);
         return stud.value.getCurrentCourses();
+    }
+
+    public boolean addMajor(String sid, Major m) {
+        studentLookup stud = this.db.getStudent(sid);
+        stud.value.addMajor(m);
+        this.db.updateStudent(sid, stud.value);
+        return true;
+    }
+
+    public boolean removeMajor(String sid, Major m) {
+        studentLookup stud = this.db.getStudent(sid);
+        stud.value.removeMajor(m);
+        this.db.updateStudent(sid, stud.value);
+        return true;
+    }
+
+    public ArrayList<majorLookup> viewRegisteredMajors(String sid) {
+        studentLookup stud = this.db.getStudent(sid);
+        return stud.value.getMajors();
     }
 }

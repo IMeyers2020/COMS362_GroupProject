@@ -1,10 +1,8 @@
 package models.academics;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import models.general.items.Course;
-import models.general.items.courseLookup;
 import src.DatabaseSupport;
 
 public class CourseController {
@@ -16,10 +14,5 @@ public class CourseController {
     
     public HashMap<String, Course> getAllCourses() {
         return DatabaseSupport.getAllCourses();
-    }
-
-    public ArrayList<courseLookup> getRegisteredCoursesForStudent(String sid) {
-        ArrayList<courseLookup> s = this.db.getRegisteredCoursesForStudent(sid);
-        return s;
     }
 }

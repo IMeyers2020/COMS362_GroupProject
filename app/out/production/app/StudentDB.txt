@@ -1,0 +1,1 @@
+{"students":[{},{"key":"dghbdg","value":{"sched":{"maxCreditHours":18,"creditHours":0,"courses":[]},"completedCourses":[],"studentId":"dghbdg","name":"fgv","financialInfo":null,"accountBalance":0.0,"address":"dfg","ssn":"fgh","dormId":null}}]}

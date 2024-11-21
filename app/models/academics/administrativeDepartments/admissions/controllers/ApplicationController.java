@@ -1,6 +1,5 @@
 package models.academics.administrativeDepartments.admissions.controllers;
 
-import models.academics.administrativeDepartments.admissions.items.StudentApplication;
 import src.DatabaseSupport;
 
 public class ApplicationController {

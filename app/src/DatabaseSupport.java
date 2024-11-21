@@ -6,13 +6,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -20,13 +21,14 @@ import models.dorms.DormInfo;
 import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Payment;
 import models.general.items.Course;
+import models.general.items.Major;
 import models.general.items.courseLookup;
 import models.general.items.dormLookup;
+import models.general.items.majorLookup;
 import models.general.people.professor;
 import models.general.people.professorLookup;
 import models.general.people.student;
 import models.general.people.studentLookup;
-import models.finances.paymentServices.Scholarship;
 import models.finances.paymentServices.ScholarshipLookup;
 import src.jsonParser.JsonUtil;
 
@@ -37,28 +39,34 @@ public class DatabaseSupport {
     // STUDENT FUNCTIONS
     public ArrayList<studentLookup> getStudents() {
         DB_Student lookups = new DB_Student();
-
-        try(BufferedReader br = new BufferedReader(new FileReader("./StudentDB.txt"))) {
+    
+        try (BufferedReader br = new BufferedReader(new FileReader("./StudentDB.txt"))) {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
-        
+    
             while (line != null) {
                 sb.append(line);
                 sb.append(System.lineSeparator());
                 line = br.readLine();
             }
             String everything = sb.toString();
-
-            if(everything.trim().equals("{}")) {
+    
+            if (everything.trim().equals("{}")) {
                 return new ArrayList<studentLookup>();
             } else {
-                lookups = JsonUtil.deserialize(everything, lookups.getClass());
+                DB_Student dbStudent = (DB_Student) JsonUtil.deserialize(everything, DB_Student.class);
+    
+                if (dbStudent != null && dbStudent.students != null) {
+                    lookups.setStudents(dbStudent.students);
+                }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return new ArrayList<studentLookup>();
         }
-        return new ArrayList<studentLookup>(lookups.students);
+        return lookups.students != null ? new ArrayList<>(lookups.students) : new ArrayList<>();
     }
+    
 
     public studentLookup getStudent(String sid) {
         ArrayList<studentLookup> students = getStudents();
@@ -81,7 +89,6 @@ public class DatabaseSupport {
             DB_Student dbStud = new DB_Student();
             dbStud.setStudents(arrayListed);
             String lookupsString = JsonUtil.serialize(dbStud);
-            System.out.println(lookupsString);
 
             Files.writeString(Paths.get("./StudentDB.txt"), lookupsString);
         } catch (Exception e) {
@@ -474,6 +481,30 @@ public class DatabaseSupport {
         map.put("400", four);
         Course five = new Course("500", 4, Set.of("200", "300"));
         map.put("500", five);
+        map = new HashMap<String, Course>() {{
+            put("COMS100", new Course("COMS100", 3));
+            put("COMS200", new Course("COMS200", 3));
+            put("SE200", new Course("SE200", 3));
+            put("COMS300", new Course("COMS300", 3));
+            put("COMS400", new Course("COMS400", 4, Set.of("COMS100")));
+            put("SE400", new Course("SE400", 4, Set.of("SE200")));
+            put("COMS500", new Course("COMS500", 4, Set.of("COMS200")));
+
+            put("FIN100", new Course("FIN100", 3));
+            put("FIN200", new Course("FIN200", 3));
+            put("FIN300", new Course("FIN300", 4, Set.of("FIN100")));
+            put("FIN400", new Course("FIN400", 4, Set.of("FIN200")));
+        }};
+        return map;
+    }
+
+    public static HashMap<String, Major> getAllMajors() {
+        HashMap<String, Major> map = new HashMap<String, Major>() {{
+            put("SE", new Major("SE", "Software Engineering", "B.S.", 125, Set.of("COMS100", "COMS200", "COMS300", "COMS400", "COMS500")));
+            put("COMS(BS)", new Major("COMS(BS)", "Computer Science", "B.S.", 120, Set.of("COMS100", "COMS200", "COMS300", "COMS400", "COMS500")));
+            put("COMS(BA)", new Major("COMS(BA)", "Computer Science", "B.A.", 120, Set.of("COMS100", "COMS200", "COMS300", "COMS400")));
+            put("FIN", new Major("FIN", "Finance", "B.S.", 122, Set.of("COMS100", "COMS200", "COMS300", "COMS400")));
+        }};
         return map;
     }
 
@@ -494,5 +525,10 @@ public class DatabaseSupport {
     public ArrayList<courseLookup> getRegisteredCoursesForStudent(String sid) {
         studentLookup s = this.getStudent(sid);
         return s.value.getCurrentCourses();
+    }
+
+    public ArrayList<majorLookup> getRegisteredMajorsForStudent(String sid) {
+        studentLookup s = this.getStudent(sid);
+        return s.value.getMajors();
     }
 }
