@@ -1,6 +1,6 @@
 package models.academics.administrativeDepartments.humanResources.controllers;
 
-import models.academics.administrativeDepartments.humanResources.items.Offer;
+import models.general.items.Offer;
 import src.DatabaseSupport;
 
 public class OfferController {

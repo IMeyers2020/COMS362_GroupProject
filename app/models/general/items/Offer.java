@@ -1,4 +1,4 @@
-package models.academics.administrativeDepartments.humanResources.items;
+package models.general.items;
 
 import models.general.people.professor;
 import src.DatabaseSupport;
@@ -13,6 +13,6 @@ public class Offer {
     public boolean addProfessor(String pId, String name, String address, String AOS) {
         professor newProf = new professor(pId, name, address, AOS);
 
-        return this.db.addProfessor(newProf);
+        return this.db.addProfessor(pId, newProf);
     }
 }
