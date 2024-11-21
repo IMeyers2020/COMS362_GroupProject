@@ -19,7 +19,7 @@ public class StudentController {
 
     public studentLookup getStudent(String sid) {
         ArrayList<studentLookup> filtered = this.db.getStudents();
-        filtered.removeIf(s -> !(s.key == sid));
+        filtered.removeIf(s -> !(s.key.equals(sid)));
 
         if(filtered.size() == 0) {
             return null;

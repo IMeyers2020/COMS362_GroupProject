@@ -81,7 +81,7 @@ public class student {
         ArrayList<majorLookup> majorClone = getMajors();
 
         for (majorLookup maj : majorClone) {
-            if (maj.value.getMajorID() == m.getMajorID())
+            if (maj.value.getMajorID().equals(m.getMajorID()))
                 return false;
         }
 
@@ -96,7 +96,7 @@ public class student {
         if (majors.size() < 2)
             return false;
         ArrayList<majorLookup> ms = this.getMajors();
-        ms.removeIf(major -> major.value.getMajorID() == m.getMajorID());
+        ms.removeIf(major -> major.value.getMajorID().equals(m.getMajorID()));
         setMajors(ms);
         return true;
     }

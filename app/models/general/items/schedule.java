@@ -24,7 +24,7 @@ public class schedule {
         ArrayList<courseLookup> courseClone = this.getCourses();
         
         for (courseLookup cor : courseClone) {
-            if (cor.value.getCID() == c.getCID())
+            if (cor.value.getCID().equals(c.getCID()))
                 return false;
         }
 
@@ -43,7 +43,7 @@ public class schedule {
 
     public boolean removeCourse(Course c) {
         ArrayList<courseLookup> cls = this.getCourses();
-        cls.removeIf(cor -> cor.value.getCID() == c.getCID());
+        cls.removeIf(cor -> cor.value.getCID().equals(c.getCID()));
         this.setCourses(cls);
         return true;
     }
