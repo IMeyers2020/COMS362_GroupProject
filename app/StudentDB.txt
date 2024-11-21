@@ -1,1 +1,1 @@
-{"students":[{"key":"1234567","value":{"sched":{"maxCreditHours":18,"creditHours":0,"courses":[""]},"completedCourses":[""],"majors":[""],"studentId":"1234567","name":"sefberg","financialInfo":null,"accountBalance":0.0,"scholarships":null,"address":"erbhetbe","ssn":"eerhb","dormId":null}}]}
+{"students":[{"key":"12345","value":{"sched":{"maxCreditHours":18,"creditHours":0,"courses":[""]},"completedCourses":[""],"majors":[""],"studentId":"12345","name":"aerfgerg","financialInfo":null,"accountBalance":0.0,"scholarships":null,"address":"ergerg","ssn":"erge","dormId":null}}]}

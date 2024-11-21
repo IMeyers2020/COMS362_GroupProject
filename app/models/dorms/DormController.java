@@ -19,7 +19,7 @@ public class DormController {
     public boolean removeDorm(String dormId) {
         ArrayList<studentLookup> students = this.sc.getAllStudents();
         for(studentLookup stud : students) {
-            if(stud.value.getDormId() == dormId) {
+            if(stud.value.getDormId().equals(dormId)) {
                 stud.value.setDormId(null);
                 this.sc.updateStudent(stud.value);
             }
