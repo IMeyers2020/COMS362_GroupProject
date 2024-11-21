@@ -21,11 +21,16 @@ public class schedule {
             return false;
         }
 
+        ArrayList<courseLookup> courseClone = this.getCourses();
+        
+        for (courseLookup cor : courseClone) {
+            if (cor.value.getCID() == c.getCID())
+                return false;
+        }
+            
         courseLookup courseToAdd = new courseLookup(c.getCID(), c);
-        ArrayList<courseLookup> courseClone = getCourses();
-
         courseClone.add(courseToAdd);
-
+        
         this.setCourses(courseClone);
         this.setCreditHours(this.creditHours + c.getCreditHours());
         return true;
@@ -38,7 +43,7 @@ public class schedule {
     public boolean removeCourse(Course c) {
         ArrayList<courseLookup> cls = this.getCourses();
         cls.removeIf(cor -> cor.value.getCID() == c.getCID());
-        setCourses(cls);
+        this.setCourses(cls);
         return true;
     }
 

@@ -6,12 +6,15 @@ import java.util.List;
 import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Scholarship;
 import models.general.items.Course;
+import models.general.items.Major;
 import models.general.items.courseLookup;
+import models.general.items.majorLookup;
 import models.general.items.schedule;
 
 public class student {
     private schedule sched;
     private List<String> completedCourses;
+    private ArrayList<majorLookup> majors;
     private String studentId;      // Unique identifier for the student
     private String name;           // Full name of the student
     private FinancialInfo financialInfo; // Financial info of the student (linked to the FinancialInfo class)
@@ -29,6 +32,7 @@ public class student {
         this.accountBalance = accountBalance;
         sched = new schedule();
         completedCourses = new ArrayList<>();
+        majors = new ArrayList<>();
         this.address = address;
         this.ssn = ssn;
     }
@@ -36,6 +40,7 @@ public class student {
     public student() {
         sched = new schedule();
         completedCourses = new ArrayList<>();
+        majors = new ArrayList<>();
     }
 
     public boolean canAffordDorm(double dormPrice) {
@@ -52,9 +57,7 @@ public class student {
 
     public String getDormId() { return dormId; }
 
-    public ArrayList<courseLookup> getCurrentCourses() {
-        return sched.getCourses();
-    }
+    public ArrayList<courseLookup> getCurrentCourses() { return sched.getCourses(); }
 
     public boolean addCourse(Course c) {
         if (completedCourses.containsAll(c.getPrereqs())){
@@ -63,17 +66,43 @@ public class student {
         return false;
     }
 
-    public boolean removeCourse(Course c) {
-        return sched.removeCourse(c);
+    public boolean removeCourse(Course c) { return sched.removeCourse(c); }
+
+    public void setschedule(schedule s) { sched = s; }
+
+    public schedule getschedule() { return sched; }
+
+    public ArrayList<majorLookup> getMajors() { return majors; }
+
+    public boolean addMajor(Major m) {
+        if (majors.size() >= 2)
+            return false;
+
+        ArrayList<majorLookup> majorClone = getMajors();
+
+        for (majorLookup maj : majorClone) {
+            if (maj.value.getMajorID() == m.getMajorID())
+                return false;
+        }
+
+        majorLookup majorToAdd = new majorLookup(m.getMajorID(), m);
+        majorClone.add(majorToAdd);
+
+        this.setMajors(majorClone);
+        return true;
     }
 
-    public void setschedule(schedule s) {
-        sched = s;
-    }
-    public schedule getschedule() {
-        return sched;
+    public boolean removeMajor(Major m) {
+        if (majors.size() < 2)
+            return false;
+        ArrayList<majorLookup> ms = this.getMajors();
+        ms.removeIf(major -> major.value.getMajorID() == m.getMajorID());
+        setMajors(ms);
+        return true;
     }
 
+    public void setMajors(ArrayList<majorLookup> majors) { this.majors = majors; }
+    
     // Getters and Setters
     public String getStudentId() {
         return studentId;

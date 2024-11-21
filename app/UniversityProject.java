@@ -12,6 +12,7 @@ import java.util.Set;
 import models.academics.administrativeDepartments.admissions.controllers.ApplicationController;
 import models.academics.administrativeDepartments.admissions.controllers.StudentApplication;
 import models.academics.CourseController;
+import models.academics.MajorController;
 import models.academics.ProfessorController;
 import models.academics.RegistrationController;
 import models.academics.StudentController;
@@ -26,7 +27,9 @@ import models.finances.offices.AccountReceivableOffice;
 import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Payment;
 import models.general.items.Course;
+import models.general.items.Major;
 import models.general.items.courseLookup;
+import models.general.items.majorLookup;
 import models.general.people.professor;
 import models.general.people.professorLookup;
 import models.general.people.student;
@@ -338,32 +341,41 @@ public class UniversityProject {
         }
     }
 
-    public static void CourseRegistration(RegistrationController rc, CourseController cc) {
+    public static void CourseRegistration(RegistrationController rc, CourseController cc, MajorController mc) {
         
         String sid = null;
         String selection = null;
-        Course selected;
+        Course selectedCourse;
+        Major selectedMajor;
         HashMap<String, Course> offeredCourses = null;
+        HashMap<String, Major> offeredMajors = null;
 
         System.out.println("Type Student ID");
 
         if (s.hasNextLine()) {
             sid = s.nextLine();
             offeredCourses = cc.getAllCourses();
+            offeredMajors = mc.getAllMajors();
         }
 
-        System.out.println("View registered courses or Add/Remove a course?");
+        System.out.println("View major(s) and registered course(s), Add/Remove a course, or Add/Remove a major?");
         System.out.println("1. View");
-        System.out.println("2. Add");
-        System.out.println("3. Remove");
+        System.out.println("2. Add Course");
+        System.out.println("3. Remove Course");
+        System.out.println("4. Add Major");
+        System.out.println("5. Remove Major");
 
         if (s.hasNextLine())
           selection = s.nextLine();
         
         switch(selection) {
             case "1":
-                System.out.println("Student " + sid + "'s courses:");
-                for (courseLookup course : cc.getRegisteredCoursesForStudent(sid)) {
+                System.out.println("Student " + sid + "'s major(s):");
+                for (majorLookup major : rc.viewRegisteredMajors(sid)) {
+                    System.out.println(major.value.getMajorName() + ", " + major.value.getDegreeType());
+                }
+                System.out.println("Student " + sid + "'s course(s):");
+                for (courseLookup course : rc.viewRegisteredCourses(sid)) {
                     System.out.println(course.value.getCID());
                 }
                 break;
@@ -374,32 +386,65 @@ public class UniversityProject {
                 }
                 if (s.hasNextLine())
                     selection = s.nextLine();
-                selected = offeredCourses.get(selection);
-                System.out.println(selected.getCID());
+                selectedCourse = offeredCourses.get(selection);
                 clearScreen();
-                if (selected != null && rc.addCourse(selected, sid, selected.getCreditHours())){
-                    System.out.println("Operation succeeded, " + selected.getCID() + " has been added to the schedule.");
+                if (selectedCourse != null && rc.addCourse(sid, selectedCourse)){
+                    System.out.println("Operation succeeded, " + selectedCourse.getCID() + " has been added to the schedule.");
                 }
                 else {
-                    System.out.println("Operation failed, " + selected.getCID() + " has not been added to the schedule.");
+                    System.out.println("Operation failed, " + selectedCourse.getCID() + " has not been added to the schedule.");
                     System.out.println("Three potential causes: already taking course, don't have prereqs, or already have too many credit hours.");        
                 }
                 s.nextLine();
                 break;
             case "3":
                 System.out.println("What class would you like to remove?");
-                for (courseLookup course : cc.getRegisteredCoursesForStudent(sid)) {
+                for (courseLookup course : rc.viewRegisteredCourses(sid)) {
                     System.out.println(course.value.getCID());
                 }
                 if (s.hasNextLine())
                     selection = s.nextLine();
-                selected = offeredCourses.get(selection);
+                selectedCourse = offeredCourses.get(selection);
                 clearScreen();
-                if (selected != null && rc.removeCourse(sid, selected))
-                    System.out.println("Operation succeeded, " + selected.getCID() + " has been removed from the schedule.");
+                if (selectedCourse != null && rc.removeCourse(sid, selectedCourse))
+                    System.out.println("Operation succeeded, " + selectedCourse.getCID() + " has been removed from the schedule.");
                 else {
-                    System.out.println("Operation failed, a course has not been removed from the schedule.");
+                    System.out.println("Operation failed, course has not been removed from the schedule.");
                     System.out.println("This course isn't in the schedule.");
+                }
+                break;
+            case "4":
+                System.out.println("What major would you like to register for?");
+                for(String key : offeredMajors.keySet()) {
+                    System.out.println(key);
+                }
+                if (s.hasNextLine())
+                    selection = s.nextLine();
+                selectedMajor = offeredMajors.get(selection);
+                clearScreen();
+                if (selectedMajor != null && rc.addMajor(sid, selectedMajor)){
+                    System.out.println("Operation succeeded, " + selectedMajor.getMajorName() + ", " + selectedMajor.getDegreeType() + " has been added to the student's records.");
+                }
+                else {
+                    System.out.println("Operation failed, " + selectedMajor.getMajorName() + ", " + selectedMajor.getDegreeType() + " has not been added to the student's records.");
+                    System.out.println("Maximum of two majors and no duplicates allowed.");        
+                }
+                s.nextLine();
+                break;
+            case "5":
+                System.out.println("What major would you like to remove?");
+                for (majorLookup major : rc.viewRegisteredMajors(sid)) {
+                    System.out.println(major.value.getMajorID());
+                }
+                if (s.hasNextLine())
+                    selection = s.nextLine();
+                selectedMajor = offeredMajors.get(selection);
+                clearScreen();
+                if (selectedMajor != null && rc.removeMajor(sid, selectedMajor))
+                    System.out.println("Operation succeeded, " + selectedMajor.getMajorID() + " has been removed from the student's records.");
+                else {
+                    System.out.println("Operation failed, major has not been removed from the student's records.");
+                    System.out.println("University requires students to have at least one major.");
                 }
                 break;
             default:
@@ -653,6 +698,7 @@ public class UniversityProject {
         DormController dormController = new DormController(db, studentController);
         RegistrationController rc = new RegistrationController(db);
         CourseController cc = new CourseController(db);
+        MajorController mc = new MajorController(db);
 
         s = new Scanner(System.in);
 
@@ -667,7 +713,7 @@ public class UniversityProject {
                     HRTasks(offerController, professorController);
                     break;
                 case REGISTRATION:
-                    CourseRegistration(rc, cc);
+                    CourseRegistration(rc, cc, mc);
                     break;
                 case ACCOUNT_RECEIVABLE:
                     PaymentService(studentController);
