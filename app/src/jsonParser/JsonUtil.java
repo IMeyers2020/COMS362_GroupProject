@@ -2,20 +2,16 @@ package src.jsonParser;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public class JsonUtil {
 
     public static <T> String serialize(T obj) {
-        Scanner scn = new Scanner(System.in);
-
         if (obj == null) {
-            System.out.println("null");
-            scn.nextLine();
             return "null";
         }
-        System.out.println(obj.toString());
-        scn.nextLine();
 
         StringBuilder json = new StringBuilder("{");
 
@@ -83,28 +79,27 @@ public class JsonUtil {
     public static <T> T deserialize(String jsonString, Class<T> clazz) {
         try {
             jsonString = jsonString.trim();
-
-            if(clazz.isArray()) {
+            if (clazz.isArray()) {
                 return handleArrayDeserialization(jsonString, clazz);
             }
+    
             if (!jsonString.startsWith("{") || !jsonString.endsWith("}")) {
                 return handlePrimitiveTypes(jsonString, clazz);
             }
-
+    
             T obj = clazz.getDeclaredConstructor().newInstance();
             jsonString = jsonString.substring(1, jsonString.length() - 1); // Remove outer curly braces
             Map<String, String> map = parseJsonObject(jsonString);
-
+    
             for (Field field : clazz.getDeclaredFields()) {
                 field.setAccessible(true);
-                // Don't get static properties (I was running into some accessibility issues)
                 if (!java.lang.reflect.Modifier.isStatic(field.getModifiers()) && map.containsKey(field.getName())) {
                     String value = map.get(field.getName());
                     if (value.equals("null")) {
                         field.set(obj, null);
                     } else {
                         Class<?> fieldType = field.getType();
-
+    
                         if (fieldType == int.class) {
                             field.set(obj, Integer.parseInt(value));
                         } else if (fieldType == boolean.class) {
@@ -116,7 +111,10 @@ public class JsonUtil {
                         } else if (fieldType == long.class) {
                             field.set(obj, Long.parseLong(value));
                         } else if (List.class.isAssignableFrom(fieldType)) {
-                            List<Object> list = deserializeArray(value, Object.class); // Assuming List<Object>
+                            ParameterizedType listType = (ParameterizedType) field.getGenericType();
+                            Type[] actualTypeArguments = listType.getActualTypeArguments();
+                            Class<?> itemType = (Class<?>) actualTypeArguments[0];
+                            List<?> list = deserializeArray(value, itemType);
                             field.set(obj, list);
                         } else {
                             field.set(obj, deserialize(value, fieldType));
@@ -124,28 +122,73 @@ public class JsonUtil {
                     }
                 }
             }
-
+    
             return obj;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
+    
+    public static <T> List<T> deserializeArray(String jsonArray, Class<T> itemType) {
+        if (jsonArray.equals("null")) {
+            return null;
+        }
+        List<T> list = new ArrayList<>();
+        jsonArray = jsonArray.trim().substring(1, jsonArray.length() - 1); // Remove outer brackets
+    
+        int startIndex = 0;
+        int depth = 0;
+        boolean inQuotes = false;
+        List<String> items = new ArrayList<>();
+    
+        for (int i = 0; i < jsonArray.length(); i++) {
+            char c = jsonArray.charAt(i);
+    
+            if (c == '\"') {
+                inQuotes = !inQuotes; // Toggle inQuotes flag on each quote
+            } else if (!inQuotes) {
+                if (c == '[' || c == '{') {
+                    depth++; // Increase depth for nested structures
+                } else if (c == ']' || c == '}') {
+                    depth--; // Decrease depth for nested structures
+                } else if (c == ',' && depth == 0) {
+                    items.add(jsonArray.substring(startIndex, i).trim());
+                    startIndex = i + 1;
+                }
+            }
+        }
+    
+        items.add(jsonArray.substring(startIndex).trim()); // Add the last item
+    
+        for (String item : items) {
+            if (item.startsWith("{") && item.endsWith("}")) {
+                list.add(deserialize(item, itemType));
+            } else if (item.startsWith("\"") && item.endsWith("\"")) {
+                list.add((T) item.substring(1, item.length() - 1)); // Remove quotes
+            } else if (item.matches("-?\\d+(\\.\\d+)?")) {
+                list.add((T) (Double) Double.parseDouble(item)); // Primitive number
+            } else {
+                list.add((T) item); // Default to string
+            }
+        }
+    
+        return list;
+    }
+    
+
 
     private static <T> T handleArrayDeserialization(String jsonString, Class<T> clazz) {
-        Scanner scn = new Scanner(System.in);
-        System.out.println("UTILLLL VVVV");
-        System.out.println(jsonString);
-        scn.nextLine();
         if (!jsonString.startsWith("[") || !jsonString.endsWith("]")) {
             throw new IllegalArgumentException("Invalid JSON array format.");
-        } jsonString = jsonString.substring(1, jsonString.length() - 1).trim();
-        // Remove outer brackets
-        String[] items = jsonString.split(", (?=([^\"]*\"[^\"]*\")*[^\"]*$)");
-        // Split by commas outside quotes
+        }
+    
+        jsonString = jsonString.substring(1, jsonString.length() - 1).trim(); // Remove outer brackets
+        String[] items = jsonString.split(", (?=([^\"]*\"[^\"]*\")*[^\"]*$)"); // Split by commas outside quotes
         Class<?> componentType = clazz.getComponentType();
         @SuppressWarnings("unchecked")
         T array = (T) Array.newInstance(componentType, items.length);
+    
         for (int i = 0; i < items.length; i++) {
             String item = items[i].trim();
             if (componentType.isPrimitive() || componentType == String.class || Number.class.isAssignableFrom(componentType) || Boolean.class == componentType) {
@@ -154,41 +197,12 @@ public class JsonUtil {
                 Array.set(array, i, deserialize(item, componentType));
             }
         }
+    
         return array;
     }
 
-    // Function to be called to try and parse a list from a stringified JSON array.
-    //  Pulled out so we can easily handle nested objects/arrays.
-    public static List<Object> deserializeArray(String jsonArray, Class<?> itemType) {
-        // If the value that should be an array is instead null, return the null type (This probably shouldn't get hit)
-        if (jsonArray.equals("null")) {
-            return null;
-        }
-        List<Object> list = new ArrayList<>();
-        // Remove outer brackets so that I can parse the array contents
-        jsonArray = jsonArray.trim().substring(1, jsonArray.length() - 1);
-        // Use regex to get the array items. Split by commas that are outside of quotes so that it doesn't try to split on the items inside the array
-        String[] items = jsonArray.split(", (?=([^\"]*\"[^\"]*\")*[^\"]*$)");
-
-        for (String item : items) {
-            item = item.trim();
-            // If the item inside the array is an object, deserialize it using the deserialize function I made earlier
-            if (item.startsWith("{") && item.endsWith("}")) {
-                list.add(deserialize(item, itemType));
-            // If the item is a string that contains quotes, extract the string from the quotes.
-            } else if (item.startsWith("\"") && item.endsWith("\"")) {
-                list.add(item.substring(1, item.length() - 1));
-            // Use regex to check if the string is a number, if it is, try to parse it to a double (Possibly need to seperate to int/double in the future)
-            } else if (item.matches("-?\\d+(\\.\\d+)?")) {
-                list.add(Double.parseDouble(item));
-            // Just add the stringified object as a default (Not ideal, but shouldn't get hit)
-            } else {
-                list.add(item);
-            }
-        }
-
-        return list;
-    }
+    
+    
 
     private static Map<String, String> parseJsonObject(String jsonString) {
         Map<String, String> map = new HashMap<>();
@@ -201,26 +215,29 @@ public class JsonUtil {
             if (endKey == -1) break;
             String key = jsonString.substring(startKey, endKey);
             i = endKey + 1;
-
+    
             int startValue = jsonString.indexOf(":", i);
             if (startValue == -1) break;
             startValue++;
-            int endValue;
-
-            if (jsonString.charAt(startValue) == '{') {
+            int endValue = startValue;
+            char startChar = jsonString.charAt(startValue);
+    
+            if (startChar == '{') {
                 int bracesCount = 1;
-                endValue = startValue + 1;
+                endValue++;
                 while (bracesCount > 0 && endValue < jsonString.length()) {
-                    if (jsonString.charAt(endValue) == '{') bracesCount++;
-                    if (jsonString.charAt(endValue) == '}') bracesCount--;
+                    char c = jsonString.charAt(endValue);
+                    if (c == '{') bracesCount++;
+                    else if (c == '}') bracesCount--;
                     endValue++;
                 }
-            } else if (jsonString.charAt(startValue) == '[') {
+            } else if (startChar == '[') {
                 int bracketsCount = 1;
-                endValue = startValue + 1;
+                endValue++;
                 while (bracketsCount > 0 && endValue < jsonString.length()) {
-                    if (jsonString.charAt(endValue) == '[') bracketsCount++;
-                    if (jsonString.charAt(endValue) == ']') bracketsCount--;
+                    char c = jsonString.charAt(endValue);
+                    if (c == '[') bracketsCount++;
+                    else if (c == ']') bracketsCount--;
                     endValue++;
                 }
             } else {
@@ -229,13 +246,16 @@ public class JsonUtil {
                     endValue = jsonString.length();
                 }
             }
-
+    
             String value = jsonString.substring(startValue, endValue).trim();
             map.put(key, value);
             i = endValue + 1;
         }
         return map;
     }
+    
+    
+    
 
     @SuppressWarnings("unchecked")
     private static <T> T handlePrimitiveTypes(String value, Class<T> clazz) {

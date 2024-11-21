@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -26,7 +26,6 @@ import models.general.people.professor;
 import models.general.people.professorLookup;
 import models.general.people.student;
 import models.general.people.studentLookup;
-import models.finances.paymentServices.Scholarship;
 import models.finances.paymentServices.ScholarshipLookup;
 import src.jsonParser.JsonUtil;
 
@@ -37,28 +36,34 @@ public class DatabaseSupport {
     // STUDENT FUNCTIONS
     public ArrayList<studentLookup> getStudents() {
         DB_Student lookups = new DB_Student();
-
-        try(BufferedReader br = new BufferedReader(new FileReader("./StudentDB.txt"))) {
+    
+        try (BufferedReader br = new BufferedReader(new FileReader("./StudentDB.txt"))) {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
-        
+    
             while (line != null) {
                 sb.append(line);
                 sb.append(System.lineSeparator());
                 line = br.readLine();
             }
             String everything = sb.toString();
-
-            if(everything.trim().equals("{}")) {
+    
+            if (everything.trim().equals("{}")) {
                 return new ArrayList<studentLookup>();
             } else {
-                lookups = JsonUtil.deserialize(everything, lookups.getClass());
+                DB_Student dbStudent = (DB_Student) JsonUtil.deserialize(everything, DB_Student.class);
+    
+                if (dbStudent != null && dbStudent.students != null) {
+                    lookups.setStudents(dbStudent.students);
+                }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return new ArrayList<studentLookup>();
         }
-        return new ArrayList<studentLookup>(lookups.students);
+        return lookups.students != null ? new ArrayList<>(lookups.students) : new ArrayList<>();
     }
+    
 
     public studentLookup getStudent(String sid) {
         ArrayList<studentLookup> students = getStudents();
@@ -81,7 +86,6 @@ public class DatabaseSupport {
             DB_Student dbStud = new DB_Student();
             dbStud.setStudents(arrayListed);
             String lookupsString = JsonUtil.serialize(dbStud);
-            System.out.println(lookupsString);
 
             Files.writeString(Paths.get("./StudentDB.txt"), lookupsString);
         } catch (Exception e) {
