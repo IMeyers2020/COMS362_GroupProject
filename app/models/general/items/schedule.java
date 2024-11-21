@@ -5,14 +5,14 @@ import java.util.ArrayList;
 public class schedule {
     private final int maxCreditHours = 18;
     private int creditHours;
-    private ArrayList<courseLookup> courses;
+    private ArrayList<String> courses;
 
     public schedule() {
         creditHours = 0;
-        courses = new ArrayList<courseLookup>();
+        courses = new ArrayList<String>();
     }
 
-    public ArrayList<courseLookup> getCourses() {
+    public ArrayList<String> getCourses() {
         return courses;
     }
 
@@ -21,16 +21,14 @@ public class schedule {
             return false;
         }
 
-        ArrayList<courseLookup> courseClone = this.getCourses();
+        ArrayList<String> courseClone = this.getCourses();
         
-        for (courseLookup cor : courseClone) {
-            if (cor.value.getCID() == c.getCID())
+        for (String cor : courseClone) {
+            if (cor == c.getCID())
                 return false;
         }
 
-            
-        courseLookup courseToAdd = new courseLookup(c.getCID(), c);
-        courseClone.add(courseToAdd);
+        courseClone.add(c.getCID());
         
         this.setCourses(courseClone);
         this.setCreditHours(this.creditHours + c.getCreditHours());
@@ -42,13 +40,13 @@ public class schedule {
     }
 
     public boolean removeCourse(Course c) {
-        ArrayList<courseLookup> cls = this.getCourses();
-        cls.removeIf(cor -> cor.value.getCID() == c.getCID());
+        ArrayList<String> cls = this.getCourses();
+        cls.removeIf(cor -> cor == c.getCID());
         this.setCourses(cls);
         return true;
     }
 
-    public void setCourses(ArrayList<courseLookup> cl) {
+    public void setCourses(ArrayList<String> cl) {
         this.courses = cl;
     }
 }

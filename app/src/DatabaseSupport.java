@@ -477,7 +477,7 @@ public class DatabaseSupport {
     }
 
 
-    public ArrayList<courseLookup> getCoursesForStudent(String sid) {
+    public ArrayList<String> getCoursesForStudent(String sid) {
         studentLookup student = getStudent(sid);
 
         return student.value.getCurrentCourses();
@@ -524,12 +524,12 @@ public class DatabaseSupport {
         return true;
     }
 
-    public ArrayList<courseLookup> getRegisteredCoursesForStudent(String sid) {
+    public ArrayList<String> getRegisteredCoursesForStudent(String sid) {
         studentLookup s = this.getStudent(sid);
         return s.value.getCurrentCourses();
     }
 
-    public ArrayList<majorLookup> getRegisteredMajorsForStudent(String sid) {
+    public ArrayList<String> getRegisteredMajorsForStudent(String sid) {
         studentLookup s = this.getStudent(sid);
         return s.value.getMajors();
     }

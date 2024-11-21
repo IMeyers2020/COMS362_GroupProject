@@ -31,7 +31,7 @@ public class RegistrationController {
         return true;
     }
 
-    public ArrayList<courseLookup> viewRegisteredCourses(String sid) {
+    public ArrayList<String> viewRegisteredCourses(String sid) {
         studentLookup stud = this.db.getStudent(sid);
         return stud.value.getCurrentCourses();
     }

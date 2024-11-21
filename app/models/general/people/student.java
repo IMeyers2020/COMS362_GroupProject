@@ -14,7 +14,7 @@ import models.general.items.schedule;
 public class student {
     private schedule sched;
     private List<String> completedCourses;
-    private ArrayList<majorLookup> majors;
+    private ArrayList<String> majors;
     private String studentId;      // Unique identifier for the student
     private String name;           // Full name of the student
     private FinancialInfo financialInfo; // Financial info of the student (linked to the FinancialInfo class)
@@ -57,7 +57,7 @@ public class student {
 
     public String getDormId() { return dormId; }
 
-    public ArrayList<courseLookup> getCurrentCourses() { return sched.getCourses(); }
+    public ArrayList<String> getCurrentCourses() { return sched.getCourses(); }
 
     public boolean addCourse(Course c) {
         if (completedCourses.containsAll(c.getPrereqs())){
@@ -72,21 +72,20 @@ public class student {
 
     public schedule getschedule() { return sched; }
 
-    public ArrayList<majorLookup> getMajors() { return majors; }
+    public ArrayList<String> getMajors() { return majors; }
 
     public boolean addMajor(Major m) {
-        if (majors.size() >= 2)
+        if (majors.size() > 2 || (majors.size() == 2 && !majors.get(0).equals("")))
             return false;
 
-        ArrayList<majorLookup> majorClone = getMajors();
+        ArrayList<String> majorClone = getMajors();
 
-        for (majorLookup maj : majorClone) {
-            if (maj.value.getMajorID() == m.getMajorID())
+        for (String maj : majorClone) {
+            if (maj == m.getMajorID())
                 return false;
         }
 
-        majorLookup majorToAdd = new majorLookup(m.getMajorID(), m);
-        majorClone.add(majorToAdd);
+        majorClone.add(m.getMajorID());
 
         this.setMajors(majorClone);
         return true;
@@ -95,13 +94,13 @@ public class student {
     public boolean removeMajor(Major m) {
         if (majors.size() < 2)
             return false;
-        ArrayList<majorLookup> ms = this.getMajors();
-        ms.removeIf(major -> major.value.getMajorID() == m.getMajorID());
+        ArrayList<String> ms = this.getMajors();
+        ms.removeIf(major -> major == m.getMajorID());
         setMajors(ms);
         return true;
     }
 
-    public void setMajors(ArrayList<majorLookup> majors) { this.majors = majors; }
+    public void setMajors(ArrayList<String> majors) { this.majors = majors; }
     
     // Getters and Setters
     public String getStudentId() {
