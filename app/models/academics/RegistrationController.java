@@ -18,7 +18,6 @@ public class RegistrationController {
     }
 
     public boolean addCourse(String sid, Course c) {
-        Registration r = new Registration();
         studentLookup stud = this.db.getStudent(sid);
         stud.value.addCourse(c);
         this.db.updateStudent(sid, stud.value);
@@ -26,7 +25,6 @@ public class RegistrationController {
     }
 
     public boolean removeCourse(String sid, Course c) {
-        Registration r = new Registration();
         studentLookup stud = this.db.getStudent(sid);
         stud.value.removeCourse(c);
         this.db.updateStudent(sid, stud.value);
@@ -40,14 +38,16 @@ public class RegistrationController {
 
     public boolean addMajor(String sid, Major m) {
         studentLookup stud = this.db.getStudent(sid);
-        stud.value.addMajor(m);
+        if (!stud.value.addMajor(m))
+            return false;
         this.db.updateStudent(sid, stud.value);
         return true;
     }
 
     public boolean removeMajor(String sid, Major m) {
         studentLookup stud = this.db.getStudent(sid);
-        stud.value.removeMajor(m);
+        if (!stud.value.removeMajor(m))
+            return false;
         this.db.updateStudent(sid, stud.value);
         return true;
     }
