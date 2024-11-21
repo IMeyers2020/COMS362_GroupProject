@@ -46,7 +46,11 @@ public class DatabaseSupport {
             }
             String everything = sb.toString();
 
-            lookups = JsonUtil.deserialize(everything, lookups.getClass());
+            if(everything.trim().equals("{}")) {
+                return new ArrayList<studentLookup>();
+            } else {
+                lookups = JsonUtil.deserialize(everything, lookups.getClass());
+            }
         } catch (Exception e) {
             return new ArrayList<studentLookup>();
         }
@@ -67,7 +71,6 @@ public class DatabaseSupport {
     public boolean addStudent(String studentId, student stud) {
         studentLookup sl = new studentLookup(studentId, stud);
         studentLookup[] lookups = {};
-        Scanner s = new Scanner(System.in);
 
         ArrayList<studentLookup> arrayListed = getStudents();
         arrayListed.add(sl);
@@ -75,10 +78,11 @@ public class DatabaseSupport {
 
         try {
             String lookupsString = JsonUtil.serialize(lookups);
+            System.out.println(lookupsString);
+
             Files.writeString(Paths.get("./StudentDB.txt"), lookupsString);
         } catch (Exception e) {
             System.err.println(e);
-            s.nextLine();
             return false;
         }
 
