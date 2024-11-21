@@ -27,6 +27,7 @@ public class schedule {
             if (cor.value.getCID() == c.getCID())
                 return false;
         }
+
             
         courseLookup courseToAdd = new courseLookup(c.getCID(), c);
         courseClone.add(courseToAdd);

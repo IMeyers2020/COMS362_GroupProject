@@ -72,7 +72,7 @@ public class DatabaseSupport {
         ArrayList<studentLookup> students = getStudents();
 
         for(studentLookup s : students) {
-            if(s.value.getStudentId() == sid) {
+            if(s.value.getStudentId().equals(sid)) {
                 return s;
             }
         }
@@ -118,17 +118,19 @@ public class DatabaseSupport {
 
     public boolean updateStudent(String studentId, student stud) {
         studentLookup sl = new studentLookup(studentId, stud);
-        studentLookup[] lookups = {};
 
         ArrayList<studentLookup> arrayListed = getStudents();
-        arrayListed.removeIf(s -> s.key == studentId);
+        arrayListed.removeIf(s -> s.key.equals(studentId));
         arrayListed.add(sl);
-        lookups = arrayListed.toArray(lookups);
 
         try {
-            String lookupsString = JsonUtil.serialize(lookups);
+            DB_Student dbStud = new DB_Student();
+            dbStud.setStudents(arrayListed);
+            String lookupsString = JsonUtil.serialize(dbStud);
+
             Files.writeString(Paths.get("./StudentDB.txt"), lookupsString);
         } catch (Exception e) {
+            System.err.println(e);
             return false;
         }
 

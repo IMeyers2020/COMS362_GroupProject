@@ -8,6 +8,9 @@ public class Course {
     private int creditHours;
     private Set<String> prereqs;
 
+    public Course() {
+    }
+
     public Course(String cid, int creditHours, Set<String> prereqs){
         this.cid = cid;
         this.creditHours = creditHours;
