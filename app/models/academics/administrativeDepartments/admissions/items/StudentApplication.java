@@ -12,8 +12,7 @@ public class StudentApplication {
     }
 
     public boolean addStudent(String sId, String name, String address, String SSN) {
-        student stud = new student(sId, name, address, SSN, null, 0.00);
-        System.out.println(name);
+        student stud = new student(sId, name, address, SSN, null, 0.00, null);
 
         return this.db.addStudent(sId, stud);
     }
