@@ -252,11 +252,58 @@ public class DatabaseSupport {
         return new ArrayList<professorLookup>(Arrays.asList(lookups));
     }
 
+    public professorLookup getProfessor(String pid) {
+        ArrayList<professorLookup> profs = getProfessors();
+
+        for(professorLookup p : profs) {
+            if(p.value.getPID() == pid) {
+                return p;
+            }
+        }
+        return null;
+    }
+
     public boolean addProfessor(professor prof) {
         professorLookup pl = new professorLookup(prof.getPID(), prof);
         studentLookup[] lookups = {};
 
         ArrayList<professorLookup> arrayListed = getProfessors();
+        arrayListed.add(pl);
+        lookups = arrayListed.toArray(lookups);
+
+        try {
+            String lookupsString = JsonUtil.serialize(lookups);
+            Files.writeString(Paths.get(new URI("./ProfessorDB.txt")), lookupsString);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean removeProfessor(String profId) {
+        professorLookup[] lookups = {};
+
+        ArrayList<professorLookup> arrayListed = getProfessors();
+        arrayListed.removeIf(s -> s.key == profId);
+        lookups = arrayListed.toArray(lookups);
+
+        try {
+            String lookupsString = JsonUtil.serialize(lookups);
+            Files.writeString(Paths.get(new URI("./ProfessorDB.txt")), lookupsString);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean updateProfessor(String profId, professor stud) {
+        professorLookup pl = new professorLookup(profId, stud);
+        professorLookup[] lookups = {};
+
+        ArrayList<professorLookup> arrayListed = getProfessors();
+        arrayListed.removeIf(s -> s.key == profId);
         arrayListed.add(pl);
         lookups = arrayListed.toArray(lookups);
 
@@ -354,7 +401,7 @@ public class DatabaseSupport {
         return true;
     }
 
-    public ArrayList<Course> redCoursesForStudent(String sid) {
+    public ArrayList<courseLookup> getRegisteredCoursesForStudent(String sid) {
         studentLookup s = this.getStudent(sid);
         return s.value.getCurrentCourses();
     }

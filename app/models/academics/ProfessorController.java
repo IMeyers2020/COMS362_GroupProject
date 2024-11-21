@@ -1,8 +1,8 @@
 package models.academics;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
-import models.general.people.professor;
+import models.general.people.professorLookup;
 import src.DatabaseSupport;
 
 public class ProfessorController {
@@ -12,11 +12,11 @@ public class ProfessorController {
         this.db = _db;
     }
 
-    public professor getProfessor(String pid) {
-        return this.db.getProfessors().get(pid);
+    public professorLookup getProfessor(String pid) {
+        return this.db.getProfessor(pid);
     };
 
-    public HashMap<String, professor> getAllProfessors() {
+    public ArrayList<professorLookup> getAllProfessors() {
         return this.db.getProfessors();
     }
 }

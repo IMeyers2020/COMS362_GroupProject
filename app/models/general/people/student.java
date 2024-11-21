@@ -1,15 +1,15 @@
 package models.general.people;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import models.finances.paymentServices.FinancialInfo;
 import models.general.items.Course;
-import models.general.items.Schedule;
+import models.general.items.courseLookup;
+import models.general.items.schedule;
 
 public class student {
-    private Schedule sched;
+    private schedule sched;
     private List<String> completedCourses;
     private String studentId;      // Unique identifier for the student
     private String name;           // Full name of the student
@@ -25,14 +25,14 @@ public class student {
         this.name = name;
         this.financialInfo = financialInfo;
         this.accountBalance = accountBalance;
-        sched = new Schedule();
+        sched = new schedule();
         completedCourses = new ArrayList<>();
         this.address = address;
         this.ssn = ssn;
     }
 
     public student() {
-        sched = new Schedule();
+        sched = new schedule();
         completedCourses = new ArrayList<>();
     }
 
@@ -50,7 +50,7 @@ public class student {
 
     public String getDormId() { return dormId; }
 
-    public ArrayList<Course> getCurrentCourses() {
+    public ArrayList<courseLookup> getCurrentCourses() {
         return sched.getCourses();
     }
 
@@ -65,10 +65,10 @@ public class student {
         return sched.removeCourse(c);
     }
 
-    public void setSchedule(Schedule s) {
+    public void setschedule(schedule s) {
         sched = s;
     }
-    public Schedule getSchedule() {
+    public schedule getschedule() {
         return sched;
     }
 
