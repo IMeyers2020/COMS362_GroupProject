@@ -31,7 +31,7 @@ public class RegistrationController {
         return true;
     }
 
-    public ArrayList<courseLookup> viewRegisteredCourses(String sid) {
+    public ArrayList<String> viewRegisteredCourses(String sid) {
         studentLookup stud = this.db.getStudent(sid);
         return stud.value.getCurrentCourses();
     }
@@ -41,6 +41,7 @@ public class RegistrationController {
         if (!stud.value.addMajor(m))
             return false;
         this.db.updateStudent(sid, stud.value);
+        m.createRequiredCourses();
         return true;
     }
 
@@ -52,7 +53,7 @@ public class RegistrationController {
         return true;
     }
 
-    public ArrayList<majorLookup> viewRegisteredMajors(String sid) {
+    public ArrayList<String> viewRegisteredMajors(String sid) {
         studentLookup stud = this.db.getStudent(sid);
         return stud.value.getMajors();
     }

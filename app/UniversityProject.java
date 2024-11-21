@@ -399,12 +399,12 @@ public class UniversityProject {
         switch(selection) {
             case "1":
                 System.out.println("Student " + sid + "'s major(s):");
-                for (majorLookup major : rc.viewRegisteredMajors(sid)) {
-                    System.out.println(major.value.getMajorName() + ", " + major.value.getDegreeType());
+                for (String major : rc.viewRegisteredMajors(sid)) {
+                    System.out.println(major + ", " + major);
                 }
                 System.out.println("Student " + sid + "'s course(s):");
-                for (courseLookup course : rc.viewRegisteredCourses(sid)) {
-                    System.out.println(course.value.getCID());
+                for (String course : rc.viewRegisteredCourses(sid)) {
+                    System.out.println(course);
                 }
                 break;
             case "2":
@@ -427,8 +427,8 @@ public class UniversityProject {
                 break;
             case "3":
                 System.out.println("What class would you like to remove?");
-                for (courseLookup course : rc.viewRegisteredCourses(sid)) {
-                    System.out.println(course.value.getCID());
+                for (String course : rc.viewRegisteredCourses(sid)) {
+                    System.out.println(course);
                 }
                 if (s.hasNextLine())
                     selection = s.nextLine();
@@ -461,8 +461,8 @@ public class UniversityProject {
                 break;
             case "5":
                 System.out.println("What major would you like to remove?");
-                for (majorLookup major : rc.viewRegisteredMajors(sid)) {
-                    System.out.println(major.value.getMajorID());
+                for (String major : rc.viewRegisteredMajors(sid)) {
+                    System.out.println(major);
                 }
                 if (s.hasNextLine())
                     selection = s.nextLine();

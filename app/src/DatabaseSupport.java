@@ -103,7 +103,7 @@ public class DatabaseSupport {
         studentLookup[] lookups = {};
 
         ArrayList<studentLookup> arrayListed = getStudents();
-        arrayListed.removeIf(s -> s.key.equals(studentId));
+        arrayListed.removeIf(s -> s.key == studentId);
         lookups = arrayListed.toArray(lookups);
 
         try {
@@ -164,7 +164,7 @@ public class DatabaseSupport {
         ArrayList<dormLookup> dorms = getDorms();
 
         for(dormLookup d : dorms) {
-            if(d.value.getDormId().equals(did)) {
+            if(d.value.getDormId() == did) {
                 return d;
             }
         }
@@ -193,11 +193,11 @@ public class DatabaseSupport {
         dormLookup[] lookups = {};
 
         ArrayList<dormLookup> arrayListed = getDorms();
-        arrayListed.removeIf(s -> s.key.equals(dormId));
+        arrayListed.removeIf(s -> s.key == dormId);
         lookups = arrayListed.toArray(lookups);
 
         ArrayList<studentLookup> studs = getStudents();
-        studs.removeIf(s -> !(s.value.getDormId().equals(dormId)));
+        studs.removeIf(s -> !(s.value.getDormId() == dormId));
 
         for(studentLookup s : studs) {
             s.value.setDormId(null);
@@ -219,7 +219,7 @@ public class DatabaseSupport {
         dormLookup[] lookups = {};
 
         ArrayList<dormLookup> arrayListed = getDorms();
-        arrayListed.removeIf(s -> s.key.equals(dormId));
+        arrayListed.removeIf(s -> s.key == dormId);
         arrayListed.add(dl);
         lookups = arrayListed.toArray(lookups);
 
@@ -237,7 +237,7 @@ public class DatabaseSupport {
         ArrayList<studentLookup> studs = getStudents();
 
         for(studentLookup s : studs) {
-            if(s.value.getDormId().equals(dormId)) {
+            if(s.value.getDormId() == dormId) {
                 return s;
             }
         }
@@ -286,7 +286,7 @@ public class DatabaseSupport {
         ArrayList<professorLookup> profs = getProfessors();
 
         for(professorLookup p : profs) {
-            if(p.value.getPID().equals(pid)) {
+            if(p.value.getPID() == pid) {
                 return p;
             }
         }
@@ -317,7 +317,7 @@ public class DatabaseSupport {
         professorLookup[] lookups = {};
 
         ArrayList<professorLookup> arrayListed = getProfessors();
-        arrayListed.removeIf(s -> s.key.equals(profId));
+        arrayListed.removeIf(s -> s.key == profId);
         lookups = arrayListed.toArray(lookups);
 
         try {
@@ -335,7 +335,7 @@ public class DatabaseSupport {
         professorLookup[] lookups = {};
 
         ArrayList<professorLookup> arrayListed = getProfessors();
-        arrayListed.removeIf(s -> s.key.equals(profId));
+        arrayListed.removeIf(s -> s.key == profId);
         arrayListed.add(pl);
         lookups = arrayListed.toArray(lookups);
 
@@ -469,7 +469,7 @@ public class DatabaseSupport {
         ArrayList<ScholarshipLookup> scholarships = getScholarships();
 
         for(ScholarshipLookup s : scholarships) {
-            if(s.value.getScholarshipId().equals(ssid)) {
+            if(s.value.getScholarshipId() == ssid) {
                 return s;
             }
         }
@@ -477,7 +477,7 @@ public class DatabaseSupport {
     }
 
 
-    public ArrayList<courseLookup> getCoursesForStudent(String sid) {
+    public ArrayList<String> getCoursesForStudent(String sid) {
         studentLookup student = getStudent(sid);
 
         return student.value.getCurrentCourses();
@@ -524,12 +524,12 @@ public class DatabaseSupport {
         return true;
     }
 
-    public ArrayList<courseLookup> getRegisteredCoursesForStudent(String sid) {
+    public ArrayList<String> getRegisteredCoursesForStudent(String sid) {
         studentLookup s = this.getStudent(sid);
         return s.value.getCurrentCourses();
     }
 
-    public ArrayList<majorLookup> getRegisteredMajorsForStudent(String sid) {
+    public ArrayList<String> getRegisteredMajorsForStudent(String sid) {
         studentLookup s = this.getStudent(sid);
         return s.value.getMajors();
     }

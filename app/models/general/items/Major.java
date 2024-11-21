@@ -1,5 +1,9 @@
 package models.general.items;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Set;
 
 public class Major {
@@ -35,5 +39,18 @@ public class Major {
 
     public Set<String> getRequiredCourses() {
         return this.requiredCourses;
+    }
+    
+    public void createRequiredCourses() {
+        String toFile = "Required Courses for " + this.name + "\n";
+        for (String course : getRequiredCourses()) {
+            toFile += course + "\n";
+        }
+        try {
+            Files.writeString(Paths.get("./RequiredCourses.txt"), toFile);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }
