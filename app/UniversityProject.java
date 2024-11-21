@@ -492,6 +492,11 @@ public class UniversityProject {
             FinancialInfo newFI = new FinancialInfo(cardType, cardNumber, billingAddress, curStudent.value);
             AccountReceivableOffice aro = new AccountReceivableOffice();
             boolean result = aro.editStudentFinancialInfo(curStudent.value, newFI);
+            if (result) {
+                System.out.println("Financial information edited successfully."); 
+            } else {
+                System.out.println("Failed to edit financial information.");
+            }
         } catch (Exception e) {
             System.err.println("An error occurred: " + e.getMessage());
         }
@@ -511,43 +516,42 @@ public class UniversityProject {
         if (curStudent != null) {
             foundStudent = true;
         }
-
-        try {
-            System.out.println("Account balance of: " + curStudent.value.getAccountBalance());
-            System.out.println("Use saved payment information? (Y or N)");
+        System.out.println("Account balance of: " + curStudent.value.getAccountBalance());
+        System.out.println("Use saved payment information? (Y or N)");
+        userIn = s.nextLine();
+        if (userIn.equals("Y")) {
+            System.out.println("Enter payment amount:  (Enter in 000.00 format)");
+            userIn = s.nextLine();
+            double amountToPay = Double.parseDouble(userIn);
+            int randomNum = (int)(Math.random() * 99999) + 1;
+            String paymentID = String.valueOf(randomNum);
+            payment.setAmount(amountToPay);
+            payment.setPaymentId(paymentID);
+            payment.setPaymentType(curStudent.value.getFinancialInfo().getCardType());
+            System.out.println("Confirm the following information (Y or N):");
+            System.out.println("Amount To Pay: " + payment.getAmount());
+            System.out.println("Card Type: " + payment.getPaymentType() + " " + "Card Number: " + curStudent.value.getFinancialInfo().getCardNumber());
             userIn = s.nextLine();
             if (userIn.equals("Y")) {
-                System.out.println("Enter payment amount:  (Enter in 000.00 format)");
-                userIn = s.nextLine();
-                double amountToPay = Double.parseDouble(userIn);
-                int randomNum = (int)(Math.random() * 99999) + 1;
-                String paymentID = String.valueOf(randomNum);
-                payment.setAmount(amountToPay);
-                payment.setPaymentId(paymentID);
-                payment.setPaymentType(curStudent.value.getFinancialInfo().getCardType());
-                System.out.println("Confirm the following information (Y or N):");
-                System.out.println("Amount To Pay: " + payment.getAmount());
-                System.out.println("Card Type: " + payment.getPaymentType() + " " + "Card Number: " + curStudent.value.getFinancialInfo().getCardNumber());
-                userIn = s.nextLine();
-                if (userIn.equals("Y")) {
-                    pc.confirmPayment(payment);
-                    if(payment.isConfirmed()) {
-                        System.out.println("Your Payment Has Been Confirmed!");
-                        System.out.println();
-                    }
-                } else {
-                    System.out.println("Transaction cancelled.");
+                pc.confirmPayment(payment);
+                if(payment.isConfirmed()) {
+                    System.out.println("Your Payment Has Been Confirmed!");
                     System.out.println();
                 }
             } else {
                 System.out.println("Transaction cancelled.");
                 System.out.println();
             }
+        } else {
+            System.out.println("Transaction cancelled.");
+            System.out.println();
+        }
 
-            if(!foundStudent) {
-                System.out.println("You are not registered in the system.");
-            }
+        if(!foundStudent) {
+            System.out.println("You are not registered in the system.");
+        }
 
+        try {
             AccountReceivableOffice aro = new AccountReceivableOffice();
             boolean result = aro.addStudentPayment(curStudent.value, payment);
 
