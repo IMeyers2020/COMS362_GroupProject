@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Scanner;
 import java.util.Set;
 
 import models.dorms.DormInfo;
@@ -66,6 +67,7 @@ public class DatabaseSupport {
     public boolean addStudent(String studentId, student stud) {
         studentLookup sl = new studentLookup(studentId, stud);
         studentLookup[] lookups = {};
+        Scanner s = new Scanner(System.in);
 
         ArrayList<studentLookup> arrayListed = getStudents();
         arrayListed.add(sl);
@@ -73,8 +75,10 @@ public class DatabaseSupport {
 
         try {
             String lookupsString = JsonUtil.serialize(lookups);
-            Files.writeString(Paths.get(new URI("./StudentDB.txt")), lookupsString);
+            Files.writeString(Paths.get("./StudentDB.txt"), lookupsString);
         } catch (Exception e) {
+            System.err.println(e);
+            s.nextLine();
             return false;
         }
 
@@ -90,7 +94,7 @@ public class DatabaseSupport {
 
         try {
             String lookupsString = JsonUtil.serialize(lookups);
-            Files.writeString(Paths.get(new URI("./StudentDB.txt")), lookupsString);
+            Files.writeString(Paths.get("./StudentDB.txt"), lookupsString);
         } catch (Exception e) {
             return false;
         }
@@ -109,7 +113,7 @@ public class DatabaseSupport {
 
         try {
             String lookupsString = JsonUtil.serialize(lookups);
-            Files.writeString(Paths.get(new URI("./StudentDB.txt")), lookupsString);
+            Files.writeString(Paths.get("./StudentDB.txt"), lookupsString);
         } catch (Exception e) {
             return false;
         }
@@ -161,7 +165,7 @@ public class DatabaseSupport {
 
         try {
             String lookupsString = JsonUtil.serialize(lookups);
-            Files.writeString(Paths.get(new URI("./DormDB.txt")), lookupsString);
+            Files.writeString(Paths.get("./DormDB.txt"), lookupsString);
         } catch (Exception e) {
             return false;
         }
@@ -186,7 +190,7 @@ public class DatabaseSupport {
 
         try {
             String lookupsString = JsonUtil.serialize(lookups);
-            Files.writeString(Paths.get(new URI("./DormDB.txt")), lookupsString);
+            Files.writeString(Paths.get("./DormDB.txt"), lookupsString);
         } catch (Exception e) {
             return false;
         }
@@ -205,7 +209,7 @@ public class DatabaseSupport {
 
         try {
             String lookupsString = JsonUtil.serialize(lookups);
-            Files.writeString(Paths.get(new URI("./DormDB.txt")), lookupsString);
+            Files.writeString(Paths.get("./DormDB.txt"), lookupsString);
         } catch (Exception e) {
             return false;
         }
@@ -273,7 +277,7 @@ public class DatabaseSupport {
 
         try {
             String lookupsString = JsonUtil.serialize(lookups);
-            Files.writeString(Paths.get(new URI("./ProfessorDB.txt")), lookupsString);
+            Files.writeString(Paths.get("./ProfessorDB.txt"), lookupsString);
         } catch (Exception e) {
             return false;
         }
@@ -290,7 +294,7 @@ public class DatabaseSupport {
 
         try {
             String lookupsString = JsonUtil.serialize(lookups);
-            Files.writeString(Paths.get(new URI("./ProfessorDB.txt")), lookupsString);
+            Files.writeString(Paths.get("./ProfessorDB.txt"), lookupsString);
         } catch (Exception e) {
             return false;
         }
@@ -309,7 +313,7 @@ public class DatabaseSupport {
 
         try {
             String lookupsString = JsonUtil.serialize(lookups);
-            Files.writeString(Paths.get(new URI("./ProfessorDB.txt")), lookupsString);
+            Files.writeString(Paths.get("./ProfessorDB.txt"), lookupsString);
         } catch (Exception e) {
             return false;
         }
