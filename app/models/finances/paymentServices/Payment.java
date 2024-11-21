@@ -1,9 +1,5 @@
 package models.finances.paymentServices;
 
-import java.io.IOException;
-
-import src.DatabaseSupport;
-
 public class Payment {
     private String paymentId;      // Unique identifier for the payment
     private double amount;         // Amount of the payment
@@ -56,12 +52,5 @@ public class Payment {
 
     public void setConfirmed(boolean confirmed) {
         isConfirmed = confirmed;
-    }
-
-    public boolean addStudentPayment (String paymentId, double amount, String paymentType, boolean isConfirmed) throws IOException{
-        Payment p = new Payment(paymentId,amount,paymentType,isConfirmed);
-        DatabaseSupport db = new DatabaseSupport();
-
-        return db.putPayment(p);
     }
 }

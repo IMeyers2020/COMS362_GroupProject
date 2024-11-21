@@ -2,6 +2,7 @@ package models.finances.offices;
 
 import java.io.IOException;
 
+import models.finances.paymentServices.Scholarship;
 import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Payment;
 import models.general.people.student;
@@ -46,6 +47,14 @@ public class AccountReceivableOffice {
             return false;
         }
     }
+
+    public boolean addStudentScholarship(student student, Scholarship scholarship) {
+        student.setScholarships(scholarship);
+        DatabaseSupport db = new DatabaseSupport();
+
+        return db.updateStudent(student.getStudentId(), student);
+    }
+
 
     private boolean validateFinancialInfo(FinancialInfo financialInfo) {
         // Add validation logic (e.g., regex for card number, check card type)

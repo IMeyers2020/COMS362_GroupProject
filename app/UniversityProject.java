@@ -16,6 +16,9 @@ import models.academics.StudentController;
 import models.academics.administrativeDepartments.admissions.controllers.ApplicationController;
 import models.academics.administrativeDepartments.humanResources.controllers.OfferController;
 import models.dorms.DormController;
+import models.finances.paymentServices.Scholarship;
+import models.finances.paymentServices.ScholarshipLookup;
+import models.finances.controllers.ScholarshipController;
 import models.finances.controllers.FinancialInfoController;
 import models.finances.controllers.PaymentController;
 import models.finances.offices.AccountReceivableOffice;
@@ -501,7 +504,7 @@ public class UniversityProject {
             boolean result = aro.addStudentPayment(curStudent.value, payment);
 
             if (result) {
-                System.out.println();
+                System.out.println("Payent processed successfully.");
             } else {
                 System.out.println("Failed to Process Payment.");
             }
@@ -510,10 +513,49 @@ public class UniversityProject {
         }
     }
 
+    public static void addStudentScholarship(StudentController sc) {
+        DatabaseSupport db = new DatabaseSupport();
+        ScholarshipController ssc = new ScholarshipController();
+        Scholarship curScholarship = new Scholarship();
+
+        String userIn = null;
+        System.out.println("Enter the student's ID: ");
+        userIn = s.nextLine();
+        studentLookup curStudent = sc.getStudent(userIn);
+
+        System.out.println("What is the name of the scholarship the student would like to add?");
+        userIn = s.nextLine();
+
+        ArrayList<ScholarshipLookup> existingScholarships = db.getScholarships();
+        for (ScholarshipLookup scholarship : existingScholarships) {
+            if (scholarship.value.getScholarshipName().equalsIgnoreCase(userIn)) {
+                curScholarship = scholarship.value;
+            } 
+        }
+
+        boolean validateScholarship = ssc.validateScholarship(userIn, curStudent.value);
+        if (validateScholarship) {
+            System.out.println("Successfully validated scholarship status.");
+
+            AccountReceivableOffice aro = new AccountReceivableOffice();
+            boolean result = aro.addStudentScholarship(curStudent.value, curScholarship);
+            if (result) {
+                System.out.println("Successfully added scholarship.");
+            } else {
+                System.out.println("Failed to add scholarship.");
+            }
+        } else {
+            System.out.println("Failed to add scholarship.");
+        }
+        
+    }
+
     public static void PaymentService(StudentController sc) {
         System.out.println("Would you like to do?");
         System.out.println("1. Add Payment");
         System.out.println("2. Add Financial Information");
+        System.out.println("3. Add Scholarship");
+        System.out.println("4. Edit Financial Information");
 
         String selection = null;
         if (s.hasNextLine())
@@ -534,6 +576,17 @@ public class UniversityProject {
                 clearScreen();
                 addFinancialInfo(sc);
                 break;
+            case "3":
+            case "3. Add Scholarship":
+            case "3.":
+            case "Add Scholarship":
+                clearScreen();
+                addStudentScholarship(sc);
+            case "4":
+            case "4. Edit Financial Information":
+            case "4.":
+            case "Edit Financial Information":
+                clearScreen();
         }
     }
 
