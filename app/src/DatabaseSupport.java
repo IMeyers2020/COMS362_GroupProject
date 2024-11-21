@@ -25,6 +25,8 @@ import models.general.people.professor;
 import models.general.people.professorLookup;
 import models.general.people.student;
 import models.general.people.studentLookup;
+import models.finances.paymentServices.Scholarship;
+import models.finances.paymentServices.ScholarshipLookup;
 import src.jsonParser.JsonUtil;
 
 
@@ -324,6 +326,7 @@ public class DatabaseSupport {
 
         return true;
     }
+    
 
     public boolean putFinancialInfo(FinancialInfo fi) throws IOException{
         String filePath = "app/models/finances/data/FinancialInfo.txt";
@@ -371,6 +374,39 @@ public class DatabaseSupport {
     
             return true;
         }
+    }
+
+    public ArrayList<ScholarshipLookup> getScholarships() {
+        ScholarshipLookup[] lookups = {};
+
+        try(BufferedReader br = new BufferedReader(new FileReader("./Scholarships.txt"))) {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+        
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            String everything = sb.toString();
+
+            lookups = JsonUtil.deserialize(everything, lookups.getClass());
+        } catch (Exception e) {
+            return new ArrayList<ScholarshipLookup>();
+        }
+        return new ArrayList<>(Arrays.asList(lookups));
+    }
+
+
+    public ScholarshipLookup getScholarship(String ssid) {
+        ArrayList<ScholarshipLookup> scholarships = getScholarships();
+
+        for(ScholarshipLookup s : scholarships) {
+            if(s.value.getScholarshipId() == ssid) {
+                return s;
+            }
+        }
+        return null;
     }
 
 

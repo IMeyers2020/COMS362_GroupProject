@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import models.finances.paymentServices.FinancialInfo;
+import models.finances.paymentServices.Scholarship;
 import models.general.items.Course;
 import models.general.items.courseLookup;
 import models.general.items.schedule;
@@ -15,12 +16,13 @@ public class student {
     private String name;           // Full name of the student
     private FinancialInfo financialInfo; // Financial info of the student (linked to the FinancialInfo class)
     private double accountBalance; // The current balance in the student's account
+    private ArrayList<Scholarship> scholarships;
     private String address;
     private String ssn;
     private String dormId;
 
 
-    public student(String studentId, String name, String address, String ssn, FinancialInfo financialInfo, double accountBalance) {
+    public student(String studentId, String name, String address, String ssn, FinancialInfo financialInfo, double accountBalance, ArrayList<Scholarship> scholarships) {
         this.studentId = studentId;
         this.name = name;
         this.financialInfo = financialInfo;
@@ -109,6 +111,14 @@ public class student {
 
     public void setAccountBalance(double accountBalance) {
         this.accountBalance = accountBalance;
+    }
+
+    public ArrayList<Scholarship> getScholarships() {
+        return scholarships;
+    }
+
+    public void setScholarships(Scholarship scholarship) {
+        scholarships.add(scholarship);
     }
 
     // Optional: Method to check if the student has a positive account balance

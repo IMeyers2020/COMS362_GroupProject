@@ -1,16 +1,8 @@
 package models.finances.controllers;
 
-import java.io.IOException;
-
 import models.finances.paymentServices.Payment;
 
 public class PaymentController {
-    public boolean addStudentPayment (String paymentId, double amount, String paymentType, boolean isConfirmed) throws IOException{
-        Payment p = new Payment();
-
-        return p.addStudentPayment(paymentId,amount,paymentType,isConfirmed);
-    }
-
     // Method to check if the payment amount is valid
     public boolean isValidAmount(Payment p) {
         // Check if the amount is greater than 0
