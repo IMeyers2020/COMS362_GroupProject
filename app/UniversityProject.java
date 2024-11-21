@@ -423,19 +423,18 @@ public class UniversityProject {
         System.out.println("What is the card number? (enter all 16 digits no space)");
         String cardNum = s.nextLine();
 
+        if (fc.isCardValid(cardNum, cardType)) {
+            System.out.println("Valid information entered.");
+        } else {
+            System.out.println("Invalid information entered.");
+            return;
+        }
+
+        System.out.println("What is the billing address? (Street, City, State, ZIP code)");
+        String billingAddress = s.nextLine();
+
         try {
-            if (fc.isCardNumberValid(cardNum)) {
-                System.out.println("Valid card number entered.");
-            } else {
-                System.out.println("Invalid card number entered.");
-                return;
-            }
-    
-            System.out.println("What is the billing address? (Street, City, State, ZIP code)");
-            String billingAddress = s.nextLine();
-    
-            FinancialInfo financialInfo = new FinancialInfo(cardType, cardNum, billingAddress);
-    
+            FinancialInfo financialInfo = new FinancialInfo(cardType, cardNum, billingAddress, currStud.value);
             AccountReceivableOffice aro = new AccountReceivableOffice();
             boolean result = aro.addStudentFinancialInfo(currStud.value, financialInfo);
     
@@ -444,10 +443,59 @@ public class UniversityProject {
             } else {
                 System.out.println("Failed to add financial information.");
             }
-    
         } catch (Exception e) {
             System.err.println("An error occurred: " + e.getMessage());
         }
+    }
+
+    public static void editFinancialInfo(StudentController sc) {
+        String userIn = null;
+        String cardType = "";
+        String cardNumber = "";
+        String billingAddress = "";
+        System.out.println("Enter the student's ID:");
+        userIn = s.nextLine();
+
+        studentLookup curStudent = sc.getStudent(userIn);
+        FinancialInfo curFinancialInfo = curStudent.value.getFinancialInfo();
+        if(curFinancialInfo == null) {
+            System.out.println("This student has no financial information on record.");
+            return;
+        }
+
+        System.out.println("Edit student's saved card? (Y or N)");
+        userIn = s.nextLine();
+        if (userIn.equalsIgnoreCase("Y")) {
+            FinancialInfoController fiC = new FinancialInfoController();
+            System.out.println("Enter new card type:");
+            cardType = s.nextLine();
+
+            System.out.println("Enter new card number:");
+            cardNumber = s.nextLine();
+            if(fiC.isCardValid(cardNumber, cardType)) {
+                System.out.println("Valid information entered.");
+            } else {
+                return;
+            }
+
+        } 
+
+        System.out.println("Edit student's saved billing address? (Y or N)");
+        userIn = s.nextLine();
+        if (userIn.equalsIgnoreCase("Y")) {
+            System.out.println("Enter new billing address:");
+            billingAddress = s.nextLine();
+            System.out.println("New billing address entered.");
+        }
+
+        try {
+            FinancialInfo newFI = new FinancialInfo(cardType, cardNumber, billingAddress, curStudent.value);
+            AccountReceivableOffice aro = new AccountReceivableOffice();
+            boolean result = aro.editStudentFinancialInfo(curStudent.value, newFI);
+        } catch (Exception e) {
+            System.err.println("An error occurred: " + e.getMessage());
+        }
+
     }
 
     public static void addPayment(StudentController sc) {
@@ -587,6 +635,8 @@ public class UniversityProject {
             case "4.":
             case "Edit Financial Information":
                 clearScreen();
+                editFinancialInfo(sc);
+
         }
     }
 

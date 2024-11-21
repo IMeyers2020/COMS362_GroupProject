@@ -14,6 +14,7 @@ public class AccountReceivableOffice {
     public boolean addStudentFinancialInfo(student student, FinancialInfo financialInfo) throws IOException{
         if (validateFinancialInfo(financialInfo)) {    
             student.setFinancialInfo(financialInfo);
+            student.getFinancialInfo().setStudent(student);
             DatabaseSupport db = new DatabaseSupport();
             db.updateStudent(student.getStudentId(), student);
 
@@ -22,6 +23,18 @@ public class AccountReceivableOffice {
             System.out.println("Invalid financial information provided.");
             return false;
         }
+    }
+
+    public boolean editStudentFinancialInfo(student student, FinancialInfo financialInfo) throws IOException {
+        DatabaseSupport db = new DatabaseSupport();
+        student.getFinancialInfo().setCardNumber(financialInfo.getCardNumber());
+        student.getFinancialInfo().setCardType(financialInfo.getCardType());
+        student.getFinancialInfo().setBillingAddress(financialInfo.getBillingAddress());
+        student.getFinancialInfo().setStudent(student);
+        db.updateStudent(student.getStudentId(), student);
+        System.out.println("Financial information successfully updated.");
+    
+        return db.updateFinancialInfo(financialInfo);
     }
 
     public boolean addStudentPayment(student student, Payment payment) throws IOException{

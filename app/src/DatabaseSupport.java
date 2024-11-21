@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -350,6 +351,51 @@ public class DatabaseSupport {
     
             return true;
         }
+    }
+
+    public boolean updateFinancialInfo(FinancialInfo fi) throws IOException {
+        String filePath = "app/models/finances/data/FinancialInfo.txt";
+        File file = new File(filePath);
+
+        List<FinancialInfo> financialInfoList = new ArrayList<>();
+        
+        // Check if the file exists and read its contents
+        if (file.exists() && file.length() > 0) {
+            try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath))) {
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+                
+                // Deserialize existing data into a list of FinancialInfo
+                String jsonContent = sb.toString();
+                financialInfoList = Arrays.asList(JsonUtil.deserialize(jsonContent, FinancialInfo[].class));
+            }
+        }
+
+        // Find and replace the matching FinancialInfo
+        boolean isUpdated = false;
+        for (int i = 0; i < financialInfoList.size(); i++) {
+            if (financialInfoList.get(i).getStudent().equals(fi.getStudent())) { 
+                financialInfoList.set(i, fi);
+                isUpdated = true;
+                break;
+            }
+        }
+
+        // If not found
+        if (!isUpdated) {
+            System.out.println("Previous financial information not found.");
+        }
+
+        // Serialize the updated list back to the file
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath))) {
+            String updatedJsonContent = JsonUtil.serialize(financialInfoList);
+            bufferedWriter.write(updatedJsonContent);
+        }
+
+        return isUpdated;
     }
 
     public boolean putPayment(Payment p) throws IOException{
