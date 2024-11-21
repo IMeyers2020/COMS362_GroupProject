@@ -36,7 +36,7 @@ public class DatabaseSupport {
     }
     // STUDENT FUNCTIONS
     public ArrayList<studentLookup> getStudents() {
-        studentLookup[] lookups = {};
+        DB_Student lookups = new DB_Student();
 
         try(BufferedReader br = new BufferedReader(new FileReader("./StudentDB.txt"))) {
             StringBuilder sb = new StringBuilder();
@@ -57,7 +57,7 @@ public class DatabaseSupport {
         } catch (Exception e) {
             return new ArrayList<studentLookup>();
         }
-        return new ArrayList<studentLookup>(Arrays.asList(lookups));
+        return new ArrayList<studentLookup>(lookups.students);
     }
 
     public studentLookup getStudent(String sid) {
@@ -73,14 +73,14 @@ public class DatabaseSupport {
 
     public boolean addStudent(String studentId, student stud) {
         studentLookup sl = new studentLookup(studentId, stud);
-        studentLookup[] lookups = {};
 
         ArrayList<studentLookup> arrayListed = getStudents();
         arrayListed.add(sl);
-        lookups = arrayListed.toArray(lookups);
 
         try {
-            String lookupsString = JsonUtil.serialize(lookups);
+            DB_Student dbStud = new DB_Student();
+            dbStud.setStudents(arrayListed);
+            String lookupsString = JsonUtil.serialize(dbStud);
             System.out.println(lookupsString);
 
             Files.writeString(Paths.get("./StudentDB.txt"), lookupsString);

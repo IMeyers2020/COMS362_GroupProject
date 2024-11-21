@@ -12,7 +12,6 @@ public class StudentApplication {
     }
 
     public boolean addStudent(String sId, String name, String address, String SSN) {
-        System.out.println("in stud cont add stud");
         student stud = new student(sId, name, address, SSN, null, 0.00);
         System.out.println(name);
 
