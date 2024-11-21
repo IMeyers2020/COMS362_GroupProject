@@ -16,6 +16,8 @@ public class Offer {
     public boolean addProfessor(String pId, String name, String address, String AOS, ArrayList<genericPerson> refs) {
         professor newProf = new professor(pId, name, address, AOS, refs);
 
+        this.db.PrintProfessorOffer(newProf);
+
         return this.db.addProfessor(pId, newProf);
     }
 }

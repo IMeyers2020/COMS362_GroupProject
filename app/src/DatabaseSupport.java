@@ -66,6 +66,8 @@ public class DatabaseSupport {
         }
         return lookups.students != null ? new ArrayList<>(lookups.students) : new ArrayList<>();
     }
+
+    
     
 
     public studentLookup getStudent(String sid) {
@@ -305,6 +307,24 @@ public class DatabaseSupport {
             String lookupsString = JsonUtil.serialize(dbProf);
 
             Files.writeString(Paths.get("./ProfessorDB.txt"), lookupsString);
+        } catch (Exception e) {
+            System.err.println(e);
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean PrintProfessorOffer(professor prof) {
+        try {
+            String lookupsString = "Dear " + prof.getName() + ", \n\n" + "We are excited to offer you this fulltime offer as a "
+            + prof.getAOS() + " Professor at this University!\n\n" +
+            "Your compensation for this role will be $60,000/year.\n\n" +
+            "We look forward to working with you,\n" + "- The University";
+
+            String offerPath = "./" + prof.getName().trim() + "-OfferLetter.txt";
+
+            Files.writeString(Paths.get(offerPath), lookupsString);
         } catch (Exception e) {
             System.err.println(e);
             return false;
