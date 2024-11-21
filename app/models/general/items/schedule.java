@@ -1,16 +1,15 @@
 package models.general.items;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public class Schedule {
+public class schedule {
     private final int maxCreditHours = 18;
     private int creditHours;
-    private HashMap<String, Course> courses;
+    private ArrayList<courseLookup> courses;
 
-    public Schedule() {
+    public schedule() {
         creditHours = 0;
-        courses = new HashMap<>();
+        courses = new ArrayList<courseLookup>();
     }
 
     public ArrayList<courseLookup> getCourses() {
@@ -18,21 +17,32 @@ public class Schedule {
     }
 
     public boolean addCourse(Course c) {
-        if(courses.containsKey(c.getCID()))
+        if(c.getCreditHours() + creditHours > maxCreditHours) {
             return false;
-        if(c.getCreditHours() + creditHours > maxCreditHours)
-            return false;
-        courses.put(c.getCID(), c);
-        creditHours += c.getCreditHours();
+        }
+
+        courseLookup courseToAdd = new courseLookup(c.getCID(), c);
+        ArrayList<courseLookup> courseClone = getCourses();
+
+        courseClone.add(courseToAdd);
+
+        this.setCourses(courseClone);
+        this.setCreditHours(this.creditHours + c.getCreditHours());
         return true;
     }
 
+    public void setCreditHours(int creds) {
+        this.creditHours = creds;
+    }
+
     public boolean removeCourse(Course c) {
-        if(courses.containsKey(c.getCID())) {
-            courses.remove(c.getCID());
-            creditHours -= c.getCreditHours();
-            return true;
-        }
-        return false;
+        ArrayList<courseLookup> cls = this.getCourses();
+        cls.removeIf(cor -> cor.value.getCID() == c.getCID());
+        setCourses(cls);
+        return true;
+    }
+
+    public void setCourses(ArrayList<courseLookup> cl) {
+        this.courses = cl;
     }
 }

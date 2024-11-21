@@ -25,7 +25,9 @@ import models.finances.offices.AccountReceivableOffice;
 import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Payment;
 import models.general.items.Course;
+import models.general.items.courseLookup;
 import models.general.people.professor;
+import models.general.people.professorLookup;
 import models.general.people.student;
 import models.general.people.studentLookup;
 import src.DatabaseSupport;
@@ -110,9 +112,9 @@ public class UniversityProject {
         }
     }
 
-    public static void PrintProfessors(HashMap<String, professor> profs) {
-        for (professor prof : profs.values()) {
-            System.out.println(prof.getName() + ": " + prof.getPID());
+    public static void PrintProfessors(ArrayList<professorLookup> profs) {
+        for (professorLookup prof : profs) {
+            System.out.println(prof.value.getName() + ": " + prof.value.getPID());
         }
     }
 
@@ -210,7 +212,7 @@ public class UniversityProject {
     }
 
     public static void GetProfessors(ProfessorController pc) {
-        HashMap<String, professor> result = pc.getAllProfessors();
+        ArrayList<professorLookup> result = pc.getAllProfessors();
 
         clearScreen();
 
@@ -335,9 +337,7 @@ public class UniversityProject {
         }
     }
 
-    public static void CourseRegistration() {
-        RegistrationController rc = new RegistrationController();
-        CourseController cc = new CourseController();
+    public static void CourseRegistration(RegistrationController rc, CourseController cc) {
         
         String sid = null;
         String selection = null;
@@ -362,8 +362,8 @@ public class UniversityProject {
         switch(selection) {
             case "1":
                 System.out.println("Student " + sid + "'s courses:");
-                for (Course course : DatabaseSupport.getRegisteredCoursesForStudent(sid).values()) {
-                    System.out.println(course.getCID());
+                for (courseLookup course : cc.getRegisteredCoursesForStudent(sid)) {
+                    System.out.println(course.value.getCID());
                 }
                 break;
             case "2":
@@ -387,14 +387,14 @@ public class UniversityProject {
                 break;
             case "3":
                 System.out.println("What class would you like to remove?");
-                for (Course course : DatabaseSupport.getRegisteredCoursesForStudent(sid).values()) {
-                    System.out.println(course.getCID());
+                for (courseLookup course : cc.getRegisteredCoursesForStudent(sid)) {
+                    System.out.println(course.value.getCID());
                 }
                 if (s.hasNextLine())
                     selection = s.nextLine();
                 selected = offeredCourses.get(selection);
                 clearScreen();
-                if (selected != null && (new RegistrationController()).removeCourse(sid, selected))
+                if (selected != null && rc.removeCourse(sid, selected))
                     System.out.println("Operation succeeded, " + selected.getCID() + " has been removed from the schedule.");
                 else {
                     System.out.println("Operation failed, a course has not been removed from the schedule.");
@@ -600,6 +600,8 @@ public class UniversityProject {
         OfferController offerController = new OfferController(db);
         ProfessorController professorController = new ProfessorController(db);
         DormController dormController = new DormController(db, studentController);
+        RegistrationController rc = new RegistrationController(db);
+        CourseController cc = new CourseController(db);
 
         s = new Scanner(System.in);
 
@@ -614,7 +616,7 @@ public class UniversityProject {
                     HRTasks(offerController, professorController);
                     break;
                 case REGISTRATION:
-                    CourseRegistration();
+                    CourseRegistration(rc, cc);
                     break;
                 case ACCOUNT_RECEIVABLE:
                     PaymentService(studentController);

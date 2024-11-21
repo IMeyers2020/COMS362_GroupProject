@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Scanner;
 import java.util.Set;
 
 import models.dorms.DormInfo;
@@ -47,7 +48,11 @@ public class DatabaseSupport {
             }
             String everything = sb.toString();
 
-            lookups = JsonUtil.deserialize(everything, lookups.getClass());
+            if(everything.trim().equals("{}")) {
+                return new ArrayList<studentLookup>();
+            } else {
+                lookups = JsonUtil.deserialize(everything, lookups.getClass());
+            }
         } catch (Exception e) {
             return new ArrayList<studentLookup>();
         }
@@ -75,8 +80,11 @@ public class DatabaseSupport {
 
         try {
             String lookupsString = JsonUtil.serialize(lookups);
-            Files.writeString(Paths.get(new URI("./StudentDB.txt")), lookupsString);
+            System.out.println(lookupsString);
+
+            Files.writeString(Paths.get("./StudentDB.txt"), lookupsString);
         } catch (Exception e) {
+            System.err.println(e);
             return false;
         }
 
@@ -92,7 +100,7 @@ public class DatabaseSupport {
 
         try {
             String lookupsString = JsonUtil.serialize(lookups);
-            Files.writeString(Paths.get(new URI("./StudentDB.txt")), lookupsString);
+            Files.writeString(Paths.get("./StudentDB.txt"), lookupsString);
         } catch (Exception e) {
             return false;
         }
@@ -111,7 +119,7 @@ public class DatabaseSupport {
 
         try {
             String lookupsString = JsonUtil.serialize(lookups);
-            Files.writeString(Paths.get(new URI("./StudentDB.txt")), lookupsString);
+            Files.writeString(Paths.get("./StudentDB.txt"), lookupsString);
         } catch (Exception e) {
             return false;
         }
@@ -163,7 +171,7 @@ public class DatabaseSupport {
 
         try {
             String lookupsString = JsonUtil.serialize(lookups);
-            Files.writeString(Paths.get(new URI("./DormDB.txt")), lookupsString);
+            Files.writeString(Paths.get("./DormDB.txt"), lookupsString);
         } catch (Exception e) {
             return false;
         }
@@ -188,7 +196,7 @@ public class DatabaseSupport {
 
         try {
             String lookupsString = JsonUtil.serialize(lookups);
-            Files.writeString(Paths.get(new URI("./DormDB.txt")), lookupsString);
+            Files.writeString(Paths.get("./DormDB.txt"), lookupsString);
         } catch (Exception e) {
             return false;
         }
@@ -207,7 +215,7 @@ public class DatabaseSupport {
 
         try {
             String lookupsString = JsonUtil.serialize(lookups);
-            Files.writeString(Paths.get(new URI("./DormDB.txt")), lookupsString);
+            Files.writeString(Paths.get("./DormDB.txt"), lookupsString);
         } catch (Exception e) {
             return false;
         }
@@ -254,6 +262,17 @@ public class DatabaseSupport {
         return new ArrayList<professorLookup>(Arrays.asList(lookups));
     }
 
+    public professorLookup getProfessor(String pid) {
+        ArrayList<professorLookup> profs = getProfessors();
+
+        for(professorLookup p : profs) {
+            if(p.value.getPID() == pid) {
+                return p;
+            }
+        }
+        return null;
+    }
+
     public boolean addProfessor(professor prof) {
         professorLookup pl = new professorLookup(prof.getPID(), prof);
         studentLookup[] lookups = {};
@@ -264,7 +283,43 @@ public class DatabaseSupport {
 
         try {
             String lookupsString = JsonUtil.serialize(lookups);
-            Files.writeString(Paths.get(new URI("./ProfessorDB.txt")), lookupsString);
+            Files.writeString(Paths.get("./ProfessorDB.txt"), lookupsString);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean removeProfessor(String profId) {
+        professorLookup[] lookups = {};
+
+        ArrayList<professorLookup> arrayListed = getProfessors();
+        arrayListed.removeIf(s -> s.key == profId);
+        lookups = arrayListed.toArray(lookups);
+
+        try {
+            String lookupsString = JsonUtil.serialize(lookups);
+            Files.writeString(Paths.get("./ProfessorDB.txt"), lookupsString);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean updateProfessor(String profId, professor stud) {
+        professorLookup pl = new professorLookup(profId, stud);
+        professorLookup[] lookups = {};
+
+        ArrayList<professorLookup> arrayListed = getProfessors();
+        arrayListed.removeIf(s -> s.key == profId);
+        arrayListed.add(pl);
+        lookups = arrayListed.toArray(lookups);
+
+        try {
+            String lookupsString = JsonUtil.serialize(lookups);
+            Files.writeString(Paths.get("./ProfessorDB.txt"), lookupsString);
         } catch (Exception e) {
             return false;
         }
@@ -390,7 +445,7 @@ public class DatabaseSupport {
         return true;
     }
 
-    public ArrayList<Course> redCoursesForStudent(String sid) {
+    public ArrayList<courseLookup> getRegisteredCoursesForStudent(String sid) {
         studentLookup s = this.getStudent(sid);
         return s.value.getCurrentCourses();
     }
