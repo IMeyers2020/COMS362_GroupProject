@@ -250,12 +250,12 @@ public class DatabaseSupport {
 
     // PROFESSOR FUNCTIONS
     public ArrayList<professorLookup> getProfessors() {
-        professorLookup[] lookups = {};
-
-        try(BufferedReader br = new BufferedReader(new FileReader("./ProfessorDB.txt"))) {
+        DB_Professor lookups = new DB_Professor();
+    
+        try (BufferedReader br = new BufferedReader(new FileReader("./ProfessorDB.txt"))) {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
-        
+    
             while (line != null) {
                 sb.append(line);
                 sb.append(System.lineSeparator());
@@ -263,11 +263,21 @@ public class DatabaseSupport {
             }
             String everything = sb.toString();
 
-            lookups = JsonUtil.deserialize(everything, lookups.getClass());
+    
+            if (everything.trim().equals("{}")) {
+                return new ArrayList<professorLookup>();
+            } else {
+                DB_Professor dbProfessor = (DB_Professor) JsonUtil.deserialize(everything, DB_Professor.class);
+                
+                if (dbProfessor != null && dbProfessor.professors != null) {
+                    lookups.setProfessors(dbProfessor.professors);
+                }
+            }
         } catch (Exception e) {
+            e.printStackTrace();
             return new ArrayList<professorLookup>();
         }
-        return new ArrayList<professorLookup>(Arrays.asList(lookups));
+        return lookups.professors != null ? new ArrayList<>(lookups.professors) : new ArrayList<>();
     }
 
     public professorLookup getProfessor(String pid) {
@@ -281,18 +291,20 @@ public class DatabaseSupport {
         return null;
     }
 
-    public boolean addProfessor(professor prof) {
-        professorLookup pl = new professorLookup(prof.getPID(), prof);
-        studentLookup[] lookups = {};
+    public boolean addProfessor(String profId, professor prof) {
+        professorLookup sl = new professorLookup(profId, prof);
 
         ArrayList<professorLookup> arrayListed = getProfessors();
-        arrayListed.add(pl);
-        lookups = arrayListed.toArray(lookups);
+        arrayListed.add(sl);
 
         try {
-            String lookupsString = JsonUtil.serialize(lookups);
+            DB_Professor dbProf = new DB_Professor();
+            dbProf.setProfessors(arrayListed);
+            String lookupsString = JsonUtil.serialize(dbProf);
+
             Files.writeString(Paths.get("./ProfessorDB.txt"), lookupsString);
         } catch (Exception e) {
+            System.err.println(e);
             return false;
         }
 
