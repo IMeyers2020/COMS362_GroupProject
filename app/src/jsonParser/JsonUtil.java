@@ -1,14 +1,22 @@
 package src.jsonParser;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.*;
 
 public class JsonUtil {
 
     public static <T> String serialize(T obj) {
+        Scanner scn = new Scanner(System.in);
+
         if (obj == null) {
+            System.out.println("null");
+            scn.nextLine();
             return "null";
         }
+        System.out.println(obj.toString());
+        scn.nextLine();
+
         StringBuilder json = new StringBuilder("{");
 
         Field[] fields = obj.getClass().getDeclaredFields();
@@ -75,6 +83,10 @@ public class JsonUtil {
     public static <T> T deserialize(String jsonString, Class<T> clazz) {
         try {
             jsonString = jsonString.trim();
+
+            if(clazz.isArray()) {
+                return handleArrayDeserialization(jsonString, clazz);
+            }
             if (!jsonString.startsWith("{") || !jsonString.endsWith("}")) {
                 return handlePrimitiveTypes(jsonString, clazz);
             }
@@ -118,6 +130,31 @@ public class JsonUtil {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private static <T> T handleArrayDeserialization(String jsonString, Class<T> clazz) {
+        Scanner scn = new Scanner(System.in);
+        System.out.println("UTILLLL VVVV");
+        System.out.println(jsonString);
+        scn.nextLine();
+        if (!jsonString.startsWith("[") || !jsonString.endsWith("]")) {
+            throw new IllegalArgumentException("Invalid JSON array format.");
+        } jsonString = jsonString.substring(1, jsonString.length() - 1).trim();
+        // Remove outer brackets
+        String[] items = jsonString.split(", (?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+        // Split by commas outside quotes
+        Class<?> componentType = clazz.getComponentType();
+        @SuppressWarnings("unchecked")
+        T array = (T) Array.newInstance(componentType, items.length);
+        for (int i = 0; i < items.length; i++) {
+            String item = items[i].trim();
+            if (componentType.isPrimitive() || componentType == String.class || Number.class.isAssignableFrom(componentType) || Boolean.class == componentType) {
+                Array.set(array, i, handlePrimitiveTypes(item, componentType));
+            } else {
+                Array.set(array, i, deserialize(item, componentType));
+            }
+        }
+        return array;
     }
 
     // Function to be called to try and parse a list from a stringified JSON array.
