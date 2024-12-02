@@ -139,7 +139,7 @@ public class DatabaseSupport {
     public boolean PrintScheduleForStudent(student stud) {
         // Note: This currently assumes all classes get 1 hr time slots. Change this in the future to match possibility of different timeslots like other standard universities
         try {
-            final int stringWidth = 9; // 2-3 spaces on both sides ideally (3 if single digit time like 8:00AM, 2 if double like 11:00AM)
+            final int stringWidth = 10; // 2-3 spaces on both sides ideally (3 if single digit time like 8:00AM, 2 if double like 11:00AM)
             String timeLabelString = "  ";
             for(TIMES timeString : TIMES.values()) {
                 timeLabelString = timeLabelString + "|";
@@ -164,12 +164,16 @@ public class DatabaseSupport {
                         } else {
                             if(allCourses.get(courseId).getTimeOfClass().equals(timeString) && allCourses.get(courseId).getDaysOfClass().contains(dayString)) {
                                 courseFound = true;
+                                String idToShow = courseId.substring(0, 5); // Show at most 6 characters. I.E FIN200. Shouldn't have more than that
                                 if(dayClassString.charAt(dayClassString.length() - 1) != '|') {
                                     dayClassString = dayClassString.substring(0, dayClassString.length() - 1) + "|";
                                 }
-                                dayClassString = dayClassString + " ".repeat(Math.floorDiv((stringWidth - courseId.length()), 2));
-                                dayClassString = dayClassString + courseId;
-                                dayClassString = dayClassString + " ".repeat(Math.floorDiv((stringWidth - courseId.length()), 2));
+                                dayClassString = dayClassString + " ".repeat(Math.floorDiv((stringWidth - idToShow.length()), 2));
+                                dayClassString = dayClassString + idToShow;
+                                if(idToShow.length() % 2 == 1) { // If the ID is only 5 characters (Like CS200), add an extra space after to keep a consistent width
+                                    dayClassString = dayClassString + " ";
+                                }
+                                dayClassString = dayClassString + " ".repeat(Math.floorDiv((stringWidth - idToShow.length()), 2));
                                 dayClassString = dayClassString + "|";
                                 break;
                             }
@@ -182,7 +186,7 @@ public class DatabaseSupport {
                 daysString = daysString + dayClassString + "\n";
             }
 
-            String returnString = "  Schedule for " + stud.getName() + "\n\n"
+            String returnString = "   Schedule for " + stud.getName() + "\n\n"
             + timeLabelString + "\n"
             + daysString;
 
