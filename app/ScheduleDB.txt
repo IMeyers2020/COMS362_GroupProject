@@ -1,1 +1,1 @@
-{"schedules":[{"key":"145_schedule","value":{"maxCreditHours":18,"creditHours":7,"courses":["","SE200","FIN300"],"scheduleId":"145_schedule"}}]}
+{"schedules":[{"key":"146_schedule","value":{"maxCreditHours":18,"creditHours":0,"courses":[""],"scheduleId":"146_schedule"}},{"key":"135_schedule","value":{"maxCreditHours":18,"creditHours":10,"courses":["","COMS100","COMS200","FIN300"],"scheduleId":"135_schedule"}}]}

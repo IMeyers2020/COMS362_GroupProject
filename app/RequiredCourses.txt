@@ -1,5 +1,5 @@
 Required Courses for Computer Science
-COMS400
-COMS300
-COMS200
 COMS100
+COMS200
+COMS300
+COMS400
