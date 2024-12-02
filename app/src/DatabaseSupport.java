@@ -28,6 +28,8 @@ import models.general.people.professorLookup;
 import models.general.people.student;
 import models.general.people.studentLookup;
 import models.finances.paymentServices.ScholarshipLookup;
+import src.constants.DAYS;
+import src.constants.TIMES;
 import src.jsonParser.JsonUtil;
 
 
@@ -126,6 +128,67 @@ public class DatabaseSupport {
             String lookupsString = JsonUtil.serialize(dbStud);
 
             Files.writeString(Paths.get("./StudentDB.txt"), lookupsString);
+        } catch (Exception e) {
+            System.err.println(e);
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean PrintScheduleForStudent(student stud) {
+        // Note: This currently assumes all classes get 1 hr time slots. Change this in the future to match possibility of different timeslots like other standard universities
+        try {
+            final int stringWidth = 9; // 2-3 spaces on both sides ideally (3 if single digit time like 8:00AM, 2 if double like 11:00AM)
+            String timeLabelString = "  ";
+            for(TIMES timeString : TIMES.values()) {
+                timeLabelString = timeLabelString + "|";
+                timeLabelString = timeLabelString + " ".repeat(Math.floorDiv((stringWidth - timeString.label.length()), 2));
+                timeLabelString = timeLabelString + timeString.label;
+                timeLabelString = timeLabelString + " ".repeat(Math.ceilDiv((stringWidth - timeString.label.length()), 2));
+            }
+
+            ArrayList<String> courseIds = getCoursesForStudent(stud.getStudentId());
+            HashMap<String, Course> allCourses = getAllCourses();
+
+            String daysString = "";
+            for(DAYS dayString : DAYS.values()) {
+                String dayClassString = dayString.label + " |";
+                for(TIMES timeString : TIMES.values()) {
+                    boolean courseFound = false;
+                    for(String courseId : courseIds) {
+                        Course currentCourse = allCourses.get(courseId);
+
+                        if(currentCourse == null || currentCourse.getTimeOfClass() == null || currentCourse.getDaysOfClass() == null || currentCourse.getDaysOfClass().size() == 0) {
+                            continue;
+                        } else {
+                            if(allCourses.get(courseId).getTimeOfClass().equals(timeString) && allCourses.get(courseId).getDaysOfClass().contains(dayString)) {
+                                courseFound = true;
+                                if(dayClassString.charAt(dayClassString.length() - 1) != '|') {
+                                    dayClassString = dayClassString.substring(0, dayClassString.length() - 1) + "|";
+                                }
+                                dayClassString = dayClassString + " ".repeat(Math.floorDiv((stringWidth - courseId.length()), 2));
+                                dayClassString = dayClassString + courseId;
+                                dayClassString = dayClassString + " ".repeat(Math.floorDiv((stringWidth - courseId.length()), 2));
+                                dayClassString = dayClassString + "|";
+                                break;
+                            }
+                        }
+                    }
+                    if(!courseFound) {
+                        dayClassString = dayClassString + "-".repeat(stringWidth + 1); // +1 to account for the '|' that we added to the labels
+                    }
+                }
+                daysString = daysString + dayClassString + "\n";
+            }
+
+            String returnString = "  Schedule for " + stud.getName() + "\n\n"
+            + timeLabelString + "\n"
+            + daysString;
+
+            String schedulePath = "./" + stud.getName().trim() + "-Schedule.txt";
+
+            Files.writeString(Paths.get(schedulePath), returnString);
         } catch (Exception e) {
             System.err.println(e);
             return false;
@@ -607,22 +670,30 @@ public class DatabaseSupport {
             scann.nextLine();
             return null;
         }
+
         return sched.value.getCourses();
     }
 
     public static HashMap<String, Course> getAllCourses() {
+        ArrayList<DAYS> MWF = new ArrayList<DAYS>();
+        MWF.add(DAYS.Monday);
+        MWF.add(DAYS.Wednesday);
+        MWF.add(DAYS.Friday);
+        ArrayList<DAYS> TR = new ArrayList<DAYS>();
+        TR.add(DAYS.Tuesday);
+        TR.add(DAYS.Thursday);
         HashMap<String, Course> map = new HashMap<String, Course>() {{
-            put("COMS100", new Course("COMS100", 3));
-            put("COMS200", new Course("COMS200", 3));
-            put("SE200", new Course("SE200", 3));
-            put("COMS300", new Course("COMS300", 3));
-            put("COMS400", new Course("COMS400", 4, Set.of("COMS100")));
-            put("SE400", new Course("SE400", 4, Set.of("SE200")));
-            put("COMS500", new Course("COMS500", 4, Set.of("COMS200")));
-            put("FIN100", new Course("FIN100", 3));
-            put("FIN200", new Course("FIN200", 3));
-            put("FIN300", new Course("FIN300", 4, Set.of("FIN100")));
-            put("FIN400", new Course("FIN400", 4, Set.of("FIN200")));
+            put("COMS100", new Course("COMS100", 3, TIMES.EightAM, MWF));
+            put("COMS200", new Course("COMS200", 3, TIMES.NineAM, MWF));
+            put("SE200", new Course("SE200", 3, TIMES.TenAM, MWF));
+            put("COMS300", new Course("COMS300", 3, TIMES.ElevenAM, MWF));
+            put("COMS400", new Course("COMS400", 4, Set.of("COMS100"), TIMES.EightAM, TR));
+            put("SE400", new Course("SE400", 4, Set.of("SE200"), TIMES.NineAM, TR));
+            put("COMS500", new Course("COMS500", 4, Set.of("COMS200"), TIMES.TenAM, TR));
+            put("FIN100", new Course("FIN100", 3, TIMES.ElevenAM, TR));
+            put("FIN200", new Course("FIN200", 3, TIMES.TwelvePM, MWF));
+            put("FIN300", new Course("FIN300", 4, Set.of("FIN100"), TIMES.TwelvePM, TR));
+            put("FIN400", new Course("FIN400", 4, Set.of("FIN200"), TIMES.OnePM, MWF));
         }};
         return map;
     }

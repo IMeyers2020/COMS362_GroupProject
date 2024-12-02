@@ -1,16 +1,10 @@
 
 import java.util.ArrayList;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Set;
 
 import models.academics.administrativeDepartments.admissions.controllers.ApplicationController;
-import models.academics.administrativeDepartments.admissions.controllers.StudentApplication;
 import models.academics.CourseController;
 import models.academics.MajorController;
 import models.academics.ProfessorController;
@@ -28,12 +22,8 @@ import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Payment;
 import models.general.items.Course;
 import models.general.items.Major;
-import models.general.items.courseLookup;
-import models.general.items.majorLookup;
 import models.general.people.genericPerson;
-import models.general.people.professor;
 import models.general.people.professorLookup;
-import models.general.people.student;
 import models.general.people.studentLookup;
 import src.DatabaseSupport;
 
@@ -42,6 +32,39 @@ public class UniversityProject {
 
     enum Departments {
         HUMAN_RESOURCES, ADMISSIONS, REGISTRATION, ACCOUNT_RECEIVABLE, EXIT
+    }
+
+    public static enum TIMES {
+        TwelveAM("12:00AM"),
+        OneAM("1:00AM"),
+        TwoAM("2:00AM"),
+        ThreeAM("3:00AM"),
+        FourAM("4:00AM"),
+        FiveAM("5:00AM"),
+        SixAM("6:00AM"),
+        SevenAM("7:00AM"),
+        EightAM("8:00AM"),
+        NineAM("9:00AM"),
+        TenAM("10:00AM"),
+        ElevenAM("11:00AM"),
+        TwelvePM("12:00PM"),
+        OnePM("1:00PM"),
+        TwoPM("2:00PM"),
+        ThreePM("3:00PM"),
+        FourPM("4:00PM"),
+        FivePM("5:00PM"),
+        SixPM("6:00PM"),
+        SevenPM("7:00PM"),
+        EightPM("8:00PM"),
+        NinePM("9:00PM"),
+        TenPM("10:00PM"),
+        ElevenPM("11:00PM");
+    
+        public final String label;
+    
+        private TIMES(String label) {
+            this.label = label;
+        }
     }
 
     public static void clearScreen() {
@@ -94,21 +117,6 @@ public class UniversityProject {
                 System.out.println("That is not a valid option.");
                 return getDepartment();
         }
-    }
-
-    public static HashMap<String, Course> initializeCourses() {
-        HashMap<String, Course> map = new HashMap<String, Course>();
-        Course one = new Course("one", 3);
-        map.put("one", one);
-        Course two = new Course("two", 3);
-        map.put("two", two);
-        Course three = new Course("three", 3);
-        map.put("three", three);
-        Course four = new Course("four", 3, Set.of("one", "two"));
-        map.put("four", four);
-        Course five = new Course("five", 3, Set.of("two", "three"));
-        map.put("five", five);
-        return map;
     }
 
     public static void PrintStudents(ArrayList<studentLookup> students) {
@@ -432,6 +440,8 @@ public class UniversityProject {
                     }
                     index++;
                 }
+                
+                cc.OutputCoursesForStudent(sid);
                 break;
             case "2":
                 System.out.println("What class would you like to register for?");
