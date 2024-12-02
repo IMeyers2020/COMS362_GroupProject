@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
 import models.dorms.DormInfo;
@@ -592,15 +593,18 @@ public class DatabaseSupport {
 
 
     public ArrayList<String> getCoursesForStudent(String sid) {
+        Scanner scann = new Scanner(System.in);
         studentLookup student = getStudent(sid);
         if(student == null || student.value.getScheduleId() == null) {
             System.err.println("Failed to find courses, unable to get Schedule from given StudentId");
+            scann.nextLine();
             return null;
         }
 
         scheduleLookup sched = getSchedule(student.value.getScheduleId());
         if(sched == null || sched.value.getScheduleId() == null) {
             System.err.println("Failed to find courses, unable to find a Schedule matching the ScheduleId on that student");
+            scann.nextLine();
             return null;
         }
         return sched.value.getCourses();

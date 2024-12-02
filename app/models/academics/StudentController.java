@@ -2,7 +2,6 @@ package models.academics;
 
 import java.util.ArrayList;
 
-import models.general.items.schedule;
 import models.general.items.scheduleLookup;
 import models.general.people.student;
 import models.general.people.studentLookup;

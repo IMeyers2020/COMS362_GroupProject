@@ -399,12 +399,38 @@ public class UniversityProject {
         switch(selection) {
             case "1":
                 System.out.println("Student " + sid + "'s major(s):");
-                for (String major : rc.viewRegisteredMajors(sid)) {
-                    System.out.println(major + ", " + major);
+                int index = 0;
+                ArrayList<String> majors = rc.viewRegisteredMajors(sid);
+                int end = majors.size() - 1;
+                for (String major : majors) {
+                    if(major.trim().length() == 0) {
+                        continue;
+                    } else {
+                        System.out.print(major);
+                        if(index != end) {
+                            System.out.println(",");
+                        } else {
+                            System.out.println("");
+                        }
+                    }
+                    index++;
                 }
                 System.out.println("Student " + sid + "'s course(s):");
-                for (String course : rc.viewRegisteredCourses(sid)) {
-                    System.out.println(course);
+                index = 0;
+                ArrayList<String> courses = rc.viewRegisteredCourses(sid);
+                end = majors.size() - 1;
+                for (String course : courses) {
+                    if(course.trim().length() == 0) {
+                        continue;
+                    } else {
+                        System.out.print(course);
+                        if(index != end) {
+                            System.out.println(",");
+                        } else {
+                            System.out.println("");
+                        }
+                    }
+                    index++;
                 }
                 break;
             case "2":

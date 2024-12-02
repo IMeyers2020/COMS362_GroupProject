@@ -84,7 +84,7 @@ public class student {
     // Getters and Setters
     public String getStudentId() {
         if(this.schedId == null || this.schedId.length() == 0) {
-            this.schedId = studentId + "_schedule";
+            setStudentId(studentId + "_schedule");
         }
         return studentId;
     }
