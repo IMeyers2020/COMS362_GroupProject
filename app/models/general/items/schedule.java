@@ -6,10 +6,17 @@ public class schedule {
     private final int maxCreditHours = 18;
     private int creditHours;
     private ArrayList<String> courses;
+    private String scheduleId;
 
     public schedule() {
         creditHours = 0;
         courses = new ArrayList<String>();
+    }
+
+    public schedule(String schedId) {
+        creditHours = 0;
+        courses = new ArrayList<String>();
+        this.scheduleId = schedId;
     }
 
     public ArrayList<String> getCourses() {
@@ -48,5 +55,12 @@ public class schedule {
 
     public void setCourses(ArrayList<String> cl) {
         this.courses = cl;
+    }
+
+    public String getScheduleId() {
+        return this.scheduleId;
+    }
+    public void setScheduleId(String sId) {
+        this.scheduleId = sId;
     }
 }

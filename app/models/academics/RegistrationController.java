@@ -1,11 +1,9 @@
 package models.academics;
 import java.util.ArrayList;
 
-import models.academics.items.Registration;
 import models.general.items.Course;
 import models.general.items.Major;
-import models.general.items.courseLookup;
-import models.general.items.majorLookup;
+import models.general.items.scheduleLookup;
 import models.general.people.studentLookup;
 import src.DatabaseSupport;
 
@@ -19,21 +17,42 @@ public class RegistrationController {
 
     public boolean addCourse(String sid, Course c) {
         studentLookup stud = this.db.getStudent(sid);
-        stud.value.addCourse(c);
-        this.db.updateStudent(sid, stud.value);
+        if(stud == null || stud.value.getScheduleId() == null) {
+            System.err.println("Failed to add course, unable to get Schedule from given StudentId");
+            return false;
+        }
+
+        scheduleLookup sched = this.db.getSchedule(stud.value.getScheduleId());
+        if(sched == null || sched.value.getScheduleId() == null) {
+            System.err.println("Failed to add course, unable to find a Schedule matching the ScheduleId on that student");
+            return false;
+        }
+        sched.value.addCourse(c);
+        this.db.updateSchedule(sched.key, sched.value);
+        this.db.updateStudent(stud.key, stud.value);
         return true;
     }
 
     public boolean removeCourse(String sid, Course c) {
         studentLookup stud = this.db.getStudent(sid);
-        stud.value.removeCourse(c);
-        this.db.updateStudent(sid, stud.value);
+        if(stud == null || stud.value.getScheduleId() == null) {
+            System.err.println("Failed to remove course, unable to get Schedule from given StudentId");
+            return false;
+        }
+
+        scheduleLookup sched = this.db.getSchedule(stud.value.getScheduleId());
+        if(sched == null || sched.value.getScheduleId() == null) {
+            System.err.println("Failed to remove course, unable to find a Schedule matching the ScheduleId on that student");
+            return false;
+        }
+        sched.value.removeCourse(c);
+        this.db.updateSchedule(sched.key, sched.value);
+        this.db.updateStudent(stud.key, stud.value);
         return true;
     }
 
     public ArrayList<String> viewRegisteredCourses(String sid) {
-        studentLookup stud = this.db.getStudent(sid);
-        return stud.value.getCurrentCourses();
+        return this.db.getCoursesForStudent(sid);
     }
 
     public boolean addMajor(String sid, Major m) {

@@ -1,19 +1,13 @@
 package models.general.people;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Scholarship;
-import models.general.items.Course;
 import models.general.items.Major;
-import models.general.items.courseLookup;
-import models.general.items.majorLookup;
-import models.general.items.schedule;
 
 public class student {
-    private schedule sched;
-    private List<String> completedCourses;
+    private String schedId;
     private ArrayList<String> majors;
     private String studentId;      // Unique identifier for the student
     private String name;           // Full name of the student
@@ -24,22 +18,18 @@ public class student {
     private String ssn;
     private String dormId;
 
-
     public student(String studentId, String name, String address, String ssn, FinancialInfo financialInfo, double accountBalance, ArrayList<Scholarship> scholarships) {
         this.studentId = studentId;
         this.name = name;
         this.financialInfo = financialInfo;
         this.accountBalance = accountBalance;
-        sched = new schedule();
-        completedCourses = new ArrayList<>();
+        this.schedId = studentId + "_schedule";
         majors = new ArrayList<>();
         this.address = address;
         this.ssn = ssn;
     }
 
     public student() {
-        sched = new schedule();
-        completedCourses = new ArrayList<>();
         majors = new ArrayList<>();
     }
 
@@ -57,20 +47,9 @@ public class student {
 
     public String getDormId() { return dormId; }
 
-    public ArrayList<String> getCurrentCourses() { return sched.getCourses(); }
+    public void setScheduleId(String s) { this.schedId = s; }
 
-    public boolean addCourse(Course c) {
-        if (completedCourses.containsAll(c.getPrereqs())){
-            return sched.addCourse(c);
-        }
-        return false;
-    }
-
-    public boolean removeCourse(Course c) { return sched.removeCourse(c); }
-
-    public void setschedule(schedule s) { sched = s; }
-
-    public schedule getschedule() { return sched; }
+    public String getScheduleId() { return this.schedId; }
 
     public ArrayList<String> getMajors() { return majors; }
 
@@ -104,6 +83,9 @@ public class student {
     
     // Getters and Setters
     public String getStudentId() {
+        if(this.schedId == null || this.schedId.length() == 0) {
+            this.schedId = studentId + "_schedule";
+        }
         return studentId;
     }
 
