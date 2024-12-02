@@ -339,11 +339,42 @@ public class UniversityProject {
         s.nextLine();
     }
 
+    public static void UpdateProfessor(ProfessorController pc) {
+        System.out.println("Please enter professor id:");
+        String sid = s.nextLine();
+
+        System.out.println("What action would you like to perform?");
+        System.out.println("1. Add Class");
+        System.out.println("2. Update Class");
+        System.out.println("3. Delete Class");
+        String name = s.nextLine();
+
+        ArrayList<genericPerson> refs = AddReferences();
+
+        boolean result = pc.addProfessor(sid, name, address, aos, refs);
+
+        clearScreen();
+
+        if(result) {
+            System.out.println("Professor successfully added!");
+        } else {
+            System.err.println("Failed to add professer. Error: Professor with that Id already exists");
+        }
+
+        s.nextLine();
+    }
+
+    public static void PrintProfessorsClassList(ProfessorController pc) {
+
+    }
+
     public static void HRTasks(OfferController oc, ProfessorController pc) {
         
         System.out.println("What would you like to do?");
         System.out.println("1. Add Professor");
-        System.out.println("2. View All Professors");
+        System.out.println("2. Update Professor Class List");
+        System.out.println("3. View All Professors");
+        System.out.println("4. Print Professor Class List");
 
         String selection = s.nextLine();
 
@@ -358,10 +389,26 @@ public class UniversityProject {
 
             case "2":
             case "2.":
-            case "2. View All Professors":
+            case "2. Update Professor Class List":
+            case "Update Professor Class List":
+                clearScreen();
+                UpdateProfessor(pc);
+                break;
+
+            case "3":
+            case "3.":
+            case "3. View All Professors":
             case "View All Professors":
                 clearScreen();
                 GetProfessors(pc);
+                break;
+
+            case "4":
+            case "4.":
+            case "4. Print Professor Class List":
+            case "Print Professor Class List":
+                clearScreen();
+                PrintProfessorsClassList(pc);
                 break;
         
             default:
