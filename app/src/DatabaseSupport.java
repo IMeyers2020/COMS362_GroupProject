@@ -28,7 +28,6 @@ import models.general.people.professorLookup;
 import models.general.people.student;
 import models.general.people.studentLookup;
 import models.finances.paymentServices.Scholarship;
-import models.finances.paymentServices.ScholarshipLookup;
 import src.constants.DAYS;
 import src.constants.TIMES;
 import src.jsonParser.JsonUtil;
