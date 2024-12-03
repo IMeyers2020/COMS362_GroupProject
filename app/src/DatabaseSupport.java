@@ -171,10 +171,7 @@ public class DatabaseSupport {
                                 }
                                 dayClassString = dayClassString + " ".repeat(Math.floorDiv((stringWidth - idToShow.length()), 2));
                                 dayClassString = dayClassString + idToShow;
-                                if(idToShow.length() % 2 == 1) { // If the ID is only 5 characters (Like CS200), add an extra space after to keep a consistent width
-                                    dayClassString = dayClassString + " ";
-                                }
-                                dayClassString = dayClassString + " ".repeat(Math.floorDiv((stringWidth - idToShow.length()), 2));
+                                dayClassString = dayClassString + " ".repeat(Math.ceilDiv((stringWidth - idToShow.length()), 2));
                                 dayClassString = dayClassString + "|";
                                 break;
                             }
