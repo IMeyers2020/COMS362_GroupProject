@@ -21,7 +21,8 @@ public class ScholarshipController {
         }
 
         ArrayList<Scholarship> scholarships = s.getScholarships();
-        if (scholarships.isEmpty()) {
+
+        if (!scholarships.contains("")) {
             for (Scholarship scholarship : scholarships) {
                 // Check if the current scholarship's name matches the provided name
                 if (scholarship.getScholarshipName().equalsIgnoreCase(scholarshipName)) {

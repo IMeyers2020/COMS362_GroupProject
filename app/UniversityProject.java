@@ -711,9 +711,15 @@ public class UniversityProject {
         studentLookup curStudent = sc.getStudent(userIn);
 
         System.out.println("What is the name of the scholarship the student would like to add?");
-        userIn = s.nextLine();
 
+        StringBuilder availableScholarships = new StringBuilder();
         ArrayList<Scholarship> existingScholarships = db.getScholarships();
+        for (Scholarship scholarship : existingScholarships) {
+            availableScholarships.append(scholarship.getScholarshipName());
+            availableScholarships.append("    ");
+        }
+        System.out.println("Available Scholarships: " + availableScholarships.toString());
+        userIn = s.nextLine();
         for (Scholarship scholarship : existingScholarships) {
             if (scholarship.getScholarshipName().equalsIgnoreCase(userIn)) {
                 curScholarship.setScholarshipAmount(scholarship.getScholarshipAmount()); 

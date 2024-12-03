@@ -41,9 +41,9 @@ public class AccountReceivableOffice {
         String receiptContent = "------ FINANCIAL INFORMATION RECEIPT ------\n" +
                             "Student Name: " + studentName + "\n" +
                             "Student ID: " + studentId + "\n" +
-                            "Card Type: $" + cardType + "\n" +
+                            "Card Type: " + cardType + "\n" +
                             "Card Number: " + cardNum + "\n" +
-                            "Billing Address: $" + billingAddress + "\n" +
+                            "Billing Address: " + billingAddress + "\n" +
                             "-----------------------------------------------\n";
         // Define the file name with the student ID
         String baseFileName = "FI_receipt_" + studentId + ".txt";
