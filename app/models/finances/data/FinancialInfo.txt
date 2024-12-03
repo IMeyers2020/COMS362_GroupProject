@@ -1,1 +1,1 @@
-[{"cardType":"debit","cardNumber":"1234123412341234","billingAddress":"4321st Street Ames Iowa 50014","studentId":"12345"},{"cardType":"credit","cardNumber":"1234567890123456","billingAddress":"Bruh St bruh bruh 12345","studentId":"54321"}]
+[{"cardType":"credit","cardNumber":"1234123412341234","billingAddress":"Bruh St Bruh Bruh 11111","studentId":"98765"}]

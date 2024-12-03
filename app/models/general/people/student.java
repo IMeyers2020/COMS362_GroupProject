@@ -130,7 +130,10 @@ public class student {
     }
 
     public void setScholarships(Scholarship scholarship) {
-        scholarships.add(scholarship);
+        if (!scholarships.isEmpty() && scholarships.contains("")) {
+            scholarships.remove(0); // Remove the blank object or empty entry at index 0
+        }
+        scholarships.add(scholarship); 
     }
 
     // Optional: Method to check if the student has a positive account balance

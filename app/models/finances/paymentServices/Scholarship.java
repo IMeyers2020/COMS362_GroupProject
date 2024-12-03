@@ -4,13 +4,27 @@ public class Scholarship {
     private String scholarshipId;
     private String scholarshipName;
     private double scholarshipAmount;
+    private boolean isApplied;
 
     public Scholarship () {}
 
-    public Scholarship (String scholarshipId, String scholarshipName, double scholarshipAmount) {
+    public Scholarship (String scholarshipId, String scholarshipName, double scholarshipAmount, boolean isApplied) {
         this.scholarshipId = scholarshipId;
         this.scholarshipName = scholarshipName;
         this.scholarshipAmount = scholarshipAmount;
+        this.isApplied = false;
+    }
+
+    public void setApplied() {
+        this.isApplied = true;
+    }
+
+    public boolean checkIsApplied() {
+        if (this.isApplied == true) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public String getScholarshipId() {

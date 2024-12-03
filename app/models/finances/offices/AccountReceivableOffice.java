@@ -35,7 +35,7 @@ public class AccountReceivableOffice {
         return db.updateFinancialInfo(financialInfo);
     }
 
-    public boolean addStudentPayment(student student, Payment payment) throws IOException{
+    public boolean addStudentPayment(student student, Payment payment, double scholarshipAmount) throws IOException{
         if (student.getFinancialInfo() == null) {
             System.out.println("Student does not have financial information on file.");
             return false;
@@ -47,7 +47,7 @@ public class AccountReceivableOffice {
         }
 
         if (processPayment(payment)) {
-            student.setAccountBalance(student.getAccountBalance() - payment.getAmount());
+            student.setAccountBalance(student.getAccountBalance() - payment.getAmount() - scholarshipAmount);
             DatabaseSupport db = new DatabaseSupport();
             db.updateStudent(student.getStudentId(), student);
 

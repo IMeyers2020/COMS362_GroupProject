@@ -626,7 +626,30 @@ public class UniversityProject {
         if (curStudent != null) {
             foundStudent = true;
         }
-        System.out.println("Account balance of: " + curStudent.value.getAccountBalance());
+
+        ArrayList<Scholarship> scholarships = curStudent.value.getScholarships();
+        StringBuilder scholarshipBuilder = new StringBuilder();
+        double scholarshipAmount = 0;
+        for(Scholarship scholarship: scholarships) {
+            if (scholarship.checkIsApplied() == false) {
+                scholarship.setApplied();
+                scholarshipAmount+=(scholarship.getScholarshipAmount());
+                scholarshipBuilder.append(scholarship.getScholarshipName());
+                scholarshipBuilder.append("  ");
+            } else {
+                scholarshipBuilder.append(scholarship.getScholarshipName());
+                scholarshipBuilder.append("(applied)  ");
+            }
+            
+        }
+        System.out.println("Account balance of: " + curStudent.value.getAccountBalance()); 
+        System.out.println("Scholarships: ");
+        System.out.println("--------------");
+        System.out.println(scholarshipBuilder.toString());
+        System.out.println("--------------");
+        System.out.println("Account balance after scholarships: " + (curStudent.value.getAccountBalance() - + scholarshipAmount));
+        System.out.println();
+
         System.out.println("Use saved payment information? (Y or N)");
         userIn = s.nextLine();
         if (userIn.equals("Y")) {
@@ -663,7 +686,7 @@ public class UniversityProject {
 
         try {
             AccountReceivableOffice aro = new AccountReceivableOffice();
-            boolean result = aro.addStudentPayment(curStudent.value, payment);
+            boolean result = aro.addStudentPayment(curStudent.value, payment, scholarshipAmount);
 
             if (result) {
                 System.out.println("Payent processed successfully.");
