@@ -6,14 +6,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -22,15 +20,17 @@ import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Payment;
 import models.general.items.Course;
 import models.general.items.Major;
-import models.general.items.courseLookup;
 import models.general.items.dormLookup;
-import models.general.items.majorLookup;
+import models.general.items.schedule;
+import models.general.items.scheduleLookup;
 import models.general.people.professor;
 import models.general.people.professorLookup;
 import models.general.people.student;
 import models.general.people.studentLookup;
 import models.finances.paymentServices.Scholarship;
 import models.finances.paymentServices.ScholarshipLookup;
+import src.constants.DAYS;
+import src.constants.TIMES;
 import src.jsonParser.JsonUtil;
 
 
@@ -66,7 +66,7 @@ public class DatabaseSupport {
             return new ArrayList<studentLookup>();
         }
         return lookups.students != null ? new ArrayList<>(lookups.students) : new ArrayList<>();
-    }
+    }   
 
     public studentLookup getStudent(String sid) {
         ArrayList<studentLookup> students = getStudents();
@@ -137,6 +137,171 @@ public class DatabaseSupport {
         return true;
     }
 
+    public boolean PrintScheduleForStudent(student stud) {
+        // Note: This currently assumes all classes get 1 hr time slots. Change this in the future to match possibility of different timeslots like other standard universities
+        try {
+            final int stringWidth = 10; // 2-3 spaces on both sides ideally (3 if single digit time like 8:00AM, 2 if double like 11:00AM)
+            String timeLabelString = "  ";
+            for(TIMES timeString : TIMES.values()) {
+                timeLabelString = timeLabelString + "|";
+                timeLabelString = timeLabelString + " ".repeat(Math.floorDiv((stringWidth - timeString.label.length()), 2));
+                timeLabelString = timeLabelString + timeString.label;
+                timeLabelString = timeLabelString + " ".repeat(Math.ceilDiv((stringWidth - timeString.label.length()), 2));
+            }
+
+            ArrayList<String> courseIds = getCoursesForStudent(stud.getStudentId());
+            HashMap<String, Course> allCourses = getAllCourses();
+
+            String daysString = "";
+            for(DAYS dayString : DAYS.values()) {
+                String dayClassString = dayString.label + " |";
+                for(TIMES timeString : TIMES.values()) {
+                    boolean courseFound = false;
+                    for(String courseId : courseIds) {
+                        Course currentCourse = allCourses.get(courseId);
+
+                        if(currentCourse == null || currentCourse.getTimeOfClass() == null || currentCourse.getDaysOfClass() == null || currentCourse.getDaysOfClass().size() == 0) {
+                            continue;
+                        } else {
+                            if(allCourses.get(courseId).getTimeOfClass().equals(timeString) && allCourses.get(courseId).getDaysOfClass().contains(dayString)) {
+                                courseFound = true;
+                                String idToShow = courseId.substring(0, 5); // Show at most 6 characters. I.E FIN200. Shouldn't have more than that
+                                if(dayClassString.charAt(dayClassString.length() - 1) != '|') {
+                                    dayClassString = dayClassString.substring(0, dayClassString.length() - 1) + "|";
+                                }
+                                dayClassString = dayClassString + " ".repeat(Math.floorDiv((stringWidth - idToShow.length()), 2));
+                                dayClassString = dayClassString + idToShow;
+                                if(idToShow.length() % 2 == 1) { // If the ID is only 5 characters (Like CS200), add an extra space after to keep a consistent width
+                                    dayClassString = dayClassString + " ";
+                                }
+                                dayClassString = dayClassString + " ".repeat(Math.floorDiv((stringWidth - idToShow.length()), 2));
+                                dayClassString = dayClassString + "|";
+                                break;
+                            }
+                        }
+                    }
+                    if(!courseFound) {
+                        dayClassString = dayClassString + "-".repeat(stringWidth + 1); // +1 to account for the '|' that we added to the labels
+                    }
+                }
+                daysString = daysString + dayClassString + "\n";
+            }
+
+            String returnString = "   Schedule for " + stud.getName() + "\n\n"
+            + timeLabelString + "\n"
+            + daysString;
+
+            String schedulePath = "./" + stud.getName().trim() + "-Schedule.txt";
+
+            Files.writeString(Paths.get(schedulePath), returnString);
+        } catch (Exception e) {
+            System.err.println(e);
+            return false;
+        }
+
+        return true;
+    }
+
+
+    // SCHEDULE FUNCTIONS
+    public ArrayList<scheduleLookup> getSchedules() {
+        DB_Schedule lookups = new DB_Schedule();
+    
+        try (BufferedReader br = new BufferedReader(new FileReader("./ScheduleDB.txt"))) {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+    
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            String everything = sb.toString();
+    
+            if (everything.trim().equals("{}")) {
+                return new ArrayList<scheduleLookup>();
+            } else {
+                DB_Schedule dbSchedule = (DB_Schedule) JsonUtil.deserialize(everything, DB_Schedule.class);
+    
+                if (dbSchedule != null && dbSchedule.schedules != null) {
+                    lookups.setSchedules(dbSchedule.schedules);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<scheduleLookup>();
+        }
+        return lookups.schedules != null ? new ArrayList<>(lookups.schedules) : new ArrayList<>();
+    }   
+
+    public scheduleLookup getSchedule(String sid) {
+        ArrayList<scheduleLookup> scheds = getSchedules();
+
+        for(scheduleLookup s : scheds) {
+            if(s.value.getScheduleId().equals(sid)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    public boolean addSchedule(String schedId, schedule sched) {
+        scheduleLookup sl = new scheduleLookup(schedId, sched);
+
+        ArrayList<scheduleLookup> arrayListed = getSchedules();
+        arrayListed.add(sl);
+
+        try {
+            DB_Schedule dbSched = new DB_Schedule();
+            dbSched.setSchedules(arrayListed);
+            String lookupsString = JsonUtil.serialize(dbSched);
+
+            Files.writeString(Paths.get("./ScheduleDB.txt"), lookupsString);
+        } catch (Exception e) {
+            System.err.println(e);
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean removeSchedule(String schedId) {
+        scheduleLookup[] lookups = {};
+
+        ArrayList<scheduleLookup> arrayListed = getSchedules();
+        arrayListed.removeIf(s -> s.key == schedId);
+        lookups = arrayListed.toArray(lookups);
+
+        try {
+            String lookupsString = JsonUtil.serialize(lookups);
+            Files.writeString(Paths.get("./ScheduleDB.txt"), lookupsString);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean updateSchedule(String schedId, schedule sched) {
+        scheduleLookup sl = new scheduleLookup(schedId, sched);
+
+        ArrayList<scheduleLookup> arrayListed = getSchedules();
+        arrayListed.removeIf(s -> s.key.equals(schedId));
+        arrayListed.add(sl);
+
+        try {
+            DB_Schedule dbSched = new DB_Schedule();
+            dbSched.setSchedules(arrayListed);
+            String lookupsString = JsonUtil.serialize(dbSched);
+
+            Files.writeString(Paths.get("./ScheduleDB.txt"), lookupsString);
+        } catch (Exception e) {
+            System.err.println(e);
+            return false;
+        }
+
+        return true;
+    }
 
     // DORM FUNCTIONS
     public ArrayList<dormLookup> getDorms() {
@@ -537,24 +702,44 @@ public class DatabaseSupport {
 
 
     public ArrayList<String> getCoursesForStudent(String sid) {
+        Scanner scann = new Scanner(System.in);
         studentLookup student = getStudent(sid);
+        if(student == null || student.value.getScheduleId() == null) {
+            System.err.println("Failed to find courses, unable to get Schedule from given StudentId");
+            scann.nextLine();
+            return null;
+        }
 
-        return student.value.getCurrentCourses();
+        scheduleLookup sched = getSchedule(student.value.getScheduleId());
+        if(sched == null || sched.value.getScheduleId() == null) {
+            System.err.println("Failed to find courses, unable to find a Schedule matching the ScheduleId on that student");
+            scann.nextLine();
+            return null;
+        }
+
+        return sched.value.getCourses();
     }
 
     public static HashMap<String, Course> getAllCourses() {
+        ArrayList<DAYS> MWF = new ArrayList<DAYS>();
+        MWF.add(DAYS.Monday);
+        MWF.add(DAYS.Wednesday);
+        MWF.add(DAYS.Friday);
+        ArrayList<DAYS> TR = new ArrayList<DAYS>();
+        TR.add(DAYS.Tuesday);
+        TR.add(DAYS.Thursday);
         HashMap<String, Course> map = new HashMap<String, Course>() {{
-            put("COMS100", new Course("COMS100", 3));
-            put("COMS200", new Course("COMS200", 3));
-            put("SE200", new Course("SE200", 3));
-            put("COMS300", new Course("COMS300", 3));
-            put("COMS400", new Course("COMS400", 4, Set.of("COMS100")));
-            put("SE400", new Course("SE400", 4, Set.of("SE200")));
-            put("COMS500", new Course("COMS500", 4, Set.of("COMS200")));
-            put("FIN100", new Course("FIN100", 3));
-            put("FIN200", new Course("FIN200", 3));
-            put("FIN300", new Course("FIN300", 4, Set.of("FIN100")));
-            put("FIN400", new Course("FIN400", 4, Set.of("FIN200")));
+            put("COMS100", new Course("COMS100", 3, TIMES.EightAM, MWF));
+            put("COMS200", new Course("COMS200", 3, TIMES.NineAM, MWF));
+            put("SE200", new Course("SE200", 3, TIMES.TenAM, MWF));
+            put("COMS300", new Course("COMS300", 3, TIMES.ElevenAM, MWF));
+            put("COMS400", new Course("COMS400", 4, Set.of("COMS100"), TIMES.EightAM, TR));
+            put("SE400", new Course("SE400", 4, Set.of("SE200"), TIMES.NineAM, TR));
+            put("COMS500", new Course("COMS500", 4, Set.of("COMS200"), TIMES.TenAM, TR));
+            put("FIN100", new Course("FIN100", 3, TIMES.ElevenAM, TR));
+            put("FIN200", new Course("FIN200", 3, TIMES.TwelvePM, MWF));
+            put("FIN300", new Course("FIN300", 4, Set.of("FIN100"), TIMES.TwelvePM, TR));
+            put("FIN400", new Course("FIN400", 4, Set.of("FIN200"), TIMES.OnePM, MWF));
         }};
         return map;
     }
@@ -584,8 +769,7 @@ public class DatabaseSupport {
     }
 
     public ArrayList<String> getRegisteredCoursesForStudent(String sid) {
-        studentLookup s = this.getStudent(sid);
-        return s.value.getCurrentCourses();
+        return this.getCoursesForStudent(sid);
     }
 
     public ArrayList<String> getRegisteredMajorsForStudent(String sid) {
