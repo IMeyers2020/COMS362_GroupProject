@@ -508,7 +508,7 @@ public class UniversityProject {
         String billingAddress = s.nextLine();
 
         try {
-            FinancialInfo financialInfo = new FinancialInfo(cardType, cardNum, billingAddress, currStud.value);
+            FinancialInfo financialInfo = new FinancialInfo(cardType, cardNum, billingAddress, currStud.value.getStudentId());
             AccountReceivableOffice aro = new AccountReceivableOffice();
             boolean result = aro.addStudentFinancialInfo(currStud.value, financialInfo);
     
@@ -563,7 +563,7 @@ public class UniversityProject {
         }
 
         try {
-            FinancialInfo newFI = new FinancialInfo(cardType, cardNumber, billingAddress, curStudent.value);
+            FinancialInfo newFI = new FinancialInfo(cardType, cardNumber, billingAddress, curStudent.value.getStudentId());
             AccountReceivableOffice aro = new AccountReceivableOffice();
             boolean result = aro.editStudentFinancialInfo(curStudent.value, newFI);
             if (result) {
@@ -652,10 +652,13 @@ public class UniversityProject {
         System.out.println("What is the name of the scholarship the student would like to add?");
         userIn = s.nextLine();
 
-        ArrayList<ScholarshipLookup> existingScholarships = db.getScholarships();
-        for (ScholarshipLookup scholarship : existingScholarships) {
-            if (scholarship.value.getScholarshipName().equalsIgnoreCase(userIn)) {
-                curScholarship = scholarship.value;
+        ArrayList<Scholarship> existingScholarships = db.getScholarships();
+        for (Scholarship scholarship : existingScholarships) {
+            if (scholarship.getScholarshipName().equalsIgnoreCase(userIn)) {
+                curScholarship.setScholarshipAmount(scholarship.getScholarshipAmount()); 
+                curScholarship.setScholarshipId(scholarship.getScholarshipId());
+                curScholarship.setScholarshipName(scholarship.getScholarshipName());
+                break;
             } 
         }
 
@@ -708,13 +711,14 @@ public class UniversityProject {
             case "Add Scholarship":
                 clearScreen();
                 addStudentScholarship(sc);
+                break;
             case "4":
             case "4. Edit Financial Information":
             case "4.":
             case "Edit Financial Information":
                 clearScreen();
                 editFinancialInfo(sc);
-
+                break;
         }
     }
 

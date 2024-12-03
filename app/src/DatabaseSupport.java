@@ -29,6 +29,7 @@ import models.general.people.professor;
 import models.general.people.professorLookup;
 import models.general.people.student;
 import models.general.people.studentLookup;
+import models.finances.paymentServices.Scholarship;
 import models.finances.paymentServices.ScholarshipLookup;
 import src.jsonParser.JsonUtil;
 
@@ -66,9 +67,6 @@ public class DatabaseSupport {
         }
         return lookups.students != null ? new ArrayList<>(lookups.students) : new ArrayList<>();
     }
-
-    
-    
 
     public studentLookup getStudent(String sid) {
         ArrayList<studentLookup> students = getStudents();
@@ -371,32 +369,51 @@ public class DatabaseSupport {
     
 
     public boolean putFinancialInfo(FinancialInfo fi) throws IOException{
-        String filePath = "app/models/finances/data/FinancialInfo.txt";
-        String jsonContent = JsonUtil.serialize(fi);
-
+        String filePath = "models/finances/data/FinancialInfo.txt";
         File file = new File(filePath);
-        boolean fileExists = file.exists();
+        List<FinancialInfo> financialInfoList = new ArrayList<>();
 
-        boolean isFirstObject = !fileExists || file.length() == 0;
-    
-        try (FileWriter fileWriter = new FileWriter(filePath, true);  
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
-    
-            if (isFirstObject) {
-                // Append the new object
-                bufferedWriter.write(jsonContent);
-            } else {
-                bufferedWriter.write(",");
-                bufferedWriter.write(jsonContent);
+        // Check if the file exists and has content
+        if (file.exists() && file.length() > 0) {
+            try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                // Deserialize existing JSON array into a list
+                String jsonContent = sb.toString();
+                financialInfoList = JsonUtil.deserializeArray(jsonContent, FinancialInfo.class);
             }
-    
-            return true;
         }
+
+        // Add the new FinancialInfo object to the list
+        financialInfoList.add(fi);
+
+        // Serialize the updated list back to the file
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath))) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("["); // Start of JSON array
+
+            for (int i = 0; i < financialInfoList.size(); i++) {
+                sb.append(JsonUtil.serialize(financialInfoList.get(i)));
+                if (i < financialInfoList.size() - 1) {
+                    sb.append(","); // Add comma between objects
+                }
+            }
+
+            sb.append("]"); // End of JSON array
+            bufferedWriter.write(sb.toString());
+        }
+
+        return true;
     }
 
     public boolean updateFinancialInfo(FinancialInfo fi) throws IOException {
-        String filePath = "app/models/finances/data/FinancialInfo.txt";
+        String filePath = "models/finances/data/FinancialInfo.txt";
         File file = new File(filePath);
+        int lineCount = 0;
 
         List<FinancialInfo> financialInfoList = new ArrayList<>();
         
@@ -407,11 +424,18 @@ public class DatabaseSupport {
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     sb.append(line);
+                    lineCount++;
                 }
                 
                 // Deserialize existing data into a list of FinancialInfo
-                String jsonContent = sb.toString();
-                financialInfoList = Arrays.asList(JsonUtil.deserialize(jsonContent, FinancialInfo[].class));
+                if (lineCount < 2) {
+                    String jsonContent = sb.toString();
+                    FinancialInfo dJsonContent = JsonUtil.deserialize(jsonContent, FinancialInfo.class);
+                    financialInfoList.add(dJsonContent);
+                }
+
+                String jsonArray = sb.toString();
+                financialInfoList = JsonUtil.deserializeArray(jsonArray, FinancialInfo.class);
             }
         }
 
@@ -430,9 +454,25 @@ public class DatabaseSupport {
             System.out.println("Previous financial information not found.");
         }
 
-        // Serialize the updated list back to the file
+        if (lineCount < 2) {
+            // Serialize back to the file
+            try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath))) {
+                String updatedJsonContent = JsonUtil.serialize(financialInfoList.get(0));
+                bufferedWriter.write(updatedJsonContent);
+            }
+        }
+
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath))) {
-            String updatedJsonContent = JsonUtil.serialize(financialInfoList);
+            StringBuilder sb = new StringBuilder();
+            sb.append("[");
+            for (int i = 0; i < financialInfoList.size(); i++) {
+                sb.append(JsonUtil.serialize(financialInfoList.get(i)));
+                if (i < financialInfoList.size() - 1) {
+                    sb.append(",");
+                }
+            }
+            sb.append("]");
+            String updatedJsonContent = sb.toString();
             bufferedWriter.write(updatedJsonContent);
         }
 
@@ -440,7 +480,7 @@ public class DatabaseSupport {
     }
 
     public boolean putPayment(Payment p) throws IOException{
-        String filePath = "app/models/finances/data/Payments.txt";
+        String filePath = "models/finances/data/Payments.txt";
         String jsonContent = JsonUtil.serialize(p);
 
         File file = new File(filePath);
@@ -463,33 +503,32 @@ public class DatabaseSupport {
         }
     }
 
-    public ArrayList<ScholarshipLookup> getScholarships() {
-        ScholarshipLookup[] lookups = {};
+    public ArrayList<Scholarship> getScholarships() {
+        List<Scholarship> lookups = new ArrayList<>();
 
-        try(BufferedReader br = new BufferedReader(new FileReader("./Scholarships.txt"))) {
+        try(BufferedReader br = new BufferedReader(new FileReader("models/finances/data/Scholarships.txt"))) {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
         
             while (line != null) {
                 sb.append(line);
-                sb.append(System.lineSeparator());
                 line = br.readLine();
             }
             String everything = sb.toString();
 
-            lookups = JsonUtil.deserialize(everything, lookups.getClass());
+            lookups = JsonUtil.deserializeArray(everything, Scholarship.class);
         } catch (Exception e) {
-            return new ArrayList<ScholarshipLookup>();
+            return new ArrayList<Scholarship>();
         }
-        return new ArrayList<>(Arrays.asList(lookups));
+        return new ArrayList<Scholarship>(lookups);
     }
 
 
-    public ScholarshipLookup getScholarship(String ssid) {
-        ArrayList<ScholarshipLookup> scholarships = getScholarships();
+    public Scholarship getScholarship(String ssid) {
+        ArrayList<Scholarship> scholarships = getScholarships();
 
-        for(ScholarshipLookup s : scholarships) {
-            if(s.value.getScholarshipId() == ssid) {
+        for(Scholarship s : scholarships) {
+            if(s.getScholarshipId() == ssid) {
                 return s;
             }
         }

@@ -6,16 +6,16 @@ public class FinancialInfo {
     private String cardType; // "debit" or "credit"
     private String cardNumber;
     private String billingAddress;
-    private student Student;
+    private String studentId;
 
     public FinancialInfo() { }
 
     // Constructor
-    public FinancialInfo(String cardType, String cardNumber, String billingAddress, student Student) {
+    public FinancialInfo(String cardType, String cardNumber, String billingAddress, String studentId) {
         this.cardType = cardType;
         this.cardNumber = cardNumber;
         this.billingAddress = billingAddress;
-        this.Student = Student;
+        this.studentId = studentId;
     }
 
     // Getters and Setters
@@ -43,11 +43,11 @@ public class FinancialInfo {
         this.billingAddress = billingAddress;
     }
 
-    public student getStudent() {
-        return Student;
+    public String getStudent() {
+        return studentId;
     }
 
-    public void setStudent(student Student) {
-        this.Student = Student;
+    public void setStudent(String studentId) {
+        this.studentId = studentId;
     }
 }

@@ -14,7 +14,7 @@ public class AccountReceivableOffice {
     public boolean addStudentFinancialInfo(student student, FinancialInfo financialInfo) throws IOException{
         if (validateFinancialInfo(financialInfo)) {    
             student.setFinancialInfo(financialInfo);
-            student.getFinancialInfo().setStudent(student);
+            financialInfo.setStudent(student.getStudentId());
             DatabaseSupport db = new DatabaseSupport();
             db.updateStudent(student.getStudentId(), student);
 
@@ -27,10 +27,8 @@ public class AccountReceivableOffice {
 
     public boolean editStudentFinancialInfo(student student, FinancialInfo financialInfo) throws IOException {
         DatabaseSupport db = new DatabaseSupport();
-        student.getFinancialInfo().setCardNumber(financialInfo.getCardNumber());
-        student.getFinancialInfo().setCardType(financialInfo.getCardType());
-        student.getFinancialInfo().setBillingAddress(financialInfo.getBillingAddress());
-        student.getFinancialInfo().setStudent(student);
+        financialInfo.setStudent(student.getStudentId());
+        student.setFinancialInfo(financialInfo);
         db.updateStudent(student.getStudentId(), student);
         System.out.println("Financial information successfully updated.");
     

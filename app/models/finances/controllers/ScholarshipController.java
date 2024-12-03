@@ -12,24 +12,25 @@ public class ScholarshipController {
         DatabaseSupport db = new DatabaseSupport();
         boolean scholarshipExists = false;
 
-        ArrayList<ScholarshipLookup> existingScholarships = db.getScholarships();
+        ArrayList<Scholarship> existingScholarships = db.getScholarships();
         
-        for(ScholarshipLookup scholarship : existingScholarships) {
-            if(scholarship.value.getScholarshipName().equalsIgnoreCase(scholarshipName)) {
+        for(Scholarship scholarship : existingScholarships) {
+            if(scholarship.getScholarshipName().equalsIgnoreCase(scholarshipName)) {
                 scholarshipExists = true;
             } 
         }
 
         ArrayList<Scholarship> scholarships = s.getScholarships();
-        
-        for (Scholarship scholarship : scholarships) {
-            // Check if the current scholarship's name matches the provided name
-            if (scholarship.getScholarshipName().equalsIgnoreCase(scholarshipName)) {
-                System.out.println("This student has already added this scholarship.");
-                return false;
+        if (scholarships.isEmpty()) {
+            for (Scholarship scholarship : scholarships) {
+                // Check if the current scholarship's name matches the provided name
+                if (scholarship.getScholarshipName().equalsIgnoreCase(scholarshipName)) {
+                    System.out.println("This student has already added this scholarship.");
+                    return false;
+                }
             }
         }
-
+        
         if (scholarshipExists) {
             return true;
         } else {

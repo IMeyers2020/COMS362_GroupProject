@@ -30,6 +30,7 @@ public class student {
         this.name = name;
         this.financialInfo = financialInfo;
         this.accountBalance = accountBalance;
+        this.scholarships = new ArrayList<>();
         sched = new schedule();
         completedCourses = new ArrayList<>();
         majors = new ArrayList<>();
@@ -41,6 +42,7 @@ public class student {
         sched = new schedule();
         completedCourses = new ArrayList<>();
         majors = new ArrayList<>();
+        scholarships = new ArrayList<>();  
     }
 
     public boolean canAffordDorm(double dormPrice) {
