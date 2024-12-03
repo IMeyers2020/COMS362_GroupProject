@@ -2,7 +2,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
-import java.util.Set;
 
 import models.academics.administrativeDepartments.admissions.controllers.ApplicationController;
 import models.academics.CourseController;
@@ -13,7 +12,6 @@ import models.academics.StudentController;
 import models.academics.administrativeDepartments.humanResources.controllers.OfferController;
 import models.dorms.DormController;
 import models.finances.paymentServices.Scholarship;
-import models.finances.paymentServices.ScholarshipLookup;
 import models.finances.controllers.ScholarshipController;
 import models.finances.controllers.FinancialInfoController;
 import models.finances.controllers.PaymentController;

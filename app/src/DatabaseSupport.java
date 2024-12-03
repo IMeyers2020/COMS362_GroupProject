@@ -300,6 +300,106 @@ public class DatabaseSupport {
         return true;
     }
 
+    // COURSE FUNCTIONS
+    public ArrayList<scheduleLookup> getAllCourses() {
+        DB_Course lookups = new DB_Course();
+    
+        try (BufferedReader br = new BufferedReader(new FileReader("./ScheduleDB.txt"))) {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+    
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            String everything = sb.toString();
+    
+            if (everything.trim().equals("{}")) {
+                return new ArrayList<scheduleLookup>();
+            } else {
+                DB_Schedule dbSchedule = (DB_Schedule) JsonUtil.deserialize(everything, DB_Schedule.class);
+    
+                if (dbSchedule != null && dbSchedule.schedules != null) {
+                    lookups.setSchedules(dbSchedule.schedules);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<scheduleLookup>();
+        }
+        return lookups.schedules != null ? new ArrayList<>(lookups.schedules) : new ArrayList<>();
+    }   
+
+    public scheduleLookup getSchedule(String sid) {
+        ArrayList<scheduleLookup> scheds = getSchedules();
+
+        for(scheduleLookup s : scheds) {
+            if(s.value.getScheduleId().equals(sid)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    public boolean addSchedule(String schedId, schedule sched) {
+        scheduleLookup sl = new scheduleLookup(schedId, sched);
+
+        ArrayList<scheduleLookup> arrayListed = getSchedules();
+        arrayListed.add(sl);
+
+        try {
+            DB_Schedule dbSched = new DB_Schedule();
+            dbSched.setSchedules(arrayListed);
+            String lookupsString = JsonUtil.serialize(dbSched);
+
+            Files.writeString(Paths.get("./ScheduleDB.txt"), lookupsString);
+        } catch (Exception e) {
+            System.err.println(e);
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean removeSchedule(String schedId) {
+        scheduleLookup[] lookups = {};
+
+        ArrayList<scheduleLookup> arrayListed = getSchedules();
+        arrayListed.removeIf(s -> s.key == schedId);
+        lookups = arrayListed.toArray(lookups);
+
+        try {
+            String lookupsString = JsonUtil.serialize(lookups);
+            Files.writeString(Paths.get("./ScheduleDB.txt"), lookupsString);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean updateSchedule(String schedId, schedule sched) {
+        scheduleLookup sl = new scheduleLookup(schedId, sched);
+
+        ArrayList<scheduleLookup> arrayListed = getSchedules();
+        arrayListed.removeIf(s -> s.key.equals(schedId));
+        arrayListed.add(sl);
+
+        try {
+            DB_Schedule dbSched = new DB_Schedule();
+            dbSched.setSchedules(arrayListed);
+            String lookupsString = JsonUtil.serialize(dbSched);
+
+            Files.writeString(Paths.get("./ScheduleDB.txt"), lookupsString);
+        } catch (Exception e) {
+            System.err.println(e);
+            return false;
+        }
+
+        return true;
+    }
+
     // DORM FUNCTIONS
     public ArrayList<dormLookup> getDorms() {
         dormLookup[] lookups = {};
