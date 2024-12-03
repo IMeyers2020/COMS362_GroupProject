@@ -550,6 +550,7 @@ public class UniversityProject {
     
             if (result) {
                 System.out.println("Financial information added successfully."); 
+                aro.printFinancialInfoReceipt(currStud.value);
             } else {
                 System.out.println("Failed to add financial information.");
             }
@@ -690,6 +691,7 @@ public class UniversityProject {
 
             if (result) {
                 System.out.println("Payent processed successfully.");
+                aro.printPaymentReceipt(payment, curStudent.value);
             } else {
                 System.out.println("Failed to Process Payment.");
             }

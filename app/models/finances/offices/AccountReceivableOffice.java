@@ -1,5 +1,8 @@
 package models.finances.offices;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import models.finances.paymentServices.Scholarship;
@@ -8,6 +11,9 @@ import models.finances.paymentServices.Payment;
 import models.general.people.student;
 import models.general.people.studentLookup;
 import src.DatabaseSupport;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class AccountReceivableOffice {
 
@@ -23,6 +29,34 @@ public class AccountReceivableOffice {
             System.out.println("Invalid financial information provided.");
             return false;
         }
+    }
+
+    public void printFinancialInfoReceipt(student student) {
+        String studentName = student.getName();
+        String studentId = student.getStudentId();
+        String cardType = student.getFinancialInfo().getCardType();
+        String cardNum = student.getFinancialInfo().getCardNumber();
+        String billingAddress = student.getFinancialInfo().getBillingAddress();
+        
+        String receiptContent = "------ FINANCIAL INFORMATION RECEIPT ------\n" +
+                            "Student Name: " + studentName + "\n" +
+                            "Student ID: " + studentId + "\n" +
+                            "Card Type: $" + cardType + "\n" +
+                            "Card Number: " + cardNum + "\n" +
+                            "Billing Address: $" + billingAddress + "\n" +
+                            "-----------------------------------------------\n";
+        // Define the file name with the student ID
+        String baseFileName = "FI_receipt_" + studentId + ".txt";
+        File file = new File("models/finances/receipts", baseFileName);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            // Write the receipt content to the file
+            writer.write(receiptContent);
+            System.out.println("Receipt has been written to " + baseFileName);
+        } catch (IOException e) {
+            System.err.println("Error writing the receipt to file: " + e.getMessage());
+        }
+        
     }
 
     public boolean editStudentFinancialInfo(student student, FinancialInfo financialInfo) throws IOException {
@@ -56,6 +90,42 @@ public class AccountReceivableOffice {
         } else {
             System.out.println("Payment failed.");
             return false;
+        }
+    }
+
+    public void printPaymentReceipt(Payment payment, student student) {
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+        
+        // Format the date
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        String formattedDate = currentDate.format(formatter); 
+        String studentName = student.getName();
+        String studentId = student.getStudentId();
+        double currentBalance = student.getAccountBalance();
+        
+        // Get payment details
+        double paymentAmount = payment.getAmount();
+        String paymentMethod = payment.getPaymentType();
+
+        String receiptContent = "------ PAYMENT RECEIPT ------\n" +
+                            "Date: " + formattedDate + "\n" +
+                            "Student Name: " + studentName + "\n" +
+                            "Student ID: " + studentId + "\n" +
+                            "Payment Amount: $" + paymentAmount + "\n" +
+                            "Payment Method: " + paymentMethod + "\n" +
+                            "Current Account Balance: $" + currentBalance + "\n" +
+                            "----------------------------\n";
+        // Define the file name with the student ID
+        String baseFileName = "payment_receipt_" + studentId + ".txt";
+        File file = new File("models/finances/receipts", baseFileName);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            // Write the receipt content to the file
+            writer.write(receiptContent);
+            System.out.println("Receipt has been written to " + baseFileName);
+        } catch (IOException e) {
+            System.err.println("Error writing the receipt to file: " + e.getMessage());
         }
     }
 
