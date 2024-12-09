@@ -1,7 +1,0 @@
------- FINANCIAL INFORMATION RECEIPT ------
-Student Name: Brandon Liao
-Student ID: 12345
-Card Type: $credit
-Card Number: 1234123412341234
-Billing Address: $1st Street Ames Iowa 50014
------------------------------------------------

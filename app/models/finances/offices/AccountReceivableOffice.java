@@ -69,6 +69,15 @@ public class AccountReceivableOffice {
         return db.updateFinancialInfo(financialInfo);
     }
 
+    public boolean deleteStudentFinancialInfo(student student, FinancialInfo financialInfo) throws IOException {
+        DatabaseSupport db = new DatabaseSupport();
+        student.removeFinancialInfo();
+        db.updateStudent(student.getStudentId(), student);
+        System.out.println("Financial information successfully deleted.");
+
+        return db.deleteFinancialInfo(financialInfo);
+    }
+
     public boolean addStudentPayment(student student, Payment payment, double scholarshipAmount) throws IOException{
         if (student.getFinancialInfo() == null) {
             System.out.println("Student does not have financial information on file.");
@@ -136,7 +145,12 @@ public class AccountReceivableOffice {
         return db.updateStudent(student.getStudentId(), student);
     }
 
+    public boolean deleteStudentScholarship(student student, Scholarship scholarship) {
+        student.removeScholarship(scholarship) ;
+        DatabaseSupport db = new DatabaseSupport();
 
+        return db.updateStudent(student.getStudentId(), student);
+    }
     private boolean validateFinancialInfo(FinancialInfo financialInfo) {
         // Add validation logic (e.g., regex for card number, check card type)
         return financialInfo.getCardNumber() != null && !financialInfo.getCardNumber().isEmpty();

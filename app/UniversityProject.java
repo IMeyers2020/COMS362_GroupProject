@@ -614,6 +614,43 @@ public class UniversityProject {
 
     }
 
+    public static void deleteFinancialInfo(StudentController sc) {
+        String userIn = null;
+
+        System.out.println("Enter the student's ID:");
+        userIn = s.nextLine();
+
+        studentLookup curStudent = sc.getStudent(userIn);
+        FinancialInfo curFinancialInfo = curStudent.value.getFinancialInfo();
+        if(curFinancialInfo == null) {
+            System.out.println("This student has no financial information on record.");
+            return;
+        }
+
+        System.out.println("Delete student's saved financial information? (Y or N)");
+        System.out.println("Saved Financial Information: ");
+        System.out.println("------------------------------");
+        System.out.println("Card Type: " + curFinancialInfo.getCardType());
+        System.out.println("Card Number: " + curFinancialInfo.getCardNumber());
+        System.out.println("Billing Address: " + curFinancialInfo.getBillingAddress());
+        System.out.println("------------------------------");
+        
+        userIn = s.nextLine();
+
+        if (userIn.equalsIgnoreCase("Y")) {
+            try {
+                AccountReceivableOffice aro = new AccountReceivableOffice();
+                boolean result = aro.deleteStudentFinancialInfo(curStudent.value, curFinancialInfo);
+            } catch (Exception e) {
+                System.err.println("An error occurred: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Transaction cancelled.");
+            return;
+        }
+
+    }
+
     public static void addPayment(StudentController sc) {
         Payment payment = new Payment();
         PaymentController pc = new PaymentController();
@@ -743,7 +780,49 @@ public class UniversityProject {
         } else {
             System.out.println("Failed to add scholarship.");
         }
-        
+    }
+
+    public static void deleteStudentScholarship(StudentController sc) {
+        Scholarship curScholarship = new Scholarship();
+
+        String userIn = null;
+        System.out.println("Enter the student's ID: ");
+        userIn = s.nextLine();
+        studentLookup curStudent = sc.getStudent(userIn);
+
+        System.out.println("What is the name of the scholarship you would like to delete?");
+
+        StringBuilder availableScholarships = new StringBuilder();
+        ArrayList<Scholarship> studentScholarships = curStudent.value.getScholarships();
+        for (Scholarship scholarship : studentScholarships) {
+            availableScholarships.append(scholarship.getScholarshipName());
+            availableScholarships.append("    ");
+        }
+        System.out.println("Available Scholarships: " + availableScholarships.toString());
+
+        userIn = s.nextLine();
+        boolean validatedScholarshipStatus = false;
+        while (!validatedScholarshipStatus) {
+            for (Scholarship scholarship : studentScholarships) {
+                if (scholarship.getScholarshipName().equalsIgnoreCase(userIn)) {
+                    curScholarship = scholarship;
+                    validatedScholarshipStatus = true;
+                    System.out.println("Validated scholarship status, please continue.");
+                    break;
+                } else {
+                    System.out.println("Entered name is not one of the available scholarships, please try again.");
+                    userIn = s.nextLine();
+                }
+            }
+        }
+
+        AccountReceivableOffice aro = new AccountReceivableOffice();
+        boolean result = aro.deleteStudentScholarship(curStudent.value, curScholarship);
+        if (result) {
+            System.out.println("Successfully deleted scholarship.");
+        } else {
+            System.out.println("Failed to delete scholarship.");
+        }
     }
 
     public static void PaymentService(StudentController sc) {
@@ -752,6 +831,8 @@ public class UniversityProject {
         System.out.println("2. Add Financial Information");
         System.out.println("3. Add Scholarship");
         System.out.println("4. Edit Financial Information");
+        System.out.println("5. Delete Financial Information");
+        System.out.println("6. Delete Scholarship");
 
         String selection = null;
         if (s.hasNextLine())
@@ -785,6 +866,19 @@ public class UniversityProject {
             case "Edit Financial Information":
                 clearScreen();
                 editFinancialInfo(sc);
+                break;
+            case "5":
+            case "5. Delete Financial Information":
+            case "5.":
+            case "Delete Financial Information":
+                clearScreen();
+                deleteFinancialInfo(sc);
+                break;
+            case "6":
+            case "6. Delete Scholarship":
+            case "6.":
+            case "Delete Scholarship":
+                clearScreen();
                 break;
         }
     }

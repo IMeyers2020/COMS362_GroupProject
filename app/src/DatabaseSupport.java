@@ -39,7 +39,7 @@ public class DatabaseSupport {
     // STUDENT FUNCTIONS
     public ArrayList<studentLookup> getStudents() {
         DB_Student lookups = new DB_Student();
-    
+
         try (BufferedReader br = new BufferedReader(new FileReader("./StudentDB.txt"))) {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
@@ -587,14 +587,7 @@ public class DatabaseSupport {
                     sb.append(line);
                     lineCount++;
                 }
-                
-                // Deserialize existing data into a list of FinancialInfo
-                if (lineCount < 2) {
-                    String jsonContent = sb.toString();
-                    FinancialInfo dJsonContent = JsonUtil.deserialize(jsonContent, FinancialInfo.class);
-                    financialInfoList.add(dJsonContent);
-                }
-
+    
                 String jsonArray = sb.toString();
                 financialInfoList = JsonUtil.deserializeArray(jsonArray, FinancialInfo.class);
             }
@@ -638,6 +631,66 @@ public class DatabaseSupport {
         }
 
         return isUpdated;
+    }
+
+    public boolean deleteFinancialInfo(FinancialInfo fi) throws IOException {
+        String filePath = "models/finances/data/FinancialInfo.txt";
+        File file = new File(filePath);
+        int lineCount = 0;
+
+        List<FinancialInfo> financialInfoList = new ArrayList<>();
+
+        // Check if the file exists and read its contents
+        if (file.exists() && file.length() > 0) {
+            try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath))) {
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                    lineCount++;
+                }
+
+                // Deserialize existing JSON array into a list
+                String jsonContent = sb.toString();
+                financialInfoList = JsonUtil.deserializeArray(jsonContent, FinancialInfo.class);
+            }
+        }
+
+        // Find and remove the matching FinancialInfo
+        boolean isDeleted = financialInfoList.removeIf(info -> info.getStudent().equals(fi.getStudent()));
+
+        // If not found
+        if (!isDeleted) {
+            System.out.println("Financial information not found.");
+            return false;
+        }
+
+        // Serialize the updated list back to the file
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath))) {
+            if (financialInfoList.isEmpty()) {
+                // If the list is empty, write nothing to the file (empty file)
+                bufferedWriter.write("");
+            } else if (financialInfoList.size() == 1) {
+                // Special case: only one item left, serialize it directly
+                String updatedJsonContent = JsonUtil.serialize(financialInfoList.get(0));
+                bufferedWriter.write(updatedJsonContent);
+            } else {
+                StringBuilder sb = new StringBuilder();
+                sb.append("[");
+                for (int i = 0; i < financialInfoList.size(); i++) {
+                    sb.append(JsonUtil.serialize(financialInfoList.get(i)));
+                    if (i < financialInfoList.size() - 1) {
+                        sb.append(",");
+                    }
+                }
+                sb.append("]");
+                String updatedJsonContent = sb.toString();
+                bufferedWriter.write(updatedJsonContent);
+            }
+        }
+
+        return true;
+
     }
 
     public boolean putPayment(Payment p) throws IOException{

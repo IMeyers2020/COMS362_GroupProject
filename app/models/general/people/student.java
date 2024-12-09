@@ -117,6 +117,14 @@ public class student {
         this.financialInfo = financialInfo;
     }
 
+    public boolean removeFinancialInfo() {
+        if (this.financialInfo.equals(null)) {
+            return false;
+        }
+        this.financialInfo = null;
+        return true;
+    }
+
     public double getAccountBalance() {
         return accountBalance;
     }
@@ -134,6 +142,15 @@ public class student {
             scholarships.remove(0); // Remove the blank object or empty entry at index 0
         }
         scholarships.add(scholarship); 
+    }
+
+    public boolean removeScholarship(Scholarship scholarship) {
+        if (scholarships == null || scholarships.isEmpty()) {
+            return false; // No scholarships to remove
+        }
+    
+        boolean isRemoved = scholarships.remove(scholarship); // Attempt to remove the specified scholarship
+        return isRemoved;
     }
 
     // Optional: Method to check if the student has a positive account balance
