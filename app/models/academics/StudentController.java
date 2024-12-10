@@ -52,6 +52,7 @@ public class StudentController {
     // move student from expelleddb to studentdb
     public boolean unexpelStudent(String sid) {
         studentLookup s = this.db.getExpelledStudent(sid);
+        // wipe explusion note, used as way of checking explusion boolean
         s.value.setExplusionNote(null);
         // if student is added to student db and removed from expelled db return true
         return this.db.addStudent(sid, s.value) && this.db.removeExpelledStudent(sid);

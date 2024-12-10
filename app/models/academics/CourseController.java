@@ -29,6 +29,12 @@ public class CourseController {
         return this.db.GetAllValidCourses();
     }
 
+    /**
+     *
+     * @param pId       P
+     * @param c
+     * @return
+     */
     public boolean addProfessorToCourse(String pId, courseLookup c) {
         courseLookup crsClone = c;
         crsClone.value.SetProfessorId(pId);
