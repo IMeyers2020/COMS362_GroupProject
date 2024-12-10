@@ -1,4 +1,5 @@
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,6 +9,8 @@ import java.util.Set;
 
 import models.academics.administrativeDepartments.admissions.controllers.ApplicationController;
 import models.academics.administrativeDepartments.admissions.controllers.StudentApplication;
+import models.Diningplan.Dplan;
+import models.Diningplan.Dplancontroller;
 import models.academics.CourseController;
 import models.academics.MajorController;
 import models.academics.ProfessorController;
@@ -42,7 +45,7 @@ public class UniversityProject {
     public static Scanner s;
 
     enum Departments {
-        HUMAN_RESOURCES, ADMISSIONS, REGISTRATION, ACCOUNT_RECEIVABLE, EXIT
+        HUMAN_RESOURCES, ADMISSIONS, REGISTRATION, ACCOUNT_RECEIVABLE, DINING_PLAN, EXIT
     }
 
     public static void clearScreen() {
@@ -57,6 +60,8 @@ public class UniversityProject {
         System.out.println("2. Admissions");
         System.out.println("3. Registration");
         System.out.println("4. Account Receivable");
+        System.out.println("5. Dining Plan");
+
         System.out.println("exit");
 
         String selection = s.nextLine();
@@ -87,6 +92,12 @@ public class UniversityProject {
             case "4.":
                 clearScreen();
                 return Departments.ACCOUNT_RECEIVABLE;
+            case "5":
+            case "Dining Plan":
+            case "5. Dining Plan":
+            case "5.":
+                clearScreen();
+                return Departments.DINING_PLAN;
             case "exit":
                 clearScreen();
                 return Departments.EXIT;
@@ -96,6 +107,108 @@ public class UniversityProject {
                 return getDepartment();
         }
     }
+
+    // public static void PrintEvents(ArrayList<sportslookup> events) {
+    // for (sportslookup eventLookup : events) {
+    //     // Assuming `value` is an object of a class like `events`
+    //     events event = eventLookup.value;
+
+    //     // Print event details
+    //     System.out.println("Sport: " + event.getSp() + 
+    //         ", ID: " + event.getSportortsId() + 
+    //         ", Teams: " + event.getTeam1() + " vs. " + event.getTeam2() + 
+    //         ", Date: " + event.getDate() + 
+    //         ", Time: " + event.getTime() + 
+    //         ", Location: " + event.getLocation() + 
+    //         ", Ticket Price: $" + event.getPrice() + 
+    //         ", Capacity: " + event.getCapacity());
+    // }
+//}
+
+
+public static void DiningPlanService(Dplancontroller dplanController) {
+    System.out.println("What would you like to do?");
+    System.out.println("1. Add Dining Plan");
+    System.out.println("2. Remove Dining Plan");
+
+    String selection = s.nextLine();
+
+    switch (selection) {
+        case "1":
+        case "Add Dining Plan":
+            addDiningPlan(dplanController);
+            break;
+        case "2":
+        case "Remove Dining Plan":
+            removeDiningPlan(dplanController);
+            break;
+        default:
+            System.out.println("Invalid selection, please try again.");
+            break;
+    }
+}
+
+
+/**
+     * This method allows the user to add a new dining plan.
+     * 
+     * @param dplanController The Dplancontroller instance used to add dining plans.
+     */
+    public static void addDiningPlan(Dplancontroller dplanController) {
+        System.out.println("Enter the student's ID: ");
+        String studentId = s.nextLine();
+
+        // Input dining plan details
+        System.out.println("Enter the dining plan type (e.g., Meal Plan, All-You-Can-Eat): ");
+        String type = s.nextLine();
+
+        System.out.println("Enter the academic term (e.g., Fall 2024): ");
+        String term = s.nextLine();
+
+        System.out.println("Enter the number of dining dollars: ");
+        int diningDollars = Integer.parseInt(s.nextLine());
+
+        System.out.println("Enter the number of meal swipes: ");
+        int mealSwipes = Integer.parseInt(s.nextLine());
+
+        // Generate a random ID for the dining plan (for simplicity)
+        String diningPlanId = "D" + (int)(Math.random() * 99999) + 1;
+
+        try {
+            // Call the controller to add the dining plan
+            boolean success = dplanController.addDiningPlan(type, studentId, term, diningDollars, mealSwipes, diningPlanId);
+            if (success) {
+                System.out.println("Dining Plan successfully added!");
+            } else {
+                System.out.println("Failed to add Dining Plan.");
+            }
+        } catch (IOException e) {
+            System.err.println("Error adding dining plan: " + e.getMessage());
+        }
+    }
+
+
+/**
+     * This method allows the user to remove an existing dining plan.
+     * 
+     * @param dplanController The Dplancontroller instance used to remove dining plans.
+     */
+    public static void removeDiningPlan(Dplancontroller dplanController) {
+        System.out.println("Enter the Dining Plan ID to remove: ");
+        String diningPlanId = s.nextLine();
+
+        boolean success = dplanController.removeDiningPlan(diningPlanId);
+        if (success) {
+            System.out.println("Dining Plan successfully removed!");
+        } else {
+            System.out.println("Failed to remove Dining Plan. Please check the ID and try again.");
+        }
+    }
+
+
+
+
+
 
     public static void PrintStudents(ArrayList<studentLookup> students) {
         for (studentLookup student : students) {
@@ -1328,6 +1441,7 @@ public class UniversityProject {
         }
     }
 
+
     /**
      * Provides an interface for the user to interact with the payment, financial information,
      * and scholarship management features. The user can select an option to add payment, 
@@ -1410,6 +1524,7 @@ public class UniversityProject {
         CourseController cc = new CourseController(db);
         MajorController mc = new MajorController(db);
         StudentApplication forceBuild2 = new StudentApplication(db);
+        Dplancontroller Dp = new Dplancontroller(db);
 
 
         s = new Scanner(System.in);
@@ -1429,6 +1544,9 @@ public class UniversityProject {
                     break;
                 case ACCOUNT_RECEIVABLE:
                     PaymentService(studentController);
+                    break;
+                case DINING_PLAN:  // New case for dining plans
+                    DiningPlanService(Dp);  // Call DiningPlanService here
                     break;
                 case EXIT:
                     break;
