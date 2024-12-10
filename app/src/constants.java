@@ -1,6 +1,9 @@
 package src;
 
 public class constants {
+    /**
+     * This is a simple enum to assign a humanized value to a enum for times of day
+     */
     public static enum TIMES {
         TwelveAM("12:00AM"),
         OneAM("1:00AM"),
@@ -34,6 +37,9 @@ public class constants {
         }
     }
 
+    /**
+     * This is a simple enum to assign a humanized value to a enum for days of week
+     */
     public static enum DAYS {
         Monday("M"),
         Tuesday("T"),
