@@ -1,1 +1,1 @@
-{"schedules":[{"key":"123_schedule","value":{"maxCreditHours":18,"creditHours":3,"courseIds":["","COMS100"],"scheduleId":"123_schedule","studentId":"123"}}]}
+{"schedules":[{"key":"123_schedule","value":{"maxCreditHours":18,"creditHours":9,"courseIds":["","COMS100","COMS200"],"scheduleId":"123_schedule","studentId":"123"}}]}

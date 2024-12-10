@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import models.general.items.Course;
 import models.general.items.courseLookup;
+import models.general.items.courseSectionLookup;
 import models.general.items.selectedCourse;
 import models.general.people.courseSection;
 import models.general.people.studentLookup;
@@ -55,5 +56,16 @@ public class CourseController {
             this.db.addCourseSection(sec.getSectionId(), sec);
         }
         c.setCourseSections(stringified);
+    }
+
+    public ArrayList<courseSection> GetCourseSectionFromIds(ArrayList<String> ids) {
+        ArrayList<courseSection> cs = new ArrayList<>();
+        for(String id : ids) {
+            courseSectionLookup csl = this.db.getCourseSection(id);
+            if(csl != null && csl.value != null) {
+                cs.add(csl.value);
+            }
+        }
+        return cs;
     }
 }

@@ -155,7 +155,6 @@ public class DatabaseSupport {
             }
 
             ArrayList<selectedCourse> courseIds = getCoursesForStudent(stud.getStudentId());
-            ArrayList<courseLookup> allCourses = getCourses();
 
             String daysString = "";
             for(DAYS dayString : DAYS.values()) {
@@ -163,7 +162,7 @@ public class DatabaseSupport {
                 for(TIMES timeString : TIMES.values()) {
                     boolean courseFound = false;
                     for(selectedCourse courseId : courseIds) {
-                        ArrayList<courseLookup> coursesClone = allCourses;
+                        ArrayList<courseLookup> coursesClone = getCourses();
 
                         coursesClone.removeIf(c -> !(c.value.getCID().equals(courseId.getCourseId())));
                         if(coursesClone.size() > 0) {
@@ -1002,7 +1001,7 @@ public class DatabaseSupport {
         return true;
     }
 
-    public boolean updateStudent(String courseSectionId, courseSection sec) {
+    public boolean updateCourseSection(String courseSectionId, courseSection sec) {
         courseSectionLookup sl = new courseSectionLookup(courseSectionId, sec);
 
         ArrayList<courseSectionLookup> arrayListed = getCourseSections();

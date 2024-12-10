@@ -5,6 +5,7 @@ import models.general.items.Course;
 import models.general.items.Major;
 import models.general.items.scheduleLookup;
 import models.general.items.selectedCourse;
+import models.general.people.courseSection;
 import models.general.people.studentLookup;
 import src.DatabaseSupport;
 
@@ -73,6 +74,12 @@ public class RegistrationController {
             return false;
         this.db.updateStudent(sid, stud.value);
         return true;
+    }
+
+    public boolean updateCourseSection(Course c, String sectionId) {
+        Course courseCopy = c;
+        courseCopy.setCourseSections(sectionId);
+        return this.db.updateCourses(c.getCID(), courseCopy);
     }
 
     public ArrayList<String> viewRegisteredMajors(String sid) {

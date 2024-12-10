@@ -2,6 +2,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -358,6 +359,7 @@ public class UniversityProject {
 
     public static Set<String> GetPreRequisites(CourseController cc) {
         ArrayList<courseLookup> validCourses = cc.getAllValidCourses();
+        ArrayList<String> nonSetRequisites = new ArrayList<>();
         Set<String> retSet = Set.of();
         boolean cont = true;
 
@@ -377,7 +379,7 @@ public class UniversityProject {
             int selectedIdx = Integer.parseInt(s.nextLine()) - 1;
     
             courseLookup selectedCrs = validCourses.get(selectedIdx);
-            retSet.add(selectedCrs.key);
+            nonSetRequisites.add(selectedCrs.key);
 
             System.out.println("Would you like to add another pre-requisite? (Y/N)");
             String addPreReq = s.nextLine();
@@ -386,6 +388,7 @@ public class UniversityProject {
             }
         }
 
+        retSet = new HashSet<String>(nonSetRequisites);
         return retSet;
     }
 
@@ -699,7 +702,7 @@ public class UniversityProject {
                     if(course.getCourseId().trim().length() == 0) {
                         continue;
                     } else {
-                        System.out.print(course.getCourseId());
+                        System.out.print(course.getCourseId() + ": " + course.getCourseSection());
                         if(index != end) {
                             System.out.println(",");
                         } else {
@@ -710,6 +713,7 @@ public class UniversityProject {
                 }
                 
                 cc.OutputCoursesForStudent(sid);
+                s.nextLine();
                 break;
             case "2":
                 if(offeredCourses == null || offeredCourses.size() == 0) {
@@ -740,7 +744,7 @@ public class UniversityProject {
                 System.out.println("What class would you like to update?");
                 crsIdx = 1;
                 for (selectedCourse course : rc.viewRegisteredCourses(sid)) {
-                    System.out.println(crsIdx + ": " + course);
+                    System.out.println(crsIdx + ": " + course.getCourseId());
                     crsIdx++;
                 }
                 if (s.hasNextLine())
@@ -748,11 +752,20 @@ public class UniversityProject {
                 selectedCourse = offeredCourses.get(Integer.parseInt(selection) - 1).value;
                 clearScreen();
                 if (selectedCourse != null) {
-                    rc.removeCourse(sid, selectedCourse);
-                    System.out.println("Operation succeeded, " + selectedCourse.getCID() + " has been removed from the schedule.");
+                    ArrayList<courseSection> sections = cc.GetCourseSectionFromIds(selectedCourse.getCourseSectionIds());
+                    int secIndex = 1;
+                    System.out.println("Select a section to hold this class");
+                    for(courseSection cs : sections) {
+                        System.out.println(secIndex + ": " + cs.getSectionId());
+                        secIndex++;
+                    }
+                    int selectedIndex = Integer.parseInt(s.nextLine()) - 1;
+                    courseSection selectedSection = sections.get(selectedIndex);
+                    rc.updateCourseSection(selectedCourse, selectedSection.sectionId);
+                    System.out.println("Operation succeeded, " + selectedCourse.getCID() + " has been updated.");
                 }
                 else {
-                    System.out.println("Operation failed, course has not been removed from the schedule.");
+                    System.out.println("Operation failed, course has not been updated.");
                     System.out.println("This course isn't in the schedule.");
                 }
                 break;
@@ -760,7 +773,7 @@ public class UniversityProject {
                 System.out.println("What class would you like to remove?");
                 crsIdx = 1;
                 for (selectedCourse course : rc.viewRegisteredCourses(sid)) {
-                    System.out.println(crsIdx + ": " + course);
+                    System.out.println(crsIdx + ": " + course.getCourseId());
                     crsIdx++;
                 }
                 if (s.hasNextLine())
