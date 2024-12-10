@@ -331,10 +331,8 @@ public class JsonUtil {
     /**
      * Used to help parse primatives from a string as best as possible. Starts with the more specific types
      *   (A boolean could always be a string, but a string isn't always a boolean), and then works its way down
-     * @param <T>
-     * @param value
-     * @param clazz
-     * @return
+     * @param value The string value to be parsed into some primitive type
+     * @return The 
      */
     @SuppressWarnings("unchecked")
     private static <T> T handlePrimitiveTypes(String value, Class<T> clazz) {
