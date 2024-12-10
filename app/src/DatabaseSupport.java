@@ -43,6 +43,10 @@ public class DatabaseSupport {
     public DatabaseSupport() {
     }
     // STUDENT FUNCTIONS
+    /**
+     * Get all student records in the database. Uses the JSON util method to deserialize the contents of a local StudentDB.txt file
+     * @return A list of studentLookup objects, which contain a key and a student value. Allows for a structure similar to a HashMap (not as optimal) that can easily be stored in the DB
+     */
     public ArrayList<studentLookup> getStudents() {
         DB_Student lookups = new DB_Student();
 
@@ -73,6 +77,12 @@ public class DatabaseSupport {
         return lookups.students != null ? new ArrayList<>(lookups.students) : new ArrayList<>();
     }   
 
+    /**
+     * Returns the student in the database that has a matching studentId.
+     * Gets all students using out getStudents method, then filters out options without a matching Id
+     * @param sid The Id of the student to get.
+     * @return A keyValue pair of studentId and student
+     */
     public studentLookup getStudent(String sid) {
         ArrayList<studentLookup> students = getStudents();
 
@@ -84,6 +94,14 @@ public class DatabaseSupport {
         return null;
     }
 
+    /**
+     * Adds a student into the database.
+     * Creates a key value pair of the studentId and the student, gets all current students, adds the created key/value pair to the existing list, then updates in the database.
+     *  (Database is updated by writing the serialized list to a local StudentDB.txt file) using JSON Utils.
+     * @param studentId
+     * @param stud
+     * @return
+     */
     public boolean addStudent(String studentId, student stud) {
         studentLookup sl = new studentLookup(studentId, stud);
 
@@ -104,6 +122,12 @@ public class DatabaseSupport {
         return true;
     }
 
+    /**
+     * Removes a student with a matching student Id.
+     * Gets all students using the getStudents() method
+     * @param studentId Id of the student to be removed
+     * @return true if removal was successful, false otherwise
+     */
     public boolean removeStudent(String studentId) {
         studentLookup[] lookups = {};
 
@@ -215,6 +239,10 @@ public class DatabaseSupport {
 
 
     // SCHEDULE FUNCTIONS
+    /**
+     * Get all schedules records in the database. Uses the JSON util method to deserialize the contents of a local ScheduleDB.txt file
+     * @return A list of scheduleLookup objects, which contain a key and a student value. Allows for a structure similar to a HashMap (not as optimal) that can easily be stored in the DB
+     */
     public ArrayList<scheduleLookup> getSchedules() {
         DB_Schedule lookups = new DB_Schedule();
     
@@ -315,6 +343,10 @@ public class DatabaseSupport {
     }
 
     // DORM FUNCTIONS
+    /**
+     * Get all dorm records in the database. Uses the JSON util method to deserialize the contents of a local DormDB.txt file
+     * @return A list of dormLookup objects, which contain a key and a student value. Allows for a structure similar to a HashMap (not as optimal) that can easily be stored in the DB
+     */
     public ArrayList<dormLookup> getDorms() {
         dormLookup[] lookups = {};
 
@@ -427,6 +459,10 @@ public class DatabaseSupport {
     }
 
     // PROFESSOR FUNCTIONS
+    /**
+     * Get all student records in the database. Uses the JSON util method to deserialize the contents of a local ProfessorDB.txt file
+     * @return A list of professorLookup objects, which contain a key and a student value. Allows for a structure similar to a HashMap (not as optimal) that can easily be stored in the DB
+     */
     public ArrayList<professorLookup> getProfessors() {
         DB_Professor lookups = new DB_Professor();
     
