@@ -551,8 +551,15 @@ public class DatabaseSupport {
         }
     }
     
-
-    public boolean putFinancialInfo(FinancialInfo fi) throws IOException{
+    /**
+     * Adds a new financial information record to the FinancialInfo.txt file.
+     * If the file exists and contains content, it deserializes the existing data into a list,
+     * adds the new FinancialInfo object, and serializes the updated list back into the file.
+     * @param fi The FinancialInfo object to be added.
+     * @return true if the operation is successful, false otherwise.
+     * @throws IOException If an I/O error occurs while reading or writing the file.
+    */
+    public boolean addFinancialInfo(FinancialInfo fi) throws IOException{
         String filePath = "models/finances/data/FinancialInfo.txt";
         File file = new File(filePath);
         List<FinancialInfo> financialInfoList = new ArrayList<>();
@@ -594,6 +601,14 @@ public class DatabaseSupport {
         return true;
     }
 
+    /**
+     * Updates an existing financial information record in the FinancialInfo.txt file.
+     * The method searches for a matching FinancialInfo object by student ID and replaces it with the new data.
+     * If the financial information is found and updated, the updated list is serialized back to the file.
+     * @param fi The FinancialInfo object to update.
+     * @return true if the financial information is updated successfully, false if not found.
+     * @throws IOException If an I/O error occurs while reading or writing the file.
+    */
     public boolean updateFinancialInfo(FinancialInfo fi) throws IOException {
         String filePath = "models/finances/data/FinancialInfo.txt";
         File file = new File(filePath);
@@ -631,6 +646,7 @@ public class DatabaseSupport {
             System.out.println("Previous financial information not found.");
         }
 
+        // Check for special case (only 1 stored financial info object)
         if (lineCount < 2) {
             // Serialize back to the file
             try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath))) {
@@ -639,6 +655,7 @@ public class DatabaseSupport {
             }
         }
 
+        // Serialize the updated list back to the file
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath))) {
             StringBuilder sb = new StringBuilder();
             sb.append("[");
@@ -656,10 +673,17 @@ public class DatabaseSupport {
         return isUpdated;
     }
 
+    /**
+     * Deletes an existing financial information record from the FinancialInfo.txt file.
+     * The method searches for the specified FinancialInfo object by student ID and removes it.
+     * If the financial information is found and deleted, the updated list is serialized back to the file.
+     * @param fi The FinancialInfo object to be deleted.
+     * @return true if the financial information is deleted successfully, false if not found.
+     * @throws IOException If an I/O error occurs while reading or writing the file.
+    */
     public boolean deleteFinancialInfo(FinancialInfo fi) throws IOException {
         String filePath = "models/finances/data/FinancialInfo.txt";
         File file = new File(filePath);
-        int lineCount = 0;
 
         List<FinancialInfo> financialInfoList = new ArrayList<>();
 
@@ -670,7 +694,6 @@ public class DatabaseSupport {
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     sb.append(line);
-                    lineCount++;
                 }
 
                 // Deserialize existing JSON array into a list
@@ -711,12 +734,17 @@ public class DatabaseSupport {
                 bufferedWriter.write(updatedJsonContent);
             }
         }
-
         return true;
-
     }
 
-    public boolean putPayment(Payment p) throws IOException{
+    /**
+     * Adds a new payment record to the Payments.txt file.
+     * If the file exists, the new payment is appended to the file; otherwise, it writes the first payment record to the file.
+     * @param p The Payment object to be added.
+     * @return true if the payment is successfully added, false otherwise.
+     * @throws IOException If an I/O error occurs while reading or writing the file.
+    */
+    public boolean addPayment(Payment p) throws IOException{
         String filePath = "models/finances/data/Payments.txt";
         String jsonContent = JsonUtil.serialize(p);
 
@@ -729,17 +757,21 @@ public class DatabaseSupport {
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
     
             if (isFirstObject) {
-                // Append the new object
                 bufferedWriter.write(jsonContent);
             } else {
                 bufferedWriter.write(",");
                 bufferedWriter.write(jsonContent);
             }
-    
+
             return true;
         }
     }
 
+    /**
+     * Retrieves all available scholarship records from the Scholarships.txt file.
+     * It reads the file, deserializes the content into a list of Scholarship objects, and returns the list.
+     * @return A list of Scholarship objects. If no scholarships are found, an empty list is returned.
+    */
     public ArrayList<Scholarship> getScholarships() {
         List<Scholarship> lookups = new ArrayList<>();
 
@@ -760,7 +792,12 @@ public class DatabaseSupport {
         return new ArrayList<Scholarship>(lookups);
     }
 
-
+    /**
+     * Retrieves a specific scholarship record by its scholarship ID.
+     * It searches through the list of scholarships and returns the matching scholarship.
+     * @param ssid The scholarship ID to search for.
+     * @return The Scholarship object if found, null if not found.
+    */
     public Scholarship getScholarship(String ssid) {
         ArrayList<Scholarship> scholarships = getScholarships();
 

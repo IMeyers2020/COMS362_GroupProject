@@ -828,6 +828,13 @@ public class UniversityProject {
         }
     }
 
+    /**
+     * Prompts the user to enter the student ID of the student that wants to add financial information to their account.
+     * Prompts the user to enter their financial information (such as credit/debit card details and billing address) 
+     * and collects financial details from the user.
+     * Uses AccountsReceivableOffice to store the collected FinancialInfo data into the database and print a receipt of the transaction. 
+     * @param sc The StudentController instance to interact with the student account.
+    */
     public static void addFinancialInfo(StudentController sc) {
         FinancialInfoController fc = new FinancialInfoController();
 
@@ -869,6 +876,14 @@ public class UniversityProject {
         }
     }
 
+    /**
+     * Prompts the user to enter the student ID of the student that wants to edit the financial information in their account.
+     * Prompts the user to edit their saved financial information (such as credit/debit card details and billing address.
+     * Collects the updated financial information, and
+     * edits the existing financial information (credit/debit card details and billing address) that the user selects.
+     * Stores the changes into the database using AccountsReceivableOffice. 
+     * @param sc The StudentController instance to interact with the student account.
+    */
     public static void editFinancialInfo(StudentController sc) {
         String userIn = null;
         String cardType = "";
@@ -880,11 +895,16 @@ public class UniversityProject {
         studentLookup curStudent = sc.getStudent(userIn);
         FinancialInfo curFinancialInfo = curStudent.value.getFinancialInfo();
         if(curFinancialInfo == null) {
-            System.out.println("This student has no financial information on record.");
+            System.out.println("This student has no financial information on account.");
             return;
         }
 
         System.out.println("Edit student's saved card? (Y or N)");
+        System.out.println("-----------------------------------");
+        System.out.println("Saved Card Type: " + curFinancialInfo.getCardType());
+        System.out.println("Saved Card Number: " + curFinancialInfo.getCardNumber());
+        System.out.println("-----------------------------------");
+
         userIn = s.nextLine();
         if (userIn.equalsIgnoreCase("Y")) {
             FinancialInfoController fiC = new FinancialInfoController();
@@ -898,10 +918,13 @@ public class UniversityProject {
             } else {
                 return;
             }
-
         } 
 
         System.out.println("Edit student's saved billing address? (Y or N)");
+        System.out.println("-----------------------------------");
+        System.out.println("Saved Billing Address: " + curFinancialInfo.getBillingAddress());
+        System.out.println("-----------------------------------");
+
         userIn = s.nextLine();
         if (userIn.equalsIgnoreCase("Y")) {
             System.out.println("Enter new billing address:");
@@ -924,6 +947,12 @@ public class UniversityProject {
 
     }
 
+    /**
+     * Prompts the user to enter the student ID of the student that wants to delete the financial information stored on their account.
+     * Prompts the user to delete the financial information (credit/debit card details and billing address) of the student.
+     * Removes all stored financial data from the student's account and from the database using AccountReceivableOffice.
+     * @param sc The StudentController instance to interact with the student account.
+    */
     public static void deleteFinancialInfo(StudentController sc) {
         String userIn = null;
 
@@ -933,7 +962,7 @@ public class UniversityProject {
         studentLookup curStudent = sc.getStudent(userIn);
         FinancialInfo curFinancialInfo = curStudent.value.getFinancialInfo();
         if(curFinancialInfo == null) {
-            System.out.println("This student has no financial information on record.");
+            System.out.println("This student has no financial information on account.");
             return;
         }
 
@@ -961,6 +990,14 @@ public class UniversityProject {
 
     }
 
+    /**
+     * Prompts the user to enter the student ID of the student that wants to add a payment onto their account.
+     * Prompts the user to enter a payment amount for the payment they want to add onto their account.
+     *      (If applicable) Displays scholarships and account balance after scholarships are applied
+     * Processes a payment made by the student based on scholarship status and payment amount and updates their account.
+     * The payment details are collected and stored in a database, and a receipt for the transaction is printed using AccountsReceivableOffice.
+     * @param sc The StudentController instance to manage the student's account.
+    */
     public static void addPayment(StudentController sc) {
         Payment payment = new Payment();
         PaymentController pc = new PaymentController();
@@ -970,35 +1007,52 @@ public class UniversityProject {
         System.out.println("Enter the student's ID: ");
         userIn = s.nextLine();
         studentLookup curStudent = sc.getStudent(userIn);
+        FinancialInfo curFinancialInfo = curStudent.value.getFinancialInfo();
 
         if (curStudent != null) {
             foundStudent = true;
         }
 
+        if (curStudent.value.getFinancialInfo() == null) {
+            System.out.println("This student has no saved financial info on account.");
+            return;
+        }
+
         ArrayList<Scholarship> scholarships = curStudent.value.getScholarships();
         StringBuilder scholarshipBuilder = new StringBuilder();
         double scholarshipAmount = 0;
-        for(Scholarship scholarship: scholarships) {
-            if (scholarship.checkIsApplied() == false) {
-                scholarship.setApplied();
-                scholarshipAmount+=(scholarship.getScholarshipAmount());
-                scholarshipBuilder.append(scholarship.getScholarshipName());
-                scholarshipBuilder.append("  ");
-            } else {
-                scholarshipBuilder.append(scholarship.getScholarshipName());
-                scholarshipBuilder.append("(applied)  ");
+        if (!scholarships.contains("") && !scholarships.isEmpty()) {
+            for(Scholarship scholarship: scholarships) {
+                if (scholarship.checkIsApplied() == false) {
+                    scholarship.setApplied();
+                    scholarshipAmount+=(scholarship.getScholarshipAmount());
+                    scholarshipBuilder.append(scholarship.getScholarshipName());
+                    scholarshipBuilder.append("  ");
+                } else {
+                    scholarshipBuilder.append(scholarship.getScholarshipName());
+                    scholarshipBuilder.append("(applied)  ");
+                }
             }
-            
         }
+        
         System.out.println("Account balance of: " + curStudent.value.getAccountBalance()); 
+        System.out.println();
         System.out.println("Scholarships: ");
-        System.out.println("--------------");
-        System.out.println(scholarshipBuilder.toString());
-        System.out.println("--------------");
+        System.out.println("-----------------------------------");
+        if (scholarshipBuilder.isEmpty()) {
+            System.out.println("No scholarships on this student's account.");
+        } else {
+            System.out.println(scholarshipBuilder.toString());
+        }
+        System.out.println("-----------------------------------");
         System.out.println("Account balance after scholarships: " + (curStudent.value.getAccountBalance() - + scholarshipAmount));
         System.out.println();
 
         System.out.println("Use saved payment information? (Y or N)");
+        System.out.println("-----------------------------------");
+        System.out.println("Saved Card Type: " + curFinancialInfo.getCardType());
+        System.out.println("Saved Card Number: " + curFinancialInfo.getCardNumber());
+        System.out.println("-----------------------------------");
         userIn = s.nextLine();
         if (userIn.equals("Y")) {
             System.out.println("Enter payment amount:  (Enter in 000.00 format)");
@@ -1009,9 +1063,12 @@ public class UniversityProject {
             payment.setAmount(amountToPay);
             payment.setPaymentId(paymentID);
             payment.setPaymentType(curStudent.value.getFinancialInfo().getCardType());
+            System.out.println();
             System.out.println("Confirm the following information (Y or N):");
+            System.out.println("-----------------------------------");
             System.out.println("Amount To Pay: " + payment.getAmount());
-            System.out.println("Card Type: " + payment.getPaymentType() + " " + "Card Number: " + curStudent.value.getFinancialInfo().getCardNumber());
+            System.out.println("Card Type: " + payment.getPaymentType() + " | " + "Card Number: " + curStudent.value.getFinancialInfo().getCardNumber());
+            System.out.println("-----------------------------------");
             userIn = s.nextLine();
             if (userIn.equals("Y")) {
                 pc.confirmPayment(payment);
@@ -1037,7 +1094,7 @@ public class UniversityProject {
             boolean result = aro.addStudentPayment(curStudent.value, payment, scholarshipAmount);
 
             if (result) {
-                System.out.println("Payent processed successfully.");
+                System.out.println("Payent processed successfully. New balance: $" + curStudent.value.getAccountBalance());
                 aro.printPaymentReceipt(payment, curStudent.value);
             } else {
                 System.out.println("Failed to Process Payment.");
@@ -1047,6 +1104,14 @@ public class UniversityProject {
         }
     }
 
+    /** 
+     * Prompts the user to enter the student ID of the student that wants to add a scholarship onto their account.
+     * Prompts the us er to enter the name of the scholarship that student wants to add to their account.
+     *      (Displays) The available scholarships to add to the students account.
+     * Adds a scholarship to the student's account and uses AccountReceivableOffice to update the database, 
+     * checking whether or not the entered scholarship exists and the student qualifies for the scholarship.
+     * @param sc The StudentController instance to manage the student's account.
+    */
     public static void addStudentScholarship(StudentController sc) {
         DatabaseSupport db = new DatabaseSupport();
         ScholarshipController ssc = new ScholarshipController();
@@ -1092,6 +1157,14 @@ public class UniversityProject {
         }
     }
 
+    /**
+     * Prompts the user to enter the student ID of the student that needs a scholarship deleted from their account.
+     * Prompts the user to enter the name of the scholarship that needs to be deleted from the students account.
+     *      (Displays) The current scholarships on  the students account.
+     * Prompts the user to delete the entered scholarship from the students account.
+     * Removes the entered scholarship from the students account and updates the database using AccountReceivableOffice.
+     * @param sc The StudentController instance to interact with the student account.
+    */
     public static void deleteStudentScholarship(StudentController sc) {
         Scholarship curScholarship = new Scholarship();
 
@@ -1099,6 +1172,11 @@ public class UniversityProject {
         System.out.println("Enter the student's ID: ");
         userIn = s.nextLine();
         studentLookup curStudent = sc.getStudent(userIn);
+
+        if (curStudent.value.getScholarships().contains("") || curStudent.value.getScholarships().isEmpty()) {
+            System.out.println("This student has no scholarships on account.");
+            return;
+        }
 
         System.out.println("What is the name of the scholarship you would like to delete?");
 
@@ -1135,6 +1213,12 @@ public class UniversityProject {
         }
     }
 
+    /**
+     * Provides an interface for the user to interact with the payment, financial information,
+     * and scholarship management features. The user can select an option to add payment, 
+     * add financial information, add a scholarship, or edit financial information.
+     * @param sc The StudentController instance to interact with the student account.
+    */
     public static void PaymentService(StudentController sc) {
         System.out.println("Would you like to do?");
         System.out.println("1. Add Payment");
@@ -1189,6 +1273,7 @@ public class UniversityProject {
             case "6.":
             case "Delete Scholarship":
                 clearScreen();
+                deleteStudentScholarship(sc);
                 break;
         }
     }
