@@ -23,10 +23,6 @@ public class Major {
         this.requiredCourses = requiredCourses;
     }
 
-    public Major(String string, String string2, String string3, int i, Set<String> of) {
-        //TODO Auto-generated constructor stub
-    }
-
     public String getMajorID() {
         return this.id;
     }

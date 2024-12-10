@@ -141,6 +141,11 @@ public class RegistrationController {
 
         //for each major the student has, check if requirements are met
         for (String m : s.getMajors()){
+            if (m.isEmpty() && s.getMajors().size() == 1){
+                System.out.println("No major, so no requirements.");
+                return false;
+            }
+
             if (!m.isEmpty()) {
                 Major major = majors.get(m);
                 //if student doesn't have all required courses completed, return false

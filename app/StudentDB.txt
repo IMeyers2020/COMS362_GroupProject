@@ -1,5 +1,0 @@
-<<<<<<< HEAD
-{"students":[{"key":"123","value":{"schedId":"123_schedule","majors":[""],"studentId":"123","name":"Test Student","financialInfo":{"cardType":"debit","cardNumber":"1234123412341234","billingAddress":"1234 St Ames IOwa 12345","studentId":"123"},"accountBalance":45000.0,"scholarships":[""],"address":"Test123 Ames Iowa 12345","ssn":"123456789","dormId":null}}]}
-=======
-{"students":[{"key":"123","value":{"schedId":"123_schedule","majors":["","SE"],"studentId":"123","name":"Test123","financialInfo":null,"accountBalance":95000.0,"scholarships":[{"scholarshipId":"1","scholarshipName":"Scholarship1","scholarshipAmount":1500.0,"isApplied":true}],"address":"Test123","ssn":"123456789","dormId":null,"completedCourseIDs":["COMS100","COMS200","COMS300","COMS400","COMS500"],"totalCredits":125,"isGraduated":true,"explusionNote":null}}]}
->>>>>>> bdeed8c9aab6d0ef64c59350a8b15af5c606b4ef

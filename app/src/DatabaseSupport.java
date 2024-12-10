@@ -1347,14 +1347,14 @@ public class DatabaseSupport {
     public static HashMap<String, Major> getAllMajors() {
         HashMap<String, Major> map = new HashMap<String, Major>() {
             {
-                put("SE", new Major("SE", "Software Engineering", "B.S.", 125,
+                put("SE", new Major("SE", "Software Engineering", "B.S.", "Bachelor of Science", 125,
                         Set.of("COMS100", "COMS200", "COMS300", "COMS400", "COMS500")));
-                put("COMS(BS)", new Major("COMS(BS)", "Computer Science", "B.S.", 120,
+                put("COMS(BS)", new Major("COMS(BS)", "Computer Science", "B.S.", "Bachelor of Science", 120,
                         Set.of("COMS100", "COMS200", "COMS300", "COMS400", "COMS500")));
-                put("COMS(BA)", new Major("COMS(BA)", "Computer Science", "B.A.", 120,
+                put("COMS(BA)", new Major("COMS(BA)", "Computer Science", "B.A.", "Bachelor of Arts",120,
                         Set.of("COMS100", "COMS200", "COMS300", "COMS400")));
                 put("FIN",
-                        new Major("FIN", "Finance", "B.S.", 122, Set.of("COMS100", "COMS200", "COMS300", "COMS400")));
+                        new Major("FIN", "Finance", "B.S.", "Bachelor of Science", 122, Set.of("COMS100", "COMS200", "COMS300", "COMS400")));
             }
         };
         return map;
