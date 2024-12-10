@@ -570,11 +570,16 @@ public class UniversityProject {
         studentLookup curStudent = sc.getStudent(userIn);
         FinancialInfo curFinancialInfo = curStudent.value.getFinancialInfo();
         if(curFinancialInfo == null) {
-            System.out.println("This student has no financial information on record.");
+            System.out.println("This student has no financial information on account.");
             return;
         }
 
         System.out.println("Edit student's saved card? (Y or N)");
+        System.out.println("-----------------------------------");
+        System.out.println("Saved Card Type: " + curFinancialInfo.getCardType());
+        System.out.println("Saved Card Number: " + curFinancialInfo.getCardNumber());
+        System.out.println("-----------------------------------");
+
         userIn = s.nextLine();
         if (userIn.equalsIgnoreCase("Y")) {
             FinancialInfoController fiC = new FinancialInfoController();
@@ -592,6 +597,10 @@ public class UniversityProject {
         } 
 
         System.out.println("Edit student's saved billing address? (Y or N)");
+        System.out.println("-----------------------------------");
+        System.out.println("Saved Billing Address: " + curFinancialInfo.getBillingAddress());
+        System.out.println("-----------------------------------");
+
         userIn = s.nextLine();
         if (userIn.equalsIgnoreCase("Y")) {
             System.out.println("Enter new billing address:");
@@ -623,7 +632,7 @@ public class UniversityProject {
         studentLookup curStudent = sc.getStudent(userIn);
         FinancialInfo curFinancialInfo = curStudent.value.getFinancialInfo();
         if(curFinancialInfo == null) {
-            System.out.println("This student has no financial information on record.");
+            System.out.println("This student has no financial information on account.");
             return;
         }
 
@@ -665,25 +674,36 @@ public class UniversityProject {
             foundStudent = true;
         }
 
+        if (curStudent.value.getFinancialInfo() == null) {
+            System.out.println("This student has no saved financial info on account.");
+            return;
+        }
+
         ArrayList<Scholarship> scholarships = curStudent.value.getScholarships();
         StringBuilder scholarshipBuilder = new StringBuilder();
         double scholarshipAmount = 0;
-        for(Scholarship scholarship: scholarships) {
-            if (scholarship.checkIsApplied() == false) {
-                scholarship.setApplied();
-                scholarshipAmount+=(scholarship.getScholarshipAmount());
-                scholarshipBuilder.append(scholarship.getScholarshipName());
-                scholarshipBuilder.append("  ");
-            } else {
-                scholarshipBuilder.append(scholarship.getScholarshipName());
-                scholarshipBuilder.append("(applied)  ");
+        if (!scholarships.contains("") && !scholarships.isEmpty()) {
+            for(Scholarship scholarship: scholarships) {
+                if (scholarship.checkIsApplied() == false) {
+                    scholarship.setApplied();
+                    scholarshipAmount+=(scholarship.getScholarshipAmount());
+                    scholarshipBuilder.append(scholarship.getScholarshipName());
+                    scholarshipBuilder.append("  ");
+                } else {
+                    scholarshipBuilder.append(scholarship.getScholarshipName());
+                    scholarshipBuilder.append("(applied)  ");
+                }
             }
-            
         }
+        
         System.out.println("Account balance of: " + curStudent.value.getAccountBalance()); 
         System.out.println("Scholarships: ");
         System.out.println("--------------");
-        System.out.println(scholarshipBuilder.toString());
+        if (scholarshipBuilder.isEmpty()) {
+            System.out.println("No scholarships on this student's account.");
+        } else {
+            System.out.println(scholarshipBuilder.toString());
+        }
         System.out.println("--------------");
         System.out.println("Account balance after scholarships: " + (curStudent.value.getAccountBalance() - + scholarshipAmount));
         System.out.println();
@@ -790,6 +810,11 @@ public class UniversityProject {
         userIn = s.nextLine();
         studentLookup curStudent = sc.getStudent(userIn);
 
+        if (curStudent.value.getScholarships().contains("") || curStudent.value.getScholarships().isEmpty()) {
+            System.out.println("This student has no scholarships on account.");
+            return;
+        }
+
         System.out.println("What is the name of the scholarship you would like to delete?");
 
         StringBuilder availableScholarships = new StringBuilder();
@@ -879,6 +904,7 @@ public class UniversityProject {
             case "6.":
             case "Delete Scholarship":
                 clearScreen();
+                deleteStudentScholarship(sc);
                 break;
         }
     }
