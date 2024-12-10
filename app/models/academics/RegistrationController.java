@@ -22,6 +22,12 @@ public class RegistrationController {
         this.db = _db;
     }
 
+    /**
+     * Adds c to schedule of student with studentID = sid
+     * @param sid       Student ID of student to be updated
+     * @param c         Course to be added
+     * @return          true if student and schedule exist and update is successful
+     */
     public boolean addCourse(String sid, Course c) {
         studentLookup stud = this.db.getStudent(sid);
         if(stud == null || stud.value.getScheduleId() == null) {
@@ -42,6 +48,12 @@ public class RegistrationController {
         return true;
     }
 
+    /**
+     * Removes c from schedule of student with studentID = sid
+     * @param sid   Student ID of student to be updated
+     * @param c     Course to be removed
+     * @return      true if student and schedule exist and update is successful
+     */
     public boolean removeCourse(String sid, Course c) {
         studentLookup stud = this.db.getStudent(sid);
         if(stud == null || stud.value.getScheduleId() == null) {
@@ -68,6 +80,13 @@ public class RegistrationController {
     // returns 0 if successful
     // returns 1 if student has already set up graduation
     // returns 2 otherwise
+
+    /**
+     * Adds the major provided to the student with studentID = sid
+     * @param sid   Student ID of student to be updated
+     * @param m     Major to be added to student account
+     * @return      0 if successful, 1 if student has already requested graduation, 2 otherwise
+     */
     public int addMajor(String sid, Major m) {
         studentLookup stud = this.db.getStudent(sid);
         if (!stud.value.addMajor(m))
@@ -79,8 +98,12 @@ public class RegistrationController {
         return 0;
     }
 
-    // removes major m from student with studentId == sid
-    // returns true if successful
+    /**
+     * Removes the major provided from the student with studentID = sid
+     * @param sid   Student ID of student to be updated
+     * @param m     Major to be removed from student account
+     * @return      true if successful, false otherwise
+     */
     public boolean removeMajor(String sid, Major m) {
         studentLookup stud = this.db.getStudent(sid);
         if (!stud.value.removeMajor(m))
@@ -95,13 +118,22 @@ public class RegistrationController {
         return this.db.updateCourses(c.getCID(), courseCopy);
     }
 
-    // returns list of all majors student with studentId == sid is currently enrolled in
+    /**
+     * Returns list of majors that student with provided ID is registered under
+     * @param sid   Student ID of student
+     * @return      List of strings of majors
+     */
     public ArrayList<String> viewRegisteredMajors(String sid) {
         studentLookup stud = this.db.getStudent(sid);
         return stud.value.getMajors();
     }
 
-    // checks if student meets requirements for graduation
+    /**
+     * Sets the student as a graduate (marked for graduation from undergrad program) if the student
+     * meets all of the requirements of the majors they have registered for.
+     * @param sid   Student ID of student
+     * @return      true if successful, false if student's credit/course requirements are not met
+     */
     public boolean setGraduate(String sid) {
         studentLookup stud = this.db.getStudent(sid);
         student s = stud.value;
@@ -127,7 +159,11 @@ public class RegistrationController {
         return true;
     }
 
-    // creates file "./(studentname)Diploma.txt" to represent student's diploma
+    /**
+     * Creates diploma file for graduating student. Saves file to app/
+     * @param sid   Student ID of student
+     * @see         ./(studentname)Diploma.txt file created by method
+     */
     public void createDiploma(String sid) {
         studentLookup stud = this.db.getStudent(sid);
         student s = stud.value;

@@ -594,6 +594,13 @@ public class UniversityProject {
         cc.addProfessorToCourse(profId, selectedCourse);
     }
 
+    /**
+     * Prompts the user to enter the student ID of the student that is under threat of explusion.
+     * Prompts the user to answer questions pertaining to the explusion process.
+     * Prompts the user to write a finalized reason for the explusion of student.
+     * Uses StudentController to add the student to the expelledDB and remove the student from studentDB
+     * @param sc The StudentController instance to interact with the student account.
+     */
     public static void ExpelStudent(StudentController sc) {
         System.out.println("Type student id of student:");
         String sid = s.nextLine();
@@ -615,7 +622,7 @@ public class UniversityProject {
         String reason = s.nextLine();
         System.out.println("Confirm explusion of student " + sid + ". (Y/N)");
         response = s.nextLine();
-        if (response.equals("N")) {
+        if (!response.equals("Y")) {
             return;
         }
         if (sc.expelStudent(sid, reason))
@@ -624,6 +631,12 @@ public class UniversityProject {
             System.out.println("Operation failed.");
     }
 
+    /**
+     * Prompts the user to enter the student ID of the student that is having expelled status removed.
+     * Prompts the user to answer questions pertaining to the re-initiation process.
+     * Uses StudentController to add the student to the studentDB and remove the student from expelledDB
+     * @param sc The StudentController instance to interact with the student account.
+     */
     public static void UnexpelStudent(StudentController sc) {
         System.out.println("Type student id of student:");
         String sid = s.nextLine();
@@ -641,7 +654,7 @@ public class UniversityProject {
         }
         System.out.println("Confirm removal of explusion of student " + sid + ". (Y/N)");
         response = s.nextLine();
-        if (response.equals("N")) {
+        if (!response.equals("Y")) {
             return;
         }
         if (sc.unexpelStudent(sid))
@@ -926,7 +939,8 @@ public class UniversityProject {
                         if (sc.updateStudent(tmpStudent)) {
                             System.out.println("Mailing address successfully updated.");
                         }
-                        System.out.println("Mailing address unsuccessfully updated, please try again later.");
+                        else
+                            System.out.println("Mailing address unsuccessfully updated, please try again later.");
                     }
                     System.out.println("Tell student to expect to receive diploma within a month of graduation ceremony.");
                 }
