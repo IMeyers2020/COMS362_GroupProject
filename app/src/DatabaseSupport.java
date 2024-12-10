@@ -1171,30 +1171,6 @@ public class DatabaseSupport {
         return true;
     }
 
-    // public static HashMap<String, Course> getAllCourses() {
-    //     ArrayList<DAYS> MWF = new ArrayList<DAYS>();
-    //     MWF.add(DAYS.Monday);
-    //     MWF.add(DAYS.Wednesday);
-    //     MWF.add(DAYS.Friday);
-    //     ArrayList<DAYS> TR = new ArrayList<DAYS>();
-    //     TR.add(DAYS.Tuesday);
-    //     TR.add(DAYS.Thursday);
-    //     HashMap<String, Course> map = new HashMap<String, Course>() {{
-    //         put("COMS100", new Course("COMS100", 3, TIMES.EightAM, MWF));
-    //         put("COMS200", new Course("COMS200", 3, TIMES.NineAM, MWF));
-    //         put("SE200", new Course("SE200", 3, TIMES.TenAM, MWF));
-    //         put("COMS300", new Course("COMS300", 3, TIMES.ElevenAM, MWF));
-    //         put("COMS400", new Course("COMS400", 4, Set.of("COMS100"), TIMES.EightAM, TR));
-    //         put("SE400", new Course("SE400", 4, Set.of("SE200"), TIMES.NineAM, TR));
-    //         put("COMS500", new Course("COMS500", 4, Set.of("COMS200"), TIMES.TenAM, TR));
-    //         put("FIN100", new Course("FIN100", 3, TIMES.ElevenAM, TR));
-    //         put("FIN200", new Course("FIN200", 3, TIMES.TwelvePM, MWF));
-    //         put("FIN300", new Course("FIN300", 4, Set.of("FIN100"), TIMES.TwelvePM, TR));
-    //         put("FIN400", new Course("FIN400", 4, Set.of("FIN200"), TIMES.OnePM, MWF));
-    //     }};
-    //     return map;
-    // }
-
     public static HashMap<String, Major> getAllMajors() {
         HashMap<String, Major> map = new HashMap<String, Major>() {{
             put("SE", new Major("SE", "Software Engineering", "B.S.", "Bachelor of Science", 125, Set.of("COMS100", "COMS200", "COMS300", "COMS400", "COMS500")));

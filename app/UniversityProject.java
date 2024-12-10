@@ -376,6 +376,7 @@ public class UniversityProject {
             int idx = 1;
             for (courseLookup crs : validCourses) {
                 System.out.println(idx + ": " + crs.key);
+                idx++;
             }
             int selectedIdx = Integer.parseInt(s.nextLine()) - 1;
     
