@@ -176,7 +176,7 @@ public class student {
         return completedCourseIDs;
     }
 
-    public void setGraduated(boolean b) { this.isGraduated = b; }
+    public boolean setGraduated(boolean b) { this.isGraduated = b;  return this.isGraduated; }
 
     public boolean getGraduated() { return this.isGraduated; }
 

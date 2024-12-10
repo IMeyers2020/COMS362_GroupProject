@@ -702,6 +702,13 @@ public class UniversityProject {
         }
     }
 
+    /**
+     * Handles all RegistrationOffice functionality.
+     * @param rc    Handles registration database requests
+     * @param cc    Handles course database requests
+     * @param mc    Handles major database requests
+     * @param sc    Handles student database requests
+     */
     public static void CourseRegistration(RegistrationController rc, CourseController cc, MajorController mc, StudentController sc) {
         
         String sid = null;
@@ -733,6 +740,7 @@ public class UniversityProject {
           selection = s.nextLine();
         
         switch(selection) {
+            //View majors and courses
             case "1":
                 System.out.println("Student " + sid + "'s major(s):");
                 int index = 0;
@@ -772,6 +780,7 @@ public class UniversityProject {
                 cc.OutputCoursesForStudent(sid);
                 s.nextLine();
                 break;
+            //Add course
             case "2":
                 if(offeredCourses == null || offeredCourses.size() == 0) {
                     System.out.println("No classes are currently available. Please create a class, and ensure it has a professor, and at least one section!");
@@ -797,6 +806,7 @@ public class UniversityProject {
                 }
                 s.nextLine();
                 break;
+            //Update course section
             case "3":
                 System.out.println("What class would you like to update?");
                 crsIdx = 1;
@@ -826,6 +836,7 @@ public class UniversityProject {
                     System.out.println("This course isn't in the schedule.");
                 }
                 break;
+            //Remove course
             case "4":
                 System.out.println("What class would you like to remove?");
                 crsIdx = 1;
@@ -844,6 +855,7 @@ public class UniversityProject {
                     System.out.println("This course isn't in the schedule.");
                 }
                 break;
+            //Add major
             case "5":
                 System.out.println("What major would you like to register for?");
                 for(String key : offeredMajors.keySet()) {
@@ -866,6 +878,7 @@ public class UniversityProject {
                 }
                 s.nextLine();
                 break;
+            //Remove major
             case "6":
                 System.out.println("What major would you like to remove?");
                 for (String major : rc.viewRegisteredMajors(sid)) {
@@ -882,6 +895,7 @@ public class UniversityProject {
                     System.out.println("University requires students to have at least one major.");
                 }
                 break;
+            //Graduate student
             case "7":
                 clearScreen();
                 if (!rc.setGraduate(sid)) {
