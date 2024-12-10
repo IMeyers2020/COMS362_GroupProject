@@ -1012,7 +1012,11 @@ public class UniversityProject {
             } else {
                 return;
             }
-        } 
+        }  else if (userIn.equalsIgnoreCase("N")) {
+            cardType = curFinancialInfo.getCardType();
+            cardNumber = curFinancialInfo.getCardNumber();
+            System.out.println("Saved card information not edited.");
+        }
 
         System.out.println("Edit student's saved billing address? (Y or N)");
         System.out.println("-----------------------------------");
@@ -1024,6 +1028,9 @@ public class UniversityProject {
             System.out.println("Enter new billing address:");
             billingAddress = s.nextLine();
             System.out.println("New billing address entered.");
+        } else if (userIn.equalsIgnoreCase("N")) {
+            billingAddress = curFinancialInfo.getBillingAddress();
+            System.out.println("Billing address not edited.");
         }
 
         try {
