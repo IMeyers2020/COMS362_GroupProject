@@ -20,7 +20,7 @@ public class StudentApplication {
             return false;
         }
 
-        this.db.addSchedule(stud.getScheduleId(), new schedule(stud.getScheduleId()));
+        this.db.addSchedule(stud.getScheduleId(), new schedule(stud.getScheduleId(), stud.getStudentId()));
 
         return this.db.addStudent(sId, stud);
     }

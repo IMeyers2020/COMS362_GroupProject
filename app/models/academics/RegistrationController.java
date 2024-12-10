@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import models.general.items.Course;
 import models.general.items.Major;
 import models.general.items.scheduleLookup;
+import models.general.items.selectedCourse;
+import models.general.people.courseSection;
 import models.general.people.studentLookup;
 import src.DatabaseSupport;
 
@@ -27,7 +29,9 @@ public class RegistrationController {
             System.err.println("Failed to add course, unable to find a Schedule matching the ScheduleId on that student");
             return false;
         }
-        sched.value.addCourse(c);
+        selectedCourse sc = new selectedCourse();
+        sched.value.addCourse(c, sc);
+        this.db.addSelectedCourse(sc);
         this.db.updateSchedule(sched.key, sched.value);
         this.db.updateStudent(stud.key, stud.value);
         return true;
@@ -51,7 +55,7 @@ public class RegistrationController {
         return true;
     }
 
-    public ArrayList<String> viewRegisteredCourses(String sid) {
+    public ArrayList<selectedCourse> viewRegisteredCourses(String sid) {
         return this.db.getCoursesForStudent(sid);
     }
 
@@ -70,6 +74,12 @@ public class RegistrationController {
             return false;
         this.db.updateStudent(sid, stud.value);
         return true;
+    }
+
+    public boolean updateCourseSection(Course c, String sectionId) {
+        Course courseCopy = c;
+        courseCopy.setCourseSections(sectionId);
+        return this.db.updateCourses(c.getCID(), courseCopy);
     }
 
     public ArrayList<String> viewRegisteredMajors(String sid) {
