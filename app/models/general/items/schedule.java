@@ -1,45 +1,81 @@
 package models.general.items;
 
 import java.util.ArrayList;
+import java.util.Scanner;
+
+import models.general.people.courseSection;
+import src.constants.DAYS;
+import src.constants.TIMES;
 
 public class schedule {
     private final int maxCreditHours = 18;
     private int creditHours;
-    private ArrayList<String> courses;
+    private ArrayList<selectedCourse> courses;
     private String scheduleId;
 
     public schedule() {
         creditHours = 0;
-        courses = new ArrayList<String>();
+        courses = new ArrayList<selectedCourse>();
     }
 
     public schedule(String schedId) {
         creditHours = 0;
-        courses = new ArrayList<String>();
+        courses = new ArrayList<selectedCourse>();
         this.scheduleId = schedId;
     }
 
-    public ArrayList<String> getCourses() {
+    public ArrayList<selectedCourse> getCourses() {
         return courses;
     }
 
     public boolean addCourse(Course c) {
+        Scanner s = new Scanner(System.in);
         if(c.getCreditHours() + creditHours > maxCreditHours) {
             return false;
         }
+        if(c.getCourseSections() == null || c.getCourseSections().size() == 0) {
+            return false;
+        }
 
-        ArrayList<String> courseClone = this.getCourses();
+        ArrayList<selectedCourse> courseClone = this.getCourses();
         
-        for (String cor : courseClone) {
-            if (cor == c.getCID())
+        for (selectedCourse cor : courseClone) {
+            if (cor.getCourseId() == c.getCID())
                 return false;
         }
 
-        courseClone.add(c.getCID());
+        int count = 1;
+        for(courseSection sec : c.getCourseSections()) {
+            System.out.println(count + ": " + stringifySection(sec.getDays(), sec.getTime()));
+            count++;
+        }
+
+        int index = 0;
+        try {
+            index = Integer.parseInt(s.nextLine()) - 1;
+        } catch (Exception e) {
+            return false;
+        }
+
+        courseSection selectedSection = c.getCourseSections().get(index);
+
+        selectedCourse newSelectedCourse = new selectedCourse(c.getCID(), selectedSection.sectionId);
+        courseClone.add(newSelectedCourse);
         
         this.setCourses(courseClone);
         this.setCreditHours(this.creditHours + c.getCreditHours());
         return true;
+    }
+
+    private String stringifySection(ArrayList<String> days, String time) {
+        String retString = "";
+
+        for (String d : days) {
+            retString = retString + d;
+        }
+        retString = retString + " - " + time;
+
+        return retString;
     }
 
     public void setCreditHours(int creds) {
@@ -47,13 +83,13 @@ public class schedule {
     }
 
     public boolean removeCourse(Course c) {
-        ArrayList<String> cls = this.getCourses();
-        cls.removeIf(cor -> cor == c.getCID());
+        ArrayList<selectedCourse> cls = this.getCourses();
+        cls.removeIf(cor -> cor.getCourseId() == c.getCID());
         this.setCourses(cls);
         return true;
     }
 
-    public void setCourses(ArrayList<String> cl) {
+    public void setCourses(ArrayList<selectedCourse> cl) {
         this.courses = cl;
     }
 

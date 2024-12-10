@@ -1,8 +1,9 @@
 package models.academics;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import models.general.items.Course;
+import models.general.items.courseLookup;
 import models.general.people.studentLookup;
 import src.DatabaseSupport;
 
@@ -13,8 +14,26 @@ public class CourseController {
         this.db = _db;
     }
     
-    public HashMap<String, Course> getAllCourses() {
-        return DatabaseSupport.getAllCourses();
+    public ArrayList<courseLookup> getAllCourses() {
+        return this.db.getCourses();
+    }
+
+    public courseLookup getCourse(String cid) {
+        return this.db.getAvailableCourse(cid);
+    }
+
+    public ArrayList<courseLookup> getAllValidCourses() {
+        return this.db.GetAllValidCourses();
+    }
+
+    public boolean addProfessorToCourse(String pId, courseLookup c) {
+        courseLookup crsClone = c;
+        crsClone.value.SetProfessorId(pId);
+        return this.db.updateCourses(c.key, c.value);
+    }
+
+    public boolean addCourse(Course c) {
+        return this.db.addCourse(c);
     }
 
     public void OutputCoursesForStudent(String sid) {

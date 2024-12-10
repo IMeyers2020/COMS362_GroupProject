@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import models.general.items.Course;
 import models.general.items.Major;
 import models.general.items.scheduleLookup;
+import models.general.items.selectedCourse;
 import models.general.people.studentLookup;
 import src.DatabaseSupport;
 
@@ -51,7 +52,7 @@ public class RegistrationController {
         return true;
     }
 
-    public ArrayList<String> viewRegisteredCourses(String sid) {
+    public ArrayList<selectedCourse> viewRegisteredCourses(String sid) {
         return this.db.getCoursesForStudent(sid);
     }
 
