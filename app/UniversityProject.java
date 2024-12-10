@@ -657,7 +657,7 @@ public class UniversityProject {
 
         if (s.hasNextLine()) {
             sid = s.nextLine();
-            offeredCourses = cc.getAllCourses();
+            offeredCourses = cc.getAllValidCourses();
             offeredMajors = mc.getAllMajors();
         }
 
@@ -712,6 +712,11 @@ public class UniversityProject {
                 cc.OutputCoursesForStudent(sid);
                 break;
             case "2":
+                if(offeredCourses == null || offeredCourses.size() == 0) {
+                    System.out.println("No classes are currently available. Please create a class, and ensure it has a professor, and at least one section!");
+                    s.nextLine();
+                    break;
+                }
                 System.out.println("What class would you like to register for?");
                 int crsIdx = 1;
                 for(courseLookup key : offeredCourses) {
