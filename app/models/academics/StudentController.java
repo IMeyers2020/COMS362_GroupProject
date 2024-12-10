@@ -18,6 +18,11 @@ public class StudentController {
         return this.db.updateStudent(stud.getStudentId(), stud);
     }
 
+    /**
+     * Gets studentlookup object from database with provided ID
+     * @param sid   student ID
+     * @return      studentlookup object, contains student object
+     */
     public studentLookup getStudent(String sid) {
         ArrayList<studentLookup> filtered = this.db.getStudents();
         filtered.removeIf(s -> !(s.key.equals(sid)));
@@ -29,10 +34,19 @@ public class StudentController {
         return filtered.get(0);
     };
 
+    /**
+     * Gets all students currently in database
+     * @return  list of studentlookup objects
+     */
     public ArrayList<studentLookup> getAllStudents() {
         return this.db.getStudents();
     }
 
+    /**
+     * Gets schedule of student
+     * @param stud  student
+     * @return      schedulelookup object of provided student
+     */
     public scheduleLookup getScheduleForStudent(student stud) {
         scheduleLookup foundSched;
 
@@ -41,7 +55,12 @@ public class StudentController {
         return foundSched;
     }
 
-    // move student from studentdb to expelleddb
+    /**
+     * Expels student from university, puts them in expelled student database
+     * @param sid       student ID
+     * @param reason    string, reason for expulsion
+     * @return          true if student is successfully expelled
+     */
     public boolean expelStudent(String sid, String reason) {
         studentLookup s = this.db.getStudent(sid);
         s.value.setExplusionNote(reason);
@@ -49,7 +68,11 @@ public class StudentController {
         return this.db.addExpelledStudent(sid, s.value) && this.db.removeStudent(sid);
     }
 
-    // move student from expelleddb to studentdb
+    /**
+     * Unexpells student from university, returning them to main student database
+     * @param sid   student ID
+     * @return      true if student is successfully unexpelled
+     */
     public boolean unexpelStudent(String sid) {
         studentLookup s = this.db.getExpelledStudent(sid);
         // wipe explusion note, used as way of checking explusion boolean
