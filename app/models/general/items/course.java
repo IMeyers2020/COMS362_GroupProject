@@ -1,7 +1,6 @@
 package models.general.items;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 
 import models.general.people.courseSection;
@@ -11,8 +10,8 @@ import src.constants.TIMES;
 public class Course {
     private String cid;
     private int creditHours;
-    private Set<String> prereqs;
-    private ArrayList<courseSection> courseSections;
+    private ArrayList<String> prereqs;
+    private ArrayList<String> courseSectionIds;
     private String professorId;
 
     public Course() {
@@ -21,19 +20,19 @@ public class Course {
     public Course(String cid, int creditHours, Set<String> prereqs){
         this.cid = cid;
         this.creditHours = creditHours;
-        this.prereqs = new HashSet<>();
+        this.prereqs = new ArrayList<>();
         this.prereqs.addAll(prereqs);
-        this.courseSections = new ArrayList<>();
+        this.courseSectionIds = new ArrayList<>();
     }
 
     public Course(String cid, int creditHours){
         this.cid = cid;
         this.creditHours = creditHours;
-        this.prereqs = new HashSet<>();
-        this.courseSections = new ArrayList<>();
+        this.prereqs = new ArrayList<>();
+        this.courseSectionIds = new ArrayList<>();
     }
 
-    public Set<String> getPrereqs() {
+    public ArrayList<String> getPrereqs() {
         return prereqs;
     }
     public int getCreditHours() {
@@ -43,16 +42,16 @@ public class Course {
         return cid;
     }
 
-    public ArrayList<courseSection> getCourseSections() {
-        return courseSections;
+    public ArrayList<String> getCourseSectionIds() {
+        return courseSectionIds == null ? new ArrayList<>() : courseSectionIds;
     }
-    public void setCourseSections(ArrayList<courseSection> sections) {
-        this.courseSections = sections;
+    public void setCourseSections(ArrayList<String> sections) {
+        this.courseSectionIds = sections;
     }
-    public void setCourseSections(courseSection section) {
-        ArrayList<courseSection> sections = new ArrayList<>();
+    public void setCourseSections(String section) {
+        ArrayList<String> sections = new ArrayList<>();
         sections.add(section);
-        this.courseSections = sections;
+        this.courseSectionIds = sections;
     }
 
     public String GetProfessorId() {
@@ -64,7 +63,7 @@ public class Course {
 
     public void AddPrerequisite(String classId) {
         if(this.prereqs == null) {
-            this.prereqs = Set.of("classId");
+            this.prereqs = new ArrayList<>(Set.of("classId"));
         }
         this.prereqs.add(classId);
     }
@@ -72,10 +71,10 @@ public class Course {
     public void AddSection(TIMES timeOfClass, ArrayList<DAYS> daysOfClass) {
         courseSection classSection = new courseSection(stringifySection(daysOfClass, timeOfClass), daysOfClass, timeOfClass);
 
-        if(courseSections == null) {
-            this.courseSections = new ArrayList<>();
+        if(courseSectionIds == null) {
+            this.courseSectionIds = new ArrayList<>();
         }
-        this.courseSections.add(classSection);
+        this.courseSectionIds.add(stringifySection(daysOfClass, timeOfClass));
     }
 
     private String stringifySection(ArrayList<DAYS> days, TIMES time) {
@@ -95,10 +94,10 @@ public class Course {
      * @return TRUE if the course is valid (per the requirements given above), FALSE otherwise
      */
     public boolean IsValid() {
-        if(professorId == null || courseSections == null) {
+        if(professorId == null || courseSectionIds == null) {
             return false;
         }
-        if(courseSections.size() < 1) {
+        if(courseSectionIds.size() < 1) {
             return false;
         }
         return true;

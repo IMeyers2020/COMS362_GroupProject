@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import models.general.items.Course;
 import models.general.items.courseLookup;
+import models.general.items.selectedCourse;
+import models.general.people.courseSection;
 import models.general.people.studentLookup;
 import src.DatabaseSupport;
 
@@ -39,5 +41,19 @@ public class CourseController {
     public void OutputCoursesForStudent(String sid) {
         studentLookup stud = this.db.getStudent(sid);
         this.db.PrintScheduleForStudent(stud.value);
+    }
+
+    public void AddSelectedCoursesForCourse(selectedCourse sc) {
+        this.db.addSelectedCourse(sc);
+    }
+
+    public void AddSectionsToCourse(Course c, ArrayList<courseSection> secs) {
+        ArrayList<String> stringified = new ArrayList<>();
+
+        for(courseSection sec : secs) {
+            stringified.add(sec.getSectionId());
+            this.db.addCourseSection(sec.getSectionId(), sec);
+        }
+        c.setCourseSections(stringified);
     }
 }

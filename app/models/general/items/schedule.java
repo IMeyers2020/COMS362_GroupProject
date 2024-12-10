@@ -3,50 +3,44 @@ package models.general.items;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import models.general.people.courseSection;
-import src.constants.DAYS;
-import src.constants.TIMES;
-
 public class schedule {
     private final int maxCreditHours = 18;
     private int creditHours;
-    private ArrayList<selectedCourse> courses;
+    private ArrayList<String> courseIds;
     private String scheduleId;
+    private String studentId;
 
     public schedule() {
         creditHours = 0;
-        courses = new ArrayList<selectedCourse>();
+        courseIds = new ArrayList<String>();
     }
 
-    public schedule(String schedId) {
+    public schedule(String schedId, String studId) {
         creditHours = 0;
-        courses = new ArrayList<selectedCourse>();
+        courseIds = new ArrayList<String>();
         this.scheduleId = schedId;
+        this.studentId = studId;
     }
 
-    public ArrayList<selectedCourse> getCourses() {
-        return courses;
+    public ArrayList<String> getCourses() {
+        return courseIds;
     }
 
-    public boolean addCourse(Course c) {
+    public boolean addCourse(Course c, selectedCourse newSelectedCourse) {
         Scanner s = new Scanner(System.in);
         if(c.getCreditHours() + creditHours > maxCreditHours) {
             return false;
         }
-        if(c.getCourseSections() == null || c.getCourseSections().size() == 0) {
+        if(c.getCourseSectionIds() == null || c.getCourseSectionIds().size() == 0) {
             return false;
         }
 
-        ArrayList<selectedCourse> courseClone = this.getCourses();
-        
-        for (selectedCourse cor : courseClone) {
-            if (cor.getCourseId() == c.getCID())
-                return false;
-        }
+        ArrayList<String> courseClone = this.getCourses() == null ? new ArrayList<>() : this.getCourses();
 
+        System.out.println("Enter the section of " + c.getCID() + " you would like to register for");
         int count = 1;
-        for(courseSection sec : c.getCourseSections()) {
-            System.out.println(count + ": " + stringifySection(sec.getDays(), sec.getTime()));
+        for(String sec : c.getCourseSectionIds()) {
+            System.out.println(count + ": " + sec);
             count++;
         }
 
@@ -57,25 +51,18 @@ public class schedule {
             return false;
         }
 
-        courseSection selectedSection = c.getCourseSections().get(index);
+        String selectedSection = c.getCourseSectionIds().get(index);
 
-        selectedCourse newSelectedCourse = new selectedCourse(c.getCID(), selectedSection.sectionId);
-        courseClone.add(newSelectedCourse);
+        newSelectedCourse.setCourseId(c.getCID());
+        newSelectedCourse.setCourseSection(selectedSection);
+        newSelectedCourse.setStudentId(studentId);
+        if(newSelectedCourse.getCourseId() != null && newSelectedCourse.getCourseId().length() > 0) {
+            courseClone.add(newSelectedCourse.getCourseId());
+        }
         
         this.setCourses(courseClone);
         this.setCreditHours(this.creditHours + c.getCreditHours());
         return true;
-    }
-
-    private String stringifySection(ArrayList<String> days, String time) {
-        String retString = "";
-
-        for (String d : days) {
-            retString = retString + d;
-        }
-        retString = retString + " - " + time;
-
-        return retString;
     }
 
     public void setCreditHours(int creds) {
@@ -83,14 +70,14 @@ public class schedule {
     }
 
     public boolean removeCourse(Course c) {
-        ArrayList<selectedCourse> cls = this.getCourses();
-        cls.removeIf(cor -> cor.getCourseId() == c.getCID());
+        ArrayList<String> cls = this.getCourses();
+        cls.removeIf(cor -> cor.equals(c.getCID()));
         this.setCourses(cls);
         return true;
     }
 
-    public void setCourses(ArrayList<selectedCourse> cl) {
-        this.courses = cl;
+    public void setCourses(ArrayList<String> cl) {
+        this.courseIds = cl;
     }
 
     public String getScheduleId() {
@@ -98,5 +85,12 @@ public class schedule {
     }
     public void setScheduleId(String sId) {
         this.scheduleId = sId;
+    }
+
+    public String getStudentId() {
+        return this.studentId;
+    }
+    public void setStudentId(String sId) {
+        this.studentId = sId;
     }
 }

@@ -22,10 +22,13 @@ import models.finances.paymentServices.Payment;
 import models.general.items.Course;
 import models.general.items.Major;
 import models.general.items.courseLookup;
+import models.general.items.courseSectionLookup;
 import models.general.items.dormLookup;
 import models.general.items.schedule;
 import models.general.items.scheduleLookup;
 import models.general.items.selectedCourse;
+import models.general.items.selectedCoursesLookup;
+import models.general.people.courseSection;
 import models.general.people.professor;
 import models.general.people.professorLookup;
 import models.general.people.student;
@@ -105,7 +108,7 @@ public class DatabaseSupport {
         studentLookup[] lookups = {};
 
         ArrayList<studentLookup> arrayListed = getStudents();
-        arrayListed.removeIf(s -> s.key == studentId);
+        arrayListed.removeIf(s -> s.key.equals(studentId));
         lookups = arrayListed.toArray(lookups);
 
         try {
@@ -162,23 +165,25 @@ public class DatabaseSupport {
                     for(selectedCourse courseId : courseIds) {
                         ArrayList<courseLookup> coursesClone = allCourses;
                         coursesClone.removeIf(c -> !(c.value.getCID().equals(courseId)));
-                        Course currentCourse = coursesClone.get(0).value;
+                        if(coursesClone.size() > 0) {
+                            Course currentCourse = coursesClone.get(0).value;
 
-                        if(currentCourse == null || currentCourse.getCourseSections() == null || currentCourse.getCourseSections().size() == 0) {
-                            continue;
-                        } else {
-                            courseId.getCourseSection();
-                            if(courseId.getCourseSection().equals(timeString) && currentCourse.getCourseSections().contains(dayString)) {
-                                courseFound = true;
-                                String idToShow = courseId.getCourseId().substring(0, 5); // Show at most 6 characters. I.E FIN200. Shouldn't have more than that
-                                if(dayClassString.charAt(dayClassString.length() - 1) != '|') {
-                                    dayClassString = dayClassString.substring(0, dayClassString.length() - 1) + "|";
+                            if(currentCourse == null || currentCourse.getCourseSectionIds() == null || currentCourse.getCourseSectionIds().size() == 0) {
+                                continue;
+                            } else {
+                                courseId.getCourseSection();
+                                if(courseId.getCourseSection().equals(timeString) && currentCourse.getCourseSectionIds().contains(dayString)) {
+                                    courseFound = true;
+                                    String idToShow = courseId.getCourseId().substring(0, 5); // Show at most 6 characters. I.E FIN200. Shouldn't have more than that
+                                    if(dayClassString.charAt(dayClassString.length() - 1) != '|') {
+                                        dayClassString = dayClassString.substring(0, dayClassString.length() - 1) + "|";
+                                    }
+                                    dayClassString = dayClassString + " ".repeat(Math.floorDiv((stringWidth - idToShow.length()), 2));
+                                    dayClassString = dayClassString + idToShow;
+                                    dayClassString = dayClassString + " ".repeat(Math.ceilDiv((stringWidth - idToShow.length()), 2));
+                                    dayClassString = dayClassString + "|";
+                                    break;
                                 }
-                                dayClassString = dayClassString + " ".repeat(Math.floorDiv((stringWidth - idToShow.length()), 2));
-                                dayClassString = dayClassString + idToShow;
-                                dayClassString = dayClassString + " ".repeat(Math.ceilDiv((stringWidth - idToShow.length()), 2));
-                                dayClassString = dayClassString + "|";
-                                break;
                             }
                         }
                     }
@@ -271,7 +276,7 @@ public class DatabaseSupport {
         scheduleLookup[] lookups = {};
 
         ArrayList<scheduleLookup> arrayListed = getSchedules();
-        arrayListed.removeIf(s -> s.key == schedId);
+        arrayListed.removeIf(s -> s.key.equals(schedId));
         lookups = arrayListed.toArray(lookups);
 
         try {
@@ -331,7 +336,7 @@ public class DatabaseSupport {
         ArrayList<dormLookup> dorms = getDorms();
 
         for(dormLookup d : dorms) {
-            if(d.value.getDormId() == did) {
+            if(d.value.getDormId().equals(did)) {
                 return d;
             }
         }
@@ -360,11 +365,11 @@ public class DatabaseSupport {
         dormLookup[] lookups = {};
 
         ArrayList<dormLookup> arrayListed = getDorms();
-        arrayListed.removeIf(s -> s.key == dormId);
+        arrayListed.removeIf(s -> s.key.equals(dormId));
         lookups = arrayListed.toArray(lookups);
 
         ArrayList<studentLookup> studs = getStudents();
-        studs.removeIf(s -> !(s.value.getDormId() == dormId));
+        studs.removeIf(s -> !(s.value.getDormId().equals(dormId)));
 
         for(studentLookup s : studs) {
             s.value.setDormId(null);
@@ -386,7 +391,7 @@ public class DatabaseSupport {
         dormLookup[] lookups = {};
 
         ArrayList<dormLookup> arrayListed = getDorms();
-        arrayListed.removeIf(s -> s.key == dormId);
+        arrayListed.removeIf(s -> s.key.equals(dormId));
         arrayListed.add(dl);
         lookups = arrayListed.toArray(lookups);
 
@@ -404,7 +409,7 @@ public class DatabaseSupport {
         ArrayList<studentLookup> studs = getStudents();
 
         for(studentLookup s : studs) {
-            if(s.value.getDormId() == dormId) {
+            if(s.value.getDormId().equals(dormId)) {
                 return s;
             }
         }
@@ -453,7 +458,7 @@ public class DatabaseSupport {
         ArrayList<professorLookup> profs = getProfessors();
 
         for(professorLookup p : profs) {
-            if(p.value.getPID() == pid) {
+            if(p.value.getPID().equals(pid)) {
                 return p;
             }
         }
@@ -502,7 +507,7 @@ public class DatabaseSupport {
         professorLookup[] lookups = {};
 
         ArrayList<professorLookup> arrayListed = getProfessors();
-        arrayListed.removeIf(s -> s.key == profId);
+        arrayListed.removeIf(s -> s.key.equals(profId));
         lookups = arrayListed.toArray(lookups);
 
         try {
@@ -520,7 +525,7 @@ public class DatabaseSupport {
         professorLookup[] lookups = {};
 
         ArrayList<professorLookup> arrayListed = getProfessors();
-        arrayListed.removeIf(s -> s.key == profId);
+        arrayListed.removeIf(s -> s.key.equals(profId));
         arrayListed.add(pl);
         lookups = arrayListed.toArray(lookups);
 
@@ -756,7 +761,7 @@ public class DatabaseSupport {
         ArrayList<Scholarship> scholarships = getScholarships();
 
         for(Scholarship s : scholarships) {
-            if(s.getScholarshipId() == ssid) {
+            if(s.getScholarshipId().equals(ssid)) {
                 return s;
             }
         }
@@ -765,12 +770,6 @@ public class DatabaseSupport {
 
         // AVAILABLE COURSES FUNCTIONS
         public ArrayList<courseLookup> getCourses() {
-            try {
-                Field field = java.util.HashSet.class.getDeclaredField("serialVersionUID");
-                field.setAccessible(true);
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
             DB_Courses lookups = new DB_Courses();
 
             File f = new File("./CoursesDB.txt");
@@ -848,7 +847,7 @@ public class DatabaseSupport {
             courseLookup[] lookups = {};
     
             ArrayList<courseLookup> arrayListed = getCourses();
-            arrayListed.removeIf(s -> s.key == courseId);
+            arrayListed.removeIf(s -> s.key.equals(courseId));
             lookups = arrayListed.toArray(lookups);
     
             try {
@@ -905,7 +904,230 @@ public class DatabaseSupport {
             return null;
         }
 
-        return sched.value.getCourses();
+        ArrayList<String> courseIds = sched.value.getCourses();
+        ArrayList<selectedCourse> retList = new ArrayList<>();
+
+        for(String courseId : courseIds) {
+            selectedCoursesLookup crsLookup = getSelectedCourse(student.getKey(), courseId);
+            if(crsLookup != null) {
+                selectedCourse foundCourse = crsLookup.value;
+                retList.add(foundCourse);
+            }
+        }
+
+        return retList;
+    }
+
+    // COURSE SECTIONS FUNCTIONS
+    public ArrayList<courseSectionLookup> getCourseSections() {
+        DB_CourseSection lookups = new DB_CourseSection();
+
+        try (BufferedReader br = new BufferedReader(new FileReader("./CourseSectionDB.txt"))) {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+    
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            String everything = sb.toString();
+    
+            if (everything.trim().equals("{}")) {
+                return new ArrayList<courseSectionLookup>();
+            } else {
+                DB_CourseSection dbCourseSection = (DB_CourseSection) JsonUtil.deserialize(everything, DB_CourseSection.class);
+    
+                if (dbCourseSection != null && dbCourseSection.sections != null) {
+                    lookups.setSections(dbCourseSection.sections);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<courseSectionLookup>();
+        }
+        return lookups.sections != null ? new ArrayList<>(lookups.sections) : new ArrayList<>();
+    }   
+
+    public courseSectionLookup getCourseSection(String sid) {
+        ArrayList<courseSectionLookup> courseSections = getCourseSections();
+
+        for(courseSectionLookup s : courseSections) {
+            if(s.value.getSectionId().equals(sid)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    public boolean addCourseSection(String courseSectionId, courseSection sec) {
+        courseSectionLookup sl = new courseSectionLookup(courseSectionId, sec);
+
+        ArrayList<courseSectionLookup> arrayListed = getCourseSections();
+        arrayListed.add(sl);
+
+        try {
+            DB_CourseSection dbCourseSection = new DB_CourseSection();
+            dbCourseSection.setSections(arrayListed);
+            String lookupsString = JsonUtil.serialize(dbCourseSection);
+
+            Files.writeString(Paths.get("./CourseSectionDB.txt"), lookupsString);
+        } catch (Exception e) {
+            System.err.println(e);
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean removeCourseSection(String courseSectionId) {
+        courseSectionLookup[] lookups = {};
+
+        ArrayList<courseSectionLookup> arrayListed = getCourseSections();
+        arrayListed.removeIf(s -> s.key.equals(courseSectionId));
+        lookups = arrayListed.toArray(lookups);
+
+        try {
+            String lookupsString = JsonUtil.serialize(lookups);
+            Files.writeString(Paths.get("./CourseSectionDB.txt"), lookupsString);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean updateStudent(String courseSectionId, courseSection sec) {
+        courseSectionLookup sl = new courseSectionLookup(courseSectionId, sec);
+
+        ArrayList<courseSectionLookup> arrayListed = getCourseSections();
+        arrayListed.removeIf(s -> s.key.equals(courseSectionId));
+        arrayListed.add(sl);
+
+        try {
+            DB_CourseSection dbStud = new DB_CourseSection();
+            dbStud.setSections(arrayListed);
+            String lookupsString = JsonUtil.serialize(dbStud);
+
+            Files.writeString(Paths.get("./CourseSectionDB.txt"), lookupsString);
+        } catch (Exception e) {
+            System.err.println(e);
+            return false;
+        }
+
+        return true;
+    }
+
+    // STUDENT SELECTED COURSES FUNCTIONS
+    public ArrayList<selectedCoursesLookup> getSelectedCourses() {
+        DB_SelectedCourse lookups = new DB_SelectedCourse();
+
+        File f = new File("./SelectedCoursesDB.txt");
+        if(!f.exists() || f.isDirectory()) {
+            try {
+                f.createNewFile();
+                Files.writeString(Paths.get("./SelectedCoursesDB.txt"), "{}");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader("./SelectedCoursesDB.txt"))) {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+    
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            String everything = sb.toString();
+    
+            if (everything.trim().equals("{}")) {
+                return new ArrayList<selectedCoursesLookup>();
+            } else {
+                DB_SelectedCourse dbSelectedCourse = (DB_SelectedCourse) JsonUtil.deserialize(everything, DB_SelectedCourse.class);
+    
+                if (dbSelectedCourse != null && dbSelectedCourse.courses != null) {
+                    lookups.setSelectedCourses(dbSelectedCourse.courses);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<selectedCoursesLookup>();
+        }
+        return lookups.courses != null ? new ArrayList<>(lookups.courses) : new ArrayList<>();
+    }   
+
+    public selectedCoursesLookup getSelectedCourse(String sid, String cid) {
+        ArrayList<selectedCoursesLookup> courses = getSelectedCourses().size() > 0 ? getSelectedCourses() : new ArrayList<>();
+
+        for(selectedCoursesLookup s : courses) {
+            if(s != null) {
+                if(s.value.getStudentId().equals(sid) && s.value.getCourseId().equals(cid)) {
+                    return s;
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean addSelectedCourse(selectedCourse stud) {
+        selectedCoursesLookup sl = new selectedCoursesLookup(stud.getStudentId(), stud);
+
+        ArrayList<selectedCoursesLookup> arrayListed = getSelectedCourses();
+        arrayListed.add(sl);
+
+        try {
+            DB_SelectedCourse dbSelectedCourse = new DB_SelectedCourse();
+            dbSelectedCourse.setSelectedCourses(arrayListed);
+            String lookupsString = JsonUtil.serialize(dbSelectedCourse);
+
+            Files.writeString(Paths.get("./SelectedCoursesDB.txt"), lookupsString);
+        } catch (Exception e) {
+            System.err.println(e);
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean removeSelectedCourse(String studentId) {
+        selectedCoursesLookup[] lookups = {};
+
+        ArrayList<selectedCoursesLookup> arrayListed = getSelectedCourses();
+        arrayListed.removeIf(s -> s.key.equals(studentId));
+        lookups = arrayListed.toArray(lookups);
+
+        try {
+            String lookupsString = JsonUtil.serialize(lookups);
+            Files.writeString(Paths.get("./SelectedCoursesDB.txt"), lookupsString);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean updateSelectedCourse(selectedCourse stud) {
+        selectedCoursesLookup sl = new selectedCoursesLookup(stud.getStudentId(), stud);
+
+        ArrayList<selectedCoursesLookup> arrayListed = getSelectedCourses();
+        arrayListed.removeIf(s -> (s.value.getStudentId().equals(stud.getStudentId()) && s.value.getCourseId().equals(stud.getCourseId())));
+        arrayListed.add(sl);
+
+        try {
+            DB_SelectedCourse dbStud = new DB_SelectedCourse();
+            dbStud.setSelectedCourses(arrayListed);
+            String lookupsString = JsonUtil.serialize(dbStud);
+
+            Files.writeString(Paths.get("./SelectedCoursesDB.txt"), lookupsString);
+        } catch (Exception e) {
+            System.err.println(e);
+            return false;
+        }
+
+        return true;
     }
 
     // public static HashMap<String, Course> getAllCourses() {

@@ -28,7 +28,9 @@ public class RegistrationController {
             System.err.println("Failed to add course, unable to find a Schedule matching the ScheduleId on that student");
             return false;
         }
-        sched.value.addCourse(c);
+        selectedCourse sc = new selectedCourse();
+        sched.value.addCourse(c, sc);
+        this.db.addSelectedCourse(sc);
         this.db.updateSchedule(sched.key, sched.value);
         this.db.updateStudent(stud.key, stud.value);
         return true;

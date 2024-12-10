@@ -6,6 +6,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 import models.academics.administrativeDepartments.admissions.controllers.ApplicationController;
+import models.academics.administrativeDepartments.admissions.controllers.StudentApplication;
 import models.academics.CourseController;
 import models.academics.MajorController;
 import models.academics.ProfessorController;
@@ -23,7 +24,10 @@ import models.finances.paymentServices.Payment;
 import models.general.items.Course;
 import models.general.items.Major;
 import models.general.items.courseLookup;
+import models.general.items.courseSectionLookup;
+import models.general.items.scheduleLookup;
 import models.general.items.selectedCourse;
+import models.general.items.selectedCoursesLookup;
 import models.general.people.courseSection;
 import models.general.people.genericPerson;
 import models.general.people.professorLookup;
@@ -370,7 +374,7 @@ public class UniversityProject {
             for (courseLookup crs : validCourses) {
                 System.out.println(idx + ": " + crs.key);
             }
-            int selectedIdx = s.nextInt() - 1;
+            int selectedIdx = Integer.parseInt(s.nextLine()) - 1;
     
             courseLookup selectedCrs = validCourses.get(selectedIdx);
             retSet.add(selectedCrs.key);
@@ -396,15 +400,16 @@ public class UniversityProject {
                 System.out.println(idx + ": " + d.label);
                 idx++;
             }
-            int selectedIdx = s.nextInt() - 1;
+            int selectedIdx = Integer.parseInt(s.nextLine()) - 1;
     
             crsDays.add(days.get(selectedIdx).label);
-            System.out.println("Would you like to add another section? (Y/N)");
+            System.out.println("Would you like to add another class day? (Y/N)");
             String addDay = s.nextLine();
             if(!addDay.toLowerCase().equals("y")) {
-                days.remove(selectedIdx);
                 clearScreen();
                 cont = false;
+            } else {
+                days.remove(selectedIdx);
             }
         }
 
@@ -419,7 +424,7 @@ public class UniversityProject {
             System.out.println(idx + ": " + t.label);
             idx++;
         }
-        int selectedIdx = s.nextInt();
+        int selectedIdx = Integer.parseInt(s.nextLine());
 
         if(selectedIdx > TIMES.values().length) {
             System.out.println("INVALID TIME! Please enter the number next to the time you would like to select");
@@ -478,7 +483,7 @@ public class UniversityProject {
         }
 
         Course newCourse = new Course(cid, creditHrs, preReqs);
-        newCourse.setCourseSections(crsSections);
+        cc.AddSectionsToCourse(newCourse, crsSections);
 
         boolean result = cc.addCourse(newCourse);
 
@@ -497,16 +502,17 @@ public class UniversityProject {
         ArrayList<courseLookup> validCourses = cc.getAllValidCourses();
 
         for(courseLookup crs : validCourses) {
+
             professorLookup prof = pc.getProfessor(crs.value.GetProfessorId());
-            System.out.println(crs.key);
-            for(courseSection sec : crs.value.getCourseSections()) {
-                ArrayList<String> dys = sec.getDays();
-                String times = sec.getTime();
-                String lbl = stringifySection(dys, times);
-                System.out.println("\t" + lbl + " - " + prof.value.getName());
+            System.out.println(crs.key + " - " + prof.value.getName());
+            if(crs.value.getCourseSectionIds().size() > 0) {
+                for(String sec : crs.value.getCourseSectionIds()) {
+                    System.out.println("\t" + sec);
+                }
+                System.out.println();
             }
-            System.out.println();
         }
+        s.nextLine();
     }
 
     private static String stringifySection(ArrayList<String> days, String time) {
@@ -525,15 +531,14 @@ public class UniversityProject {
 
         for(courseLookup crs : allCourses) {
             System.out.println(crs.key);
-            for(courseSection sec : crs.value.getCourseSections()) {
-                ArrayList<String> dys = sec.getDays();
-                String times = sec.getTime();
-                String lbl = stringifySection(dys, times);
-                System.out.println("\t" + lbl);
+            if(crs.value.getCourseSectionIds().size() > 0) {
+                for(String sec : crs.value.getCourseSectionIds()) {
+                    System.out.println("\t" + sec);
+                }
+                System.out.println();
             }
-            System.out.println();
         }
-        
+        s.nextLine();
     }
 
     public static void GetCourses(CourseController cc, ProfessorController pc) {
@@ -577,7 +582,7 @@ public class UniversityProject {
             System.out.println(idx + ": " + crs.key);
             idx++;
         }
-        int selectedIdx = s.nextInt();
+        int selectedIdx = Integer.parseInt(s.nextLine());
 
         courseLookup selectedCourse = allCourses.get(selectedIdx - 1);
 
@@ -659,9 +664,10 @@ public class UniversityProject {
         System.out.println("View major(s) and registered course(s), Add/Remove a course, or Add/Remove a major?");
         System.out.println("1. View");
         System.out.println("2. Add Course");
-        System.out.println("3. Remove Course");
-        System.out.println("4. Add Major");
-        System.out.println("5. Remove Major");
+        System.out.println("3. Update Course Section");
+        System.out.println("4. Remove Course");
+        System.out.println("5. Add Major");
+        System.out.println("6. Remove Major");
 
         if (s.hasNextLine())
           selection = s.nextLine();
@@ -693,7 +699,7 @@ public class UniversityProject {
                     if(course.getCourseId().trim().length() == 0) {
                         continue;
                     } else {
-                        System.out.print(course);
+                        System.out.print(course.getCourseId());
                         if(index != end) {
                             System.out.println(",");
                         } else {
@@ -709,7 +715,7 @@ public class UniversityProject {
                 System.out.println("What class would you like to register for?");
                 int crsIdx = 1;
                 for(courseLookup key : offeredCourses) {
-                    System.out.println(crsIdx + ": " + key);
+                    System.out.println(crsIdx + ": " + key.key);
                     crsIdx++;
                 }
                 if (s.hasNextLine())
@@ -726,6 +732,26 @@ public class UniversityProject {
                 s.nextLine();
                 break;
             case "3":
+                System.out.println("What class would you like to update?");
+                crsIdx = 1;
+                for (selectedCourse course : rc.viewRegisteredCourses(sid)) {
+                    System.out.println(crsIdx + ": " + course);
+                    crsIdx++;
+                }
+                if (s.hasNextLine())
+                    selection = s.nextLine();
+                selectedCourse = offeredCourses.get(Integer.parseInt(selection) - 1).value;
+                clearScreen();
+                if (selectedCourse != null) {
+                    rc.removeCourse(sid, selectedCourse);
+                    System.out.println("Operation succeeded, " + selectedCourse.getCID() + " has been removed from the schedule.");
+                }
+                else {
+                    System.out.println("Operation failed, course has not been removed from the schedule.");
+                    System.out.println("This course isn't in the schedule.");
+                }
+                break;
+            case "4":
                 System.out.println("What class would you like to remove?");
                 crsIdx = 1;
                 for (selectedCourse course : rc.viewRegisteredCourses(sid)) {
@@ -743,7 +769,7 @@ public class UniversityProject {
                     System.out.println("This course isn't in the schedule.");
                 }
                 break;
-            case "4":
+            case "5":
                 System.out.println("What major would you like to register for?");
                 for(String key : offeredMajors.keySet()) {
                     System.out.println(key);
@@ -761,7 +787,7 @@ public class UniversityProject {
                 }
                 s.nextLine();
                 break;
-            case "5":
+            case "6":
                 System.out.println("What major would you like to remove?");
                 for (String major : rc.viewRegisteredMajors(sid)) {
                     System.out.println(major);
@@ -1150,6 +1176,9 @@ public class UniversityProject {
     }
 
     public static void main(String[] args) {
+        scheduleLookup forceBuild = new scheduleLookup();
+        selectedCoursesLookup forceBuild3 = new selectedCoursesLookup();
+        courseSectionLookup forceBuild4 = new courseSectionLookup();
         // Select a department. This is in place instead of any type of authentication.
         //  This allows us to take the user to the correct 'screen'.
         Departments selectedDepartment = null;
@@ -1162,6 +1191,8 @@ public class UniversityProject {
         RegistrationController rc = new RegistrationController(db);
         CourseController cc = new CourseController(db);
         MajorController mc = new MajorController(db);
+        StudentApplication forceBuild2 = new StudentApplication(db);
+
 
         s = new Scanner(System.in);
 
