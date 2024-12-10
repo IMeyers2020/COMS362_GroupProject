@@ -24,6 +24,7 @@ public class Dplan {
     /** The number of meal swipes available in the dining plan */
     private int mealswipes;
     private String id;
+    private int cost;
     
         private String studentId;
     
@@ -38,13 +39,14 @@ public class Dplan {
             this.mealswipes = 0;
         }
     
-        public Dplan(String type, String studentId, String term, int diningDollars, int mealSwipes, String id) {
+        public Dplan(String type, String studentId, String term, int diningDollars, int mealSwipes, String id, int cost) {
         this.type = type;            // Set the dining plan type (e.g., "Meal Plan", "All-You-Can-Eat")
         this.studentId = studentId;  // Set the student ID associated with the dining plan
         this.term = term;            // Set the academic term for which the dining plan is valid (e.g., "Fall 2024")
         this.diningdollars = diningDollars;  // Set the number of dining dollars available in the plan
         this.mealswipes = mealSwipes;        // Set the number of meal swipes available in the plan
-        this.id = id;                // Set the unique identifier for the dining plan
+        this.id = id;              // Set the unique identifier for the dining plan
+        this.cost = cost;
     }
 
     /**
@@ -90,6 +92,10 @@ public class Dplan {
      */
     public String getTerm() {
         return term;
+    }
+
+    public int getcost() {
+        return cost;
     }
 
     /**

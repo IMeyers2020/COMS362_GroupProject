@@ -2,6 +2,7 @@ package models.Diningplan;
 
 import java.io.IOException;
 
+import models.general.people.student;
 import src.DatabaseSupport;     // Assuming DatabaseSupport handles DB operations for storing dining plans
 
 /**
@@ -37,13 +38,22 @@ public class Dplancontroller {
      * @throws IOException if an error occurs during database interaction
      */
     public boolean addDiningPlan(String type, String studentId, String term, int diningDollars, 
-                                 int mealSwipes, String id) throws IOException 
+                                 int mealSwipes, String id, int cost) throws IOException 
     {
         // Create a new Dplan object with the provided details
-        Dplan dplan = new Dplan(type, studentId, term, diningDollars, mealSwipes, id);
-        
+        Dplan dplan = new Dplan(type, studentId, term, diningDollars, mealSwipes, id, cost);
+        try {
+            System.out.println(db.getStudents().toString());
+            System.out.println(db.getStudent(id));
+            System.out.println(id);
+            dplan.setStudent(db.getStudent(id).value);
+            this.db.addDiningPlan(id, dplan);
+        }
+        catch(NullPointerException e)
+        {
+            System.out.println("student does not exist!");
+        }
         // Store the dining plan in the database
-        this.db.addDiningPlan(id, dplan);
         
         // Return true to indicate successful addition
         return true;

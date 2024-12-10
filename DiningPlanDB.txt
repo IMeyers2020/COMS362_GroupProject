@@ -1,1 +1,1 @@
-{}
+{"diningPlans":[{"key":"1","value":{"type":"1","student":{"schedId":"1_schedule","majors":[""],"studentId":"1","name":"ron","financialInfo":null,"accountBalance":0.0,"scholarships":[""],"address":"aj","ssn":"lfj","dormId":null},"term":"Fall 2024","diningdollars":100,"mealswipes":50,"id":"1","cost":500,"studentId":"D772161"}}]}

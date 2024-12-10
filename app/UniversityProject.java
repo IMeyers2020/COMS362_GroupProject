@@ -157,26 +157,59 @@ public static void DiningPlanService(Dplancontroller dplanController) {
     public static void addDiningPlan(Dplancontroller dplanController) {
         System.out.println("Enter the student's ID: ");
         String studentId = s.nextLine();
+        String plan = "";
+        int mealswipes = 0;
+        int dining = 0;
+        int cost = 0;
 
         // Input dining plan details
-        System.out.println("Enter the dining plan type (e.g., Meal Plan, All-You-Can-Eat): ");
-        String type = s.nextLine();
+        System.out.println("Welcome to the Dining Plan Selection!");
+        System.out.println("Choose a dining plan that best suits your needs for the semester.");
+        System.out.println("--------------------------------------------------------------");
+        System.out.println("1: **Essential Dining Plan - $500 **");
+        System.out.println("   - Perfect for students who want the basics. Includes 100 Dining Dollars and 50 Swipes. Great for on-the-go meals.");
+        System.out.println("2: **Premium Dining Plan - $700 **");
+        System.out.println("   - For those who want more flexibility. Includes 200 Dining Dollars and 100 Swipes. Perfect for a balanced meal schedule.");
+        System.out.println("3: **Unlimited Dining Plan - $900 **");
+        System.out.println("   - Enjoy unlimited access to campus dining with 500 Dining Dollars and Unlimited Swipes. The ultimate plan for food lovers!");
+        System.out.println("--------------------------------------------------------------");
+        System.out.print("Enter the number of your choice (1, 2, or 3): ");        String type = s.nextLine();
+
+        // Switch statement to assign plan and values based on user input
+        switch (type) {
+            case "1":
+                plan = "Essential Dining Plan";
+                dining = 100;
+                mealswipes = 50;
+                cost = 500;
+                break;
+            case "2":
+                plan = "Premium Dining Plan";
+                dining = 200;
+                mealswipes = 100;
+                cost = 700;
+                break;
+            case "3":
+                plan = "Unlimited Dining Plan";
+                mealswipes = 500;
+                mealswipes = 100000; // Indicates unlimited swipes
+                cost = 900;
+                break;
+            default:
+                plan = "Invalid option, please try again.";
+                break;
+        }
 
         System.out.println("Enter the academic term (e.g., Fall 2024): ");
         String term = s.nextLine();
 
-        System.out.println("Enter the number of dining dollars: ");
-        int diningDollars = Integer.parseInt(s.nextLine());
-
-        System.out.println("Enter the number of meal swipes: ");
-        int mealSwipes = Integer.parseInt(s.nextLine());
 
         // Generate a random ID for the dining plan (for simplicity)
         String diningPlanId = "D" + (int)(Math.random() * 99999) + 1;
 
         try {
             // Call the controller to add the dining plan
-            boolean success = dplanController.addDiningPlan(type, studentId, term, diningDollars, mealSwipes, diningPlanId);
+            boolean success = dplanController.addDiningPlan(type, diningPlanId, term, dining, mealswipes, studentId, cost);
             if (success) {
                 System.out.println("Dining Plan successfully added!");
             } else {

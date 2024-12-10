@@ -46,6 +46,25 @@ public class DatabaseSupport {
 
     // DINING PLAN FUNCTIONS
 
+    public boolean PrintMealPlan(Dplan d) {
+        try {
+            String lookupsString = "Dear " + d.getStudent().getName() + ", \n\n"
+                    + "You have chose the "
+                    + d.getType() + " meal plan. You will be charged " + d.getcost() + " for the " + d.getTerm() + " Please Sign\n\n" +
+                    "--------------------------------------\n\n" +
+                    "--------------------------------------,\n" + "- The University";
+
+            String offerPath = "./" + d.getStudent().getName().trim() + "-Mealplan.txt";
+
+            Files.writeString(Paths.get(offerPath), lookupsString);
+        } catch (Exception e) {
+            System.err.println(e);
+            return false;
+        }
+
+        return true;
+    }
+
     public ArrayList<diningplanlookups> getDiningPlans() {
         DB_DININGPLAN lookups = new DB_DININGPLAN();
 
@@ -99,6 +118,7 @@ public class DatabaseSupport {
             String lookupsString = JsonUtil.serialize(dbDiningPlan);
 
             Files.writeString(Paths.get("./DiningPlanDB.txt"), lookupsString);
+            PrintMealPlan(dplan);
         } catch (Exception e) {
             System.err.println(e);
             return false;

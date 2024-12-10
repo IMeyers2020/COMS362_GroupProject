@@ -1,0 +1,1 @@
+{"schedules":[{"key":"1_schedule","value":{"maxCreditHours":18,"creditHours":0,"courseIds":[""],"scheduleId":"1_schedule","studentId":"1"}},{"key":"2_schedule","value":{"maxCreditHours":18,"creditHours":0,"courseIds":[],"scheduleId":"2_schedule","studentId":"2"}}]}
