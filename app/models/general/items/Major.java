@@ -10,13 +10,15 @@ public class Major {
     private String id;
     private String name;
     private String degreeType;
+    private String degree;
     private int totalRequiredCredits;
     private Set<String> requiredCourses;
 
-    public Major(String id, String name, String degreeType, int totalRequiredCredits, Set<String> requiredCourses) {
+    public Major(String id, String name, String degreeType, String degree, int totalRequiredCredits, Set<String> requiredCourses) {
         this.id = id;
         this.name = name;
         this.degreeType = degreeType;
+        this.degree = degree;
         this.totalRequiredCredits = totalRequiredCredits;
         this.requiredCourses = requiredCourses;
     }
@@ -32,6 +34,8 @@ public class Major {
     public String getDegreeType() {
         return this.degreeType;
     }
+
+    public String getDegree() { return this.degree; }
 
     public int getTotalRequiredCredits() {
         return this.totalRequiredCredits;
