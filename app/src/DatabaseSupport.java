@@ -1197,10 +1197,10 @@ public class DatabaseSupport {
 
     public static HashMap<String, Major> getAllMajors() {
         HashMap<String, Major> map = new HashMap<String, Major>() {{
-            put("SE", new Major("SE", "Software Engineering", "B.S.", 125, Set.of("COMS100", "COMS200", "COMS300", "COMS400", "COMS500")));
-            put("COMS(BS)", new Major("COMS(BS)", "Computer Science", "B.S.", 120, Set.of("COMS100", "COMS200", "COMS300", "COMS400", "COMS500")));
-            put("COMS(BA)", new Major("COMS(BA)", "Computer Science", "B.A.", 120, Set.of("COMS100", "COMS200", "COMS300", "COMS400")));
-            put("FIN", new Major("FIN", "Finance", "B.S.", 122, Set.of("COMS100", "COMS200", "COMS300", "COMS400")));
+            put("SE", new Major("SE", "Software Engineering", "B.S.", "Bachelor of Science", 125, Set.of("COMS100", "COMS200", "COMS300", "COMS400", "COMS500")));
+            put("COMS(BS)", new Major("COMS(BS)", "Computer Science", "B.S.", "Bachelor of Science", 120, Set.of("COMS100", "COMS200", "COMS300", "COMS400", "COMS500")));
+            put("COMS(BA)", new Major("COMS(BA)", "Computer Science", "B.A.", "Bachelor of Arts", 120, Set.of("COMS100", "COMS200", "COMS300", "COMS400")));
+            put("FIN", new Major("FIN", "Finance", "B.S.", "Bachelor of Science", 122, Set.of("COMS100", "COMS200", "COMS300", "COMS400")));
         }};
         return map;
     }
@@ -1216,6 +1216,82 @@ public class DatabaseSupport {
         // will eventually return student with sid, for now just using preset student
         // HashMap<String, Course> students = getStudents();
         // student student = students.get(sid);
+        return true;
+    }
+    public ArrayList<studentLookup> getExpelledStudents() {
+        DB_Student lookups = new DB_Student();
+
+        try (BufferedReader br = new BufferedReader(new FileReader("./ExpelledStudentDB.txt"))) {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            String everything = sb.toString();
+
+            if (everything.trim().equals("{}")) {
+                return new ArrayList<studentLookup>();
+            } else {
+                DB_Student dbStudent = (DB_Student) JsonUtil.deserialize(everything, DB_Student.class);
+
+                if (dbStudent != null && dbStudent.students != null) {
+                    lookups.setStudents(dbStudent.students);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<studentLookup>();
+        }
+        return lookups.students != null ? new ArrayList<>(lookups.students) : new ArrayList<>();
+    }
+
+    public studentLookup getExpelledStudent(String sid) {
+        ArrayList<studentLookup> students = getExpelledStudents();
+
+        for(studentLookup s : students) {
+            if(s.value.getStudentId().equals(sid)) {
+                return s;
+            }
+        }
+        return null;
+    }
+    public boolean addExpelledStudent(String studentId, student stud) {
+        studentLookup sl = new studentLookup(studentId, stud);
+
+        ArrayList<studentLookup> arrayListed = getStudents();
+        arrayListed.add(sl);
+
+        try {
+            DB_Student dbStud = new DB_Student();
+            dbStud.setStudents(arrayListed);
+            String lookupsString = JsonUtil.serialize(dbStud);
+
+            Files.writeString(Paths.get("./ExpelledStudentDB.txt"), lookupsString);
+        } catch (Exception e) {
+            System.err.println(e);
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean removeExpelledStudent(String studentId) {
+        studentLookup[] lookups = {};
+
+        ArrayList<studentLookup> arrayListed = getStudents();
+        arrayListed.removeIf(s -> s.key == studentId);
+        lookups = arrayListed.toArray(lookups);
+
+        try {
+            String lookupsString = JsonUtil.serialize(lookups);
+            Files.writeString(Paths.get("./ExpelledStudentDB.txt"), lookupsString);
+        } catch (Exception e) {
+            return false;
+        }
+
         return true;
     }
 

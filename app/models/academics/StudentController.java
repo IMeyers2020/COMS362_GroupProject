@@ -40,4 +40,20 @@ public class StudentController {
 
         return foundSched;
     }
+
+    // move student from studentdb to expelleddb
+    public boolean expelStudent(String sid, String reason) {
+        studentLookup s = this.db.getStudent(sid);
+        s.value.setExplusionNote(reason);
+        // if student is added to expelled db and removed from student db return true
+        return this.db.addExpelledStudent(sid, s.value) && this.db.removeStudent(sid);
+    }
+
+    // move student from expelleddb to studentdb
+    public boolean unexpelStudent(String sid) {
+        studentLookup s = this.db.getExpelledStudent(sid);
+        s.value.setExplusionNote(null);
+        // if student is added to student db and removed from expelled db return true
+        return this.db.addStudent(sid, s.value) && this.db.removeExpelledStudent(sid);
+    }
 }

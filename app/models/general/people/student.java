@@ -1,14 +1,19 @@
 package models.general.people;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import models.finances.paymentServices.FinancialInfo;
 import models.finances.paymentServices.Scholarship;
 import models.general.items.Major;
 
+import static java.util.Objects.isNull;
+
 public class student {
     private String schedId;
-    private ArrayList<String> majors;
+    private ArrayList<String> majors; // Tracks all current majors
     private String studentId;      // Unique identifier for the student
     private String name;           // Full name of the student
     private FinancialInfo financialInfo; // Financial info of the student (linked to the FinancialInfo class)
@@ -17,6 +22,10 @@ public class student {
     private String address;
     private String ssn;
     private String dormId;
+    private ArrayList<String> completedCourseIDs; // Tracks all completed courses
+    private int totalCredits; // Total completed credits
+    private boolean isGraduated; // Whether the student has graduated yet
+    private String explusionNote; // Keep null unless student has been expelled
 
     public student(String studentId, String name, String address, String ssn, FinancialInfo financialInfo, double accountBalance, ArrayList<Scholarship> scholarships) {
         this.studentId = studentId;
@@ -28,11 +37,17 @@ public class student {
         majors = new ArrayList<>();
         this.address = address;
         this.ssn = ssn;
+        this.completedCourseIDs = new ArrayList<>();
+        this.isGraduated = false;
+        this.explusionNote = null;
     }
 
     public student() {
         majors = new ArrayList<>();
-        scholarships = new ArrayList<>();  
+        scholarships = new ArrayList<>();
+        completedCourseIDs = new ArrayList<>();
+        isGraduated = false;
+        explusionNote = null;
     }
 
     public boolean canAffordDorm(double dormPrice) {
@@ -62,7 +77,7 @@ public class student {
         ArrayList<String> majorClone = getMajors();
 
         for (String maj : majorClone) {
-            if (maj == m.getMajorID())
+            if (maj.equals(m.getMajorID()))
                 return false;
         }
 
@@ -76,8 +91,8 @@ public class student {
         if (majors.size() < 2)
             return false;
         ArrayList<String> ms = this.getMajors();
-        ms.removeIf(major -> major == m.getMajorID());
-        setMajors(ms);
+        ms.removeIf(major -> major.equals(m.getMajorID()));
+        this.setMajors(ms);
         return true;
     }
 
@@ -152,6 +167,24 @@ public class student {
         boolean isRemoved = scholarships.remove(scholarship); // Attempt to remove the specified scholarship
         return isRemoved;
     }
+
+    public int getTotalCredits() {
+        return totalCredits;
+    }
+
+    public ArrayList<String> getCompletedCourseIDs() {
+        return completedCourseIDs;
+    }
+
+    public void setGraduated(boolean b) { this.isGraduated = b; }
+
+    public boolean getGraduated() { return this.isGraduated; }
+
+    public void setExplusionNote(String note) {
+        this.explusionNote = note;
+    }
+
+    public boolean isExpelled() { return !isNull(this.explusionNote); }
 
     // Optional: Method to check if the student has a positive account balance
     public boolean hasPositiveBalance() {

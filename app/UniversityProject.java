@@ -32,6 +32,7 @@ import models.general.items.selectedCoursesLookup;
 import models.general.people.courseSection;
 import models.general.people.genericPerson;
 import models.general.people.professorLookup;
+import models.general.people.student;
 import models.general.people.studentLookup;
 import src.DatabaseSupport;
 import src.constants.DAYS;
@@ -592,14 +593,71 @@ public class UniversityProject {
         cc.addProfessorToCourse(profId, selectedCourse);
     }
 
-    public static void HRTasks(OfferController oc, ProfessorController pc, CourseController cc) {
-        
+    public static void ExpelStudent(StudentController sc) {
+        System.out.println("Type student id of student:");
+        String sid = s.nextLine();
+        System.out.println("Has the student met with the Student Conduct Administrator? (Y/N)");
+        String response = s.nextLine();
+        if (response.equals("N")) {
+            System.out.println("Allow the student to meet with the administrator to go over the student's conduct.");
+            return;
+        }
+        System.out.println("Has an independent professional assessment been conducted? Not required. (Y/N)");
+        response = s.nextLine();
+        System.out.println("Has the University Initiated Separation Hearing been conducted? (Y/N)");
+        response = s.nextLine();
+        if (response.equals("N")) {
+            System.out.println("A hearing is required to allow the student a chance for rebuttal.");
+            return;
+        }
+        System.out.println("Write finalized reason for explusion and press enter.");
+        String reason = s.nextLine();
+        System.out.println("Confirm explusion of student " + sid + ". (Y/N)");
+        response = s.nextLine();
+        if (response.equals("N")) {
+            return;
+        }
+        if (sc.expelStudent(sid, reason))
+            System.out.println("Operation successful.");
+        else
+            System.out.println("Operation failed.");
+    }
+
+    public static void UnexpelStudent(StudentController sc) {
+        System.out.println("Type student id of student:");
+        String sid = s.nextLine();
+        System.out.println("Has the student met with the Separation Consultation Committee? (Y/N)");
+        String response = s.nextLine();
+        if (response.equals("N")) {
+            System.out.println("Inform the student that a meeting is necessary.");
+            return;
+        }
+        System.out.println("Has the student provided documentation from licensed treating professional? (Y/N)");
+        response = s.nextLine();
+        if (response.equals("N")) {
+            System.out.println("Some form of documentation is required.");
+            return;
+        }
+        System.out.println("Confirm removal of explusion of student " + sid + ". (Y/N)");
+        response = s.nextLine();
+        if (response.equals("N")) {
+            return;
+        }
+        if (sc.unexpelStudent(sid))
+            System.out.println("Operation successful.");
+        else
+            System.out.println("Operation failed.");
+    }
+
+    public static void HRTasks(OfferController oc, ProfessorController pc, CourseController cc, StudentController sc) {
         System.out.println("What would you like to do?");
         System.out.println("1. Add Professor");
         System.out.println("2. View All Professors");
         System.out.println("3. Create Courses");
         System.out.println("4. View All Courses");
         System.out.println("5. Assign Professor to Course");
+        System.out.println("6. Expel Student");
+        System.out.println("7. Reverse Explusion of Student");
 
         String selection = s.nextLine();
 
@@ -634,6 +692,7 @@ public class UniversityProject {
                 clearScreen();
                 GetCourses(cc, pc);
                 break;
+            
             case "5":
             case "5.":
             case "5. Assign Professor to Course":
@@ -642,15 +701,31 @@ public class UniversityProject {
                 UpdateCourseWithProfessor(pc, cc);
                 break;
         
+            case "6":
+            case "6.":
+            case "6. Expel Student":
+            case "Expel Student":
+                clearScreen();
+                ExpelStudent(sc);
+                break;
+            
+            case "7":
+            case "7.":
+            case "7. Reverse Explusion of Student":
+            case "Reverse Explusion of Student":
+                clearScreen();
+                UnexpelStudent(sc);
+                break;
             default:
                 break;
         }
     }
 
-    public static void CourseRegistration(RegistrationController rc, CourseController cc, MajorController mc) {
+    public static void CourseRegistration(RegistrationController rc, CourseController cc, MajorController mc, StudentController sc) {
         
         String sid = null;
         String selection = null;
+        String address = null;
         Course selectedCourse;
         Major selectedMajor;
         ArrayList<courseLookup> offeredCourses = null;
@@ -671,6 +746,7 @@ public class UniversityProject {
         System.out.println("4. Remove Course");
         System.out.println("5. Add Major");
         System.out.println("6. Remove Major");
+        System.out.println("7. Graduate Student");
 
         if (s.hasNextLine())
           selection = s.nextLine();
@@ -796,12 +872,16 @@ public class UniversityProject {
                     selection = s.nextLine();
                 selectedMajor = offeredMajors.get(selection);
                 clearScreen();
-                if (selectedMajor != null && rc.addMajor(sid, selectedMajor)){
+                int tmp = rc.addMajor(sid, selectedMajor);
+                if (selectedMajor != null && tmp == 0){
                     System.out.println("Operation succeeded, " + selectedMajor.getMajorName() + ", " + selectedMajor.getDegreeType() + " has been added to the student's records.");
                 }
-                else {
+                else if (selectedMajor != null) {
                     System.out.println("Operation failed, " + selectedMajor.getMajorName() + ", " + selectedMajor.getDegreeType() + " has not been added to the student's records.");
-                    System.out.println("Maximum of two majors and no duplicates allowed.");        
+                    if (tmp == 1)
+                        System.out.println("Student has already requested for graduation, no majors can be added at this time.");
+                    else
+                        System.out.println("Maximum of two majors and no duplicates allowed.");
                 }
                 s.nextLine();
                 break;
@@ -819,6 +899,38 @@ public class UniversityProject {
                 else {
                     System.out.println("Operation failed, major has not been removed from the student's records.");
                     System.out.println("University requires students to have at least one major.");
+                }
+                break;
+            case "7":
+                clearScreen();
+                if (!rc.setGraduate(sid)) {
+                    System.out.println("Operation failed, student has not met requirements set by selected major(s).");
+                    break;
+                }
+                System.out.println("Creating diploma file...");
+                rc.createDiploma(sid);
+                System.out.println("Would the student like for the diploma to be mailed? (Y/N)");
+                if (s.hasNextLine())
+                    selection = s.nextLine();
+                if (selection.equals("Y")){
+                    System.out.println("Would the student like to update their mailing address? (Y/N)");
+                    if (s.hasNextLine())
+                        selection = s.nextLine();
+                    if (selection.equals("Y")){
+                        System.out.println("Type student's desired mailing address:");
+                        if (s.hasNextLine())
+                            address = s.nextLine();
+                        student tmpStudent = sc.getStudent(sid).value;
+                        tmpStudent.setAddress(address);
+                        if (sc.updateStudent(tmpStudent)) {
+                            System.out.println("Mailing address successfully updated.");
+                        }
+                        System.out.println("Mailing address unsuccessfully updated, please try again later.");
+                    }
+                    System.out.println("Tell student to expect to receive diploma within a month of graduation ceremony.");
+                }
+                else {
+                    System.out.println("Tell student to pick up diploma from Registrar Office.");
                 }
                 break;
             default:
@@ -1307,10 +1419,10 @@ public class UniversityProject {
                     AdmissionsTasks(studentController, appController, dormController);
                     break;
                 case HUMAN_RESOURCES:
-                    HRTasks(offerController, professorController, cc);
+                    HRTasks(offerController, professorController, cc, studentController);
                     break;
                 case REGISTRATION:
-                    CourseRegistration(rc, cc, mc);
+                    CourseRegistration(rc, cc, mc, studentController);
                     break;
                 case ACCOUNT_RECEIVABLE:
                     PaymentService(studentController);
