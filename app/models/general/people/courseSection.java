@@ -10,6 +10,8 @@ public class courseSection {
     public ArrayList<String> courseDays;
     public String courseTime;
 
+    public courseSection(){};
+
     public courseSection(String sectionId, ArrayList<DAYS> days, TIMES times) {
         this.courseDays = stringsFromDays(days);
         this.courseTime = times.label;

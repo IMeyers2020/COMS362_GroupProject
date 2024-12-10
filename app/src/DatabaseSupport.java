@@ -164,15 +164,19 @@ public class DatabaseSupport {
                     boolean courseFound = false;
                     for(selectedCourse courseId : courseIds) {
                         ArrayList<courseLookup> coursesClone = allCourses;
-                        coursesClone.removeIf(c -> !(c.value.getCID().equals(courseId)));
+
+                        coursesClone.removeIf(c -> !(c.value.getCID().equals(courseId.getCourseId())));
                         if(coursesClone.size() > 0) {
                             Course currentCourse = coursesClone.get(0).value;
 
-                            if(currentCourse == null || currentCourse.getCourseSectionIds() == null || currentCourse.getCourseSectionIds().size() == 0) {
+                            selectedCoursesLookup sc = getSelectedCourse(stud.getStudentId(), currentCourse.getCID());
+
+                            if(currentCourse == null || sc == null) {
                                 continue;
                             } else {
-                                courseId.getCourseSection();
-                                if(courseId.getCourseSection().equals(timeString) && currentCourse.getCourseSectionIds().contains(dayString)) {
+                                String selectedCourseSection = sc.value.getCourseSection();
+                                courseSectionLookup foundSection = getCourseSection(selectedCourseSection);
+                                if(foundSection.value.courseTime.equals(timeString.label) && foundSection.value.courseDays.contains(dayString.label)) {
                                     courseFound = true;
                                     String idToShow = courseId.getCourseId().substring(0, 5); // Show at most 6 characters. I.E FIN200. Shouldn't have more than that
                                     if(dayClassString.charAt(dayClassString.length() - 1) != '|') {
@@ -205,6 +209,7 @@ public class DatabaseSupport {
             System.err.println(e);
             return false;
         }
+        
 
         return true;
     }
